@@ -25,20 +25,25 @@ body { font-family: 'JetBrains Mono', 'SF Mono', 'Consolas', monospace; backgrou
 h1, h2, h3, h4, h5, h6, .heading { font-family: 'Oswald', 'Arial Narrow', sans-serif; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; }
 
 /* ── STATUS BAR ── */
-.status-bar {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 1001;
+#status-bar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 9999;
   background: #000; border-bottom: 1px solid #1a1a1a;
   display: flex; align-items: center; justify-content: space-between;
-  height: 28px; padding: 0 var(--gutter);
+  height: 32px; padding: 0 var(--gutter);
   font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase;
   color: #ffb733; font-weight: 600;
 }
-.status-bar .status-left { display: flex; gap: 20px; align-items: center; }
-.status-bar .status-right { display: flex; gap: 16px; align-items: center; }
-.status-bar .status-item { white-space: nowrap; color: #ccc; padding: 2px 6px; border-radius: 2px; cursor: default; transition: background 0.15s, color 0.15s; }
-.status-bar .status-item:hover { background: rgba(255,153,0,0.15); color: #fff; }
-.status-bar .status-val { color: #33ff88; margin-left: 4px; font-weight: 700; }
-.status-bar .status-neg { color: #ff6666; font-weight: 700; }
+#status-bar .status-left { display: flex; gap: 0; align-items: center; height: 100%; }
+#status-bar .status-right { display: flex; gap: 0; align-items: center; height: 100%; }
+#status-bar .si {
+  display: flex; align-items: center; height: 32px; white-space: nowrap; color: #ccc;
+  padding: 0 12px; cursor: pointer;
+}
+#status-bar .si-hover { background: #ff9900 !important; color: #000 !important; }
+#status-bar .si-hover .status-val,
+#status-bar .si-hover .status-neg { color: #000 !important; }
+#status-bar .status-val { color: #33ff88; margin-left: 4px; font-weight: 700; }
+#status-bar .status-neg { color: #ff6666; font-weight: 700; }
 .bb-cursor { display: inline-block; width: 7px; height: 12px; background: var(--amber); animation: blink 1s step-end infinite; vertical-align: middle; margin-left: 6px; }
 @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
@@ -102,7 +107,7 @@ h1, h2, h3, h4, h5, h6, .heading { font-family: 'Oswald', 'Arial Narrow', sans-s
 
 /* ── NAV ── */
 .top-nav {
-  position: fixed; top: 28px; left: 0; right: 0; z-index: 1000;
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
   background: #1a1a2e; border-bottom: 1px solid #2a2a4a;
   display: flex; align-items: center; height: var(--nav-h); padding: 0 var(--gutter); gap: 0;
 }
@@ -130,7 +135,7 @@ h1, h2, h3, h4, h5, h6, .heading { font-family: 'Oswald', 'Arial Narrow', sans-s
 }
 
 /* ── MAIN ── */
-.main { padding-top: calc(28px + var(--nav-h) + 20px); padding-bottom: 40px; }
+.main { padding-top: calc(var(--nav-h) + 20px); padding-bottom: 40px; }
 .section {
   display: none; padding: 0 var(--gutter); max-width: var(--max-w); margin: 0 auto;
   animation: sectionIn 0.2s var(--ease);
@@ -218,6 +223,21 @@ h1, h2, h3, h4, h5, h6, .heading { font-family: 'Oswald', 'Arial Narrow', sans-s
 .ccc-culture { background: rgba(255,200,0,0.15); color: #ffcc00; border: 1px solid rgba(255,200,0,0.3); }
 .ccc-community { background: rgba(0,180,255,0.12); color: #33bbff; border: 1px solid rgba(0,180,255,0.25); }
 .ccc-commerce { background: rgba(0,210,106,0.12); color: #00d26a; border: 1px solid rgba(0,210,106,0.25); }
+
+/* ── PINNED PANEL ── */
+.pinned-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+.pinned-card {
+  background: rgba(255,153,0,0.06); border: 1px solid rgba(255,153,0,0.25); border-radius: 2px;
+  padding: 10px 14px; max-width: 360px; position: relative;
+  display: flex; align-items: flex-start; gap: 10px;
+}
+.pinned-card .pinned-text { font-size: 13px; color: var(--text-light); line-height: 1.5; flex: 1; }
+.pinned-card .pinned-theme { font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--amber); font-weight: 600; margin-bottom: 4px; }
+.pinned-card .pinned-unpin {
+  background: none; border: none; color: var(--text-dim); font-size: 14px; cursor: pointer;
+  padding: 0; line-height: 1; flex-shrink: 0; transition: color 0.15s;
+}
+.pinned-card .pinned-unpin:hover { color: var(--red); }
 
 /* ── INSIGHT CARDS ── */
 .insight-card {
@@ -579,6 +599,16 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
 .card-note-delete:hover { opacity: 1; color: var(--red); }
 
 /* ── FLOATING ACTION BUTTON ── */
+.fab-note {
+  position: fixed; bottom: 16px; left: 16px; z-index: 1000;
+  width: 44px; height: 44px; border-radius: 4px;
+  background: var(--amber); color: #000; border: none;
+  font-size: 24px; font-weight: 700; line-height: 1;
+  cursor: pointer; transition: all 0.15s var(--ease);
+  box-shadow: 0 2px 12px rgba(255,153,0,0.3);
+  font-family: 'JetBrains Mono', monospace;
+}
+.fab-note:hover { transform: scale(1.1); background: #ffaa22; }
 .fab-container { position: fixed; bottom: 12px; left: 12px; z-index: 1000; }
 .fab-main {
   width: 40px; height: 40px; border-radius: 2px; background: var(--amber);
@@ -616,9 +646,12 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
 .ticker-track { display: flex; width: max-content; animation: tickerScroll 30s linear infinite; }
 .ticker-wrap:hover .ticker-track { animation-play-state: paused; }
 @keyframes tickerScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-.ticker-item { display: flex; align-items: center; gap: 8px; padding: 10px 24px; white-space: nowrap; flex-shrink: 0; }
+.ticker-item { display: flex; align-items: center; gap: 8px; padding: 10px 24px; white-space: nowrap; flex-shrink: 0; cursor: default; border-radius: 3px; transition: background 0.15s; position: relative; }
+.ticker-item:hover { background: #ff9900; }
+.ticker-item:hover .ticker-num { color: #000 !important; }
+.ticker-item:hover .ticker-label { color: #000 !important; }
 .ticker-num { font-family: 'Oswald', sans-serif; font-size: 26px; font-weight: 700; line-height: 1; }
-.ticker-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: #555; max-width: 140px; white-space: normal; line-height: 1.3; }
+.ticker-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: #888; max-width: 140px; white-space: normal; line-height: 1.3; }
 .ticker-sep { width: 3px; height: 3px; border-radius: 50%; background: #333; flex-shrink: 0; }
 
 /* ── INLINE VISUALIZATIONS ── */
@@ -693,19 +726,6 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
 <body>
 
 <!-- STATUS BAR -->
-<div class="status-bar">
-  <div class="status-left">
-    <span class="status-item">ADIDAS NAM</span>
-    <span class="status-item">REV <span class="status-val">EUR 5.128B</span></span>
-    <span class="status-item">MKT SHR <span class="status-val">8.9% &#9650;</span></span>
-    <span class="status-item">CAGR REQ <span class="status-neg">11.9%</span></span>
-    <span class="status-item">NB THREAT <span class="status-neg">$9.2B +19%</span></span>
-  </div>
-  <div class="status-right">
-    <span class="status-item" id="bb-clock"></span>
-    <span class="bb-cursor"></span>
-  </div>
-</div>
 
 <!-- TOP NAV -->
 <nav class="top-nav" id="topNav">
@@ -726,7 +746,6 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
       <button class="btn btn-sm" onclick="resetFontSize()" id="font-size-display" style="font-size:10px; padding:4px 8px; line-height:1; min-width:36px; text-align:center;" title="Reset to default">16px</button>
       <button class="btn btn-sm" onclick="changeFontSize(2)" style="font-size:13px; padding:4px 8px; line-height:1; font-weight:700;" title="Increase font size">A+</button>
     </div>
-    <button class="btn btn-sm btn-fill" onclick="addFloatingNote()" style="font-size:13px; padding:4px 10px; line-height:1; font-weight:700;" title="Add floating note">+</button>
     <button class="btn btn-sm" id="save-btn" onclick="manualSave()" style="font-size:9px; padding:4px 12px;">SAVE</button>
   </div>
 </nav>
@@ -856,6 +875,12 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
       <button class="view-toggle-btn active" id="view-grid-btn" onclick="setConditionsView('grid')" title="Grid view">&#9638;</button>
       <button class="view-toggle-btn" id="view-list-btn" onclick="setConditionsView('list')" title="List view">&#9776;</button>
     </div>
+  </div>
+
+  <!-- Pinned Insights -->
+  <div id="pinned-panel" style="display:none;" class="mb-24">
+    <div class="card-label" style="margin-bottom:8px;">Pinned Insights</div>
+    <div id="pinned-grid" class="pinned-grid"></div>
   </div>
 
   <!-- Insight Cards Container -->
@@ -1224,14 +1249,8 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
 
 </div><!-- /main -->
 
-<!-- FLOATING ACTION BUTTON -->
-<div class="fab-container">
-  <div class="fab-menu" id="fab-menu">
-    <button class="fab-item" onclick="fabAction('whiteboard')">Add to Whiteboard</button>
-    <button class="fab-item" onclick="fabAction('insight')">Add Insight</button>
-  </div>
-  <button class="fab-main" id="fab-btn" onclick="toggleFab()">+</button>
-</div>
+<!-- FLOATING NOTE BUTTON -->
+<button class="fab-note" onclick="addFloatingNote()" title="Add sticky note">+</button>
 
 <!-- MODAL -->
 <div class="modal-overlay" id="modal-overlay">
@@ -1610,11 +1629,23 @@ function renderViz(viz) {
 
 let conditionsViewMode = 'grid';
 
-let activeConditionFilter = 'all';
+let activeConditionFilters = new Set(['all']);
 function filterConditions(filter, btn) {
-  activeConditionFilter = filter;
-  document.querySelectorAll('#conditions-filter .filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
+  if (filter === 'all') {
+    activeConditionFilters = new Set(['all']);
+  } else {
+    activeConditionFilters.delete('all');
+    if (activeConditionFilters.has(filter)) {
+      activeConditionFilters.delete(filter);
+    } else {
+      activeConditionFilters.add(filter);
+    }
+    if (activeConditionFilters.size === 0) activeConditionFilters = new Set(['all']);
+  }
+  document.querySelectorAll('#conditions-filter .filter-btn').forEach(b => {
+    const f = b.getAttribute('data-filter');
+    b.classList.toggle('active', activeConditionFilters.has(f));
+  });
   renderConditions();
 }
 
@@ -1634,9 +1665,9 @@ function setConditionsView(mode) {
 
 function renderConditions() {
   const data = getConditionsData();
-  let filtered = activeConditionFilter === 'all' ? data : data.filter(d => d.themeKey === activeConditionFilter);
+  let filtered = activeConditionFilters.has('all') ? data : data.filter(d => activeConditionFilters.has(d.themeKey));
   // Apply custom ordering if stored
-  if (STATE.conditionsOrder.length > 0 && activeConditionFilter === 'all') {
+  if (STATE.conditionsOrder.length > 0 && activeConditionFilters.has('all')) {
     const orderMap = {};
     STATE.conditionsOrder.forEach((id, idx) => orderMap[id] = idx);
     filtered = [...filtered].sort((a, b) => {
@@ -1804,6 +1835,28 @@ function togglePin(id) {
   }
   saveState();
   renderConditions();
+  renderPinned();
+}
+
+function renderPinned() {
+  const panel = document.getElementById('pinned-panel');
+  const grid = document.getElementById('pinned-grid');
+  if (!panel || !grid) return;
+  if (STATE.pinnedInsights.length === 0) {
+    panel.style.display = 'none';
+    return;
+  }
+  panel.style.display = 'block';
+  grid.innerHTML = STATE.pinnedInsights.map(p => {
+    const shortText = p.text.length > 100 ? p.text.substring(0, 100) + '...' : p.text;
+    return `<div class="pinned-card">
+      <div>
+        <div class="pinned-theme">${escHtml(p.theme || p.type || '')}</div>
+        <div class="pinned-text">${escHtml(shortText)}</div>
+      </div>
+      <button class="pinned-unpin" onclick="togglePin('${p.id}')" title="Unpin">&times;</button>
+    </div>`;
+  }).join('');
 }
 
 // ==================== CONSUMER JOURNEY: ECO MAP ====================
@@ -2708,6 +2761,7 @@ function escAttr(str) { return str.replace(/"/g, '&quot;').replace(/'/g, '&#39;'
 // ==================== INIT ====================
 document.addEventListener('DOMContentLoaded', () => {
   renderConditions();
+  renderPinned();
   renderStrategy();
   renderWhiteboard();
   setTimeout(() => { updateMathModel(); updateScenarios(); }, 200);
@@ -2725,16 +2779,7 @@ window.addEventListener('resize', () => {
   }
 });
 
-// Bloomberg clock
-function updateClock() {
-  const now = new Date();
-  const pad = n => String(n).padStart(2, '0');
-  const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
-  const el = document.getElementById('bb-clock');
-  if (el) el.textContent = pad(now.getDate()) + ' ' + months[now.getMonth()] + ' ' + now.getFullYear() + ' ' + pad(now.getHours()) + ':' + pad(now.getMinutes()) + ':' + pad(now.getSeconds());
-}
-updateClock();
-setInterval(updateClock, 1000);
+
 
 // Manual save with visual feedback
 function manualSave() {
