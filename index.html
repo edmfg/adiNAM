@@ -403,7 +403,49 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
 .light-mode ::-webkit-scrollbar-thumb { background: #ccc; }
 .light-mode .eco-tooltip { background: #fff !important; color: #222 !important; border-color: #ddd !important; }
 
-/* ── MEDIA PANELS ── */
+/* ── COMPETITIVE SECTION ── */
+.comp-card {
+  background: var(--card); border: 1px solid var(--border); border-radius: 3px; padding: 20px;
+  border-top: 3px solid var(--border); position: relative;
+  transition: border-color 0.2s var(--ease);
+}
+.comp-card:hover { border-color: var(--border-hover); }
+.comp-card h4 {
+  font-family: 'Oswald', sans-serif; font-size: 18px; text-transform: uppercase;
+  margin-bottom: 4px; letter-spacing: 0.06em;
+}
+.comp-subtitle { font-size: 11px; color: var(--text-dim); margin-bottom: 12px; }
+.comp-bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.comp-bar-label {
+  font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--text-dim); width: 90px; flex-shrink: 0;
+}
+.comp-bar-track { flex: 1; height: 6px; background: var(--card3); border-radius: 2px; overflow: hidden; }
+.comp-bar-fill { height: 100%; border-radius: 2px; transition: width 0.6s var(--ease); }
+.comp-bar-val { font-size: 11px; color: var(--text-mid); width: 28px; text-align: right; font-weight: 600; }
+.comp-section { margin-top: 10px; font-size: 12px; color: var(--text-mid); line-height: 1.6; }
+.comp-section strong { color: var(--text-light); font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; }
+.comp-section.strength strong { color: var(--green); }
+.comp-section.weakness strong { color: var(--red); }
+.comp-section.campaign strong { color: var(--amber); }
+.comp-revenue {
+  font-family: 'Oswald', sans-serif; font-size: 22px; font-weight: 700;
+  margin-bottom: 2px; line-height: 1;
+}
+.comp-growth { font-size: 11px; font-weight: 600; }
+.comp-growth.positive { color: var(--green); }
+.comp-growth.negative { color: var(--red); }
+.comp-divider { border: none; border-top: 1px solid var(--border); margin: 10px 0; }
+.comp-takeaway {
+  background: var(--card); border: 1px solid var(--amber); border-radius: 3px;
+  padding: 20px; margin-top: 24px;
+}
+.comp-takeaway h3 { font-size: 16px; color: var(--amber); margin-bottom: 12px; }
+.comp-takeaway li {
+  font-size: 13px; color: var(--text-light); line-height: 1.7; margin-bottom: 8px;
+}
+.comp-takeaway li strong { color: var(--amber); }
+
 /* ── WHITEBOARD canvas ── */
 .canvas-area {
   position: relative; width: 100%; min-height: 640px;
@@ -852,6 +894,7 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
   <div class="nav-tabs">
     <button class="nav-tab active" data-tab="conditions" onclick="switchTab('conditions')">Conditions</button>
     <button class="nav-tab" data-tab="journey" onclick="switchTab('journey')">Consumer Journey</button>
+    <button class="nav-tab" data-tab="competitive" onclick="switchTab('competitive')">Competitive</button>
     <button class="nav-tab" data-tab="strategy" onclick="switchTab('strategy')">Strategy</button>
     <button class="nav-tab" data-tab="math" onclick="switchTab('math')">Math</button>
     <button class="nav-tab" data-tab="whiteboard" onclick="switchTab('whiteboard')">Whiteboard</button>
@@ -1228,6 +1271,201 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
 </div>
 
 <!-- ==================== MEDIA ==================== -->
+
+<!-- ==================== COMPETITIVE ==================== -->
+<div class="section" id="section-competitive">
+  <div class="section-header">
+    <h2>Competitive Landscape</h2>
+    <p>How Adidas stacks up against key competitors in North America — revenue, strengths, gaps, and 2025 media highlights.</p>
+  </div>
+
+  <div class="grid grid-2" style="grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));">
+
+    <!-- NIKE -->
+    <div class="comp-card" style="border-top-color: #ff6b35;">
+      <h4 style="color: #ff6b35;">Nike</h4>
+      <div class="comp-subtitle">Beaverton, OR &middot; NYSE: NKE &middot; FY2025</div>
+      <div class="comp-revenue" style="color: #ff6b35;">$46.3B</div>
+      <div class="comp-growth negative">-10% YoY &middot; NA: $19.6B</div>
+      <hr class="comp-divider">
+      <div class="comp-bar-row"><span class="comp-bar-label">Culture</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:90%; background:#ff6b35;"></div></div><span class="comp-bar-val">90</span></div>
+      <div class="comp-bar-row"><span class="comp-bar-label">Community</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:65%; background:#ff6b35;"></div></div><span class="comp-bar-val">65</span></div>
+      <div class="comp-bar-row"><span class="comp-bar-label">Commerce</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:85%; background:#ff6b35;"></div></div><span class="comp-bar-val">85</span></div>
+      <div class="comp-bar-row"><span class="comp-bar-label">Storytelling</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:92%; background:#ff6b35;"></div></div><span class="comp-bar-val">92</span></div>
+      <hr class="comp-divider">
+      <div class="comp-section strength"><strong>Strengths:</strong> Unmatched scale and global distribution. Deep league partnerships (NBA, NFL). Massive marketing budget increased 15%. Iconic "Just Do It" brand equity.</div>
+      <div class="comp-section weakness"><strong>Weaknesses:</strong> Revenue down 10% in FY2025. Innovation lag — lost cultural relevance to Adidas, NB, and On. Over-reliance on stale legacy franchises (AF1, Dunk). China sales plunging.</div>
+      <div class="comp-section campaign"><strong>2025 Media:</strong> "Winning Isn't for Everyone" Olympics campaign. "Why Do It?" rebrand featuring Tyler, the Creator. Skipped Super Bowl 60 to redirect budget to brand building. 15% marketing spend increase.</div>
+    </div>
+
+    <!-- NEW BALANCE -->
+    <div class="comp-card" style="border-top-color: #00d26a;">
+      <h4 style="color: #00d26a;">New Balance</h4>
+      <div class="comp-subtitle">Boston, MA &middot; Private &middot; 2025</div>
+      <div class="comp-revenue" style="color: #00d26a;">$9.2B</div>
+      <div class="comp-growth positive">+19% YoY &middot; Targeting $10B in 2026</div>
+      <hr class="comp-divider">
+      <div class="comp-bar-row"><span class="comp-bar-label">Culture</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:78%; background:#00d26a;"></div></div><span class="comp-bar-val">78</span></div>
+      <div class="comp-bar-row"><span class="comp-bar-label">Community</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:82%; background:#00d26a;"></div></div><span class="comp-bar-val">82</span></div>
+      <div class="comp-bar-row"><span class="comp-bar-label">Commerce</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:60%; background:#00d26a;"></div></div><span class="comp-bar-val">60</span></div>
+      <div class="comp-bar-row"><span class="comp-bar-label">Storytelling</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:70%; background:#00d26a;"></div></div><span class="comp-bar-val">70</span></div>
+      <hr class="comp-divider">
+      <div class="comp-section strength"><strong>Strengths:</strong> Privately held — no quarterly pressure, long-term patience. Dominant cultural relevance via collabs (ALD, JJJJound). Signed Cooper Flagg (#1 NBA pick), Coco Gauff, Ohtani. "Made in USA" heritage resonates.</div>
+      <div class="comp-section weakness"><strong>Weaknesses:</strong> Still smaller in absolute scale. Heavy reliance on retro silhouettes (990, 550) that could fatigue. Limited apparel penetration vs. footwear. International scale still developing.</div>
+      <div class="comp-section campaign"><strong>2025 Media:</strong> "We Got Now" campaign with dialogue-free athlete spots. "Fearlessly Independent" brand platform leaning into private ownership. 80 new retail stores opened.</div>
+    </div>
+
+    <!-- ON -->
+    <div class="comp-card" style="border-top-color: #e0e0e0;">
+      <h4 style="color: #e0e0e0;">On</h4>
+      <div class="comp-subtitle">Zurich, Switzerland &middot; NYSE: ONON &middot; TTM Sept 2025</div>
+      <div class="comp-revenue" style="color: #e0e0e0;">$3.4B</div>
+      <div class="comp-growth positive">+37% YoY &middot; 3-year CAGR 30%+ &middot; 62.5% gross margin</div>
+      <hr class="comp-divider">
+      <div class="comp-bar-row"><span class="comp-bar-label">Culture</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:50%; background:#ccc;"></div></div><span class="comp-bar-val">50</span></div>
+      <div class="comp-bar-row"><span class="comp-bar-label">Community</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:55%; background:#ccc;"></div></div><span class="comp-bar-val">55</span></div>
+      <div class="comp-bar-row"><span class="comp-bar-label">Commerce</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:62%; background:#ccc;"></div></div><span class="comp-bar-val">62</span></div>
+      <div class="comp-bar-row"><span class="comp-bar-label">Storytelling</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:58%; background:#ccc;"></div></div><span class="comp-bar-val">58</span></div>
+      <hr class="comp-divider">
+      <div class="comp-section strength"><strong>Strengths:</strong> Fastest-growing major athletic brand globally. Strong performance credibility in running. Premium positioning with industry-leading margins. Roger Federer association adds lifestyle cred. Swiss engineering narrative.</div>
+      <div class="comp-section weakness"><strong>Weaknesses:</strong> Still subscale vs. big players. Limited apparel and team sports penetration. Lower brand awareness than legacy competitors. Heavy dependence on running category.</div>
+      <div class="comp-section campaign"><strong>2025 Media:</strong> Performance-driven storytelling with continued expansion into lifestyle adjacencies. Growing Asia presence rapidly. Expanding distribution while maintaining brand heat.</div>
+    </div>
+
+    <!-- HOKA -->
+    <div class="comp-card" style="border-top-color: #4a9eff;">
+      <h4 style="color: #4a9eff;">Hoka</h4>
+      <div class="comp-subtitle">Goleta, CA &middot; Deckers Brands (NYSE: DECK) &middot; FY2025</div>
+      <div class="comp-revenue" style="color: #4a9eff;">$2.2B</div>
+      <div class="comp-growth positive">+24% YoY &middot; Growth decelerating to low-teens FY2026</div>
+      <hr class="comp-divider">
+      <div class="comp-bar-row"><span class="comp-bar-label">Culture</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:45%; background:#4a9eff;"></div></div><span class="comp-bar-val">45</span></div>
+      <div class="comp-bar-row"><span class="comp-bar-label">Community</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:72%; background:#4a9eff;"></div></div><span class="comp-bar-val">72</span></div>
+      <div class="comp-bar-row"><span class="comp-bar-label">Commerce</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:55%; background:#4a9eff;"></div></div><span class="comp-bar-val">55</span></div>
+      <div class="comp-bar-row"><span class="comp-bar-label">Storytelling</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:60%; background:#4a9eff;"></div></div><span class="comp-bar-val">60</span></div>
+      <hr class="comp-divider">
+      <div class="comp-section strength"><strong>Strengths:</strong> Strong brand identity in maximalist cushioning. Crossover appeal: performance runners + casual/lifestyle. Growing "walking shoe" ownership. Community-driven marketing resonating strongly.</div>
+      <div class="comp-section weakness"><strong>Weaknesses:</strong> Growth decelerating from 24% to low-teens. ~$150M tariff headwinds. Limited apparel business. Polarizing design aesthetic. Single-category dependence.</div>
+      <div class="comp-section campaign"><strong>2025 Media:</strong> "Together We Fly Higher" global campaign with Bob Dylan soundtrack. Community-focused messaging. Hired Rygr agency for earned media and running culture storytelling.</div>
+    </div>
+
+    <!-- UNDER ARMOUR -->
+    <div class="comp-card" style="border-top-color: #888;">
+      <h4 style="color: #888;">Under Armour</h4>
+      <div class="comp-subtitle">Baltimore, MD &middot; NYSE: UAA &middot; FY2026</div>
+      <div class="comp-revenue" style="color: #888;">~$5B</div>
+      <div class="comp-growth negative">-4-5% YoY &middot; NA: ~$2.9B (down 8%) &middot; 3rd year of decline</div>
+      <hr class="comp-divider">
+      <div class="comp-bar-row"><span class="comp-bar-label">Culture</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:32%; background:#888;"></div></div><span class="comp-bar-val">32</span></div>
+      <div class="comp-bar-row"><span class="comp-bar-label">Community</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:40%; background:#888;"></div></div><span class="comp-bar-val">40</span></div>
+      <div class="comp-bar-row"><span class="comp-bar-label">Commerce</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:38%; background:#888;"></div></div><span class="comp-bar-val">38</span></div>
+      <div class="comp-bar-row"><span class="comp-bar-label">Storytelling</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:28%; background:#888;"></div></div><span class="comp-bar-val">28</span></div>
+      <hr class="comp-divider">
+      <div class="comp-section strength"><strong>Strengths:</strong> Strong heritage in performance training and team sports. Kevin Plank's return bringing strategic discipline. "Sell Less, Earn More" improving margins. College team deals.</div>
+      <div class="comp-section weakness"><strong>Weaknesses:</strong> Three consecutive years of revenue decline. Heavily NA-dependent with that market contracting. Brand perception weakened vs. 2015-18 peak. Still operating at a loss.</div>
+      <div class="comp-section campaign"><strong>2025 Media:</strong> 25% product line reduction to sharpen focus. Pulling back from discounting/off-price. "Brand First" restructuring plan. Targeting profitability return in 2027.</div>
+    </div>
+
+    <!-- LULULEMON -->
+    <div class="comp-card" style="border-top-color: #c080ff;">
+      <h4 style="color: #c080ff;">Lululemon</h4>
+      <div class="comp-subtitle">Vancouver, BC &middot; NASDAQ: LULU &middot; TTM Oct 2025</div>
+      <div class="comp-revenue" style="color: #c080ff;">$11.1B</div>
+      <div class="comp-growth positive">+9% YoY &middot; Targeting $12.5B by end of 2026</div>
+      <hr class="comp-divider">
+      <div class="comp-bar-row"><span class="comp-bar-label">Culture</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:60%; background:#c080ff;"></div></div><span class="comp-bar-val">60</span></div>
+      <div class="comp-bar-row"><span class="comp-bar-label">Community</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:75%; background:#c080ff;"></div></div><span class="comp-bar-val">75</span></div>
+      <div class="comp-bar-row"><span class="comp-bar-label">Commerce</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:78%; background:#c080ff;"></div></div><span class="comp-bar-val">78</span></div>
+      <div class="comp-bar-row"><span class="comp-bar-label">Storytelling</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:65%; background:#c080ff;"></div></div><span class="comp-bar-val">65</span></div>
+      <hr class="comp-divider">
+      <div class="comp-section strength"><strong>Strengths:</strong> Premium brand positioning with high margins. Strong DTC model and owned retail. Growing men's category and digital business. International expansion (mid-teens growth outside NA).</div>
+      <div class="comp-section weakness"><strong>Weaknesses:</strong> North America struggling: U.S. revenue down 3% in Q3. Core product franchises (Swiftly, Scuba) need refreshing. Rising competition from Vuori and Alo Yoga. Innovation perceived as slowing.</div>
+      <div class="comp-section campaign"><strong>2025 Media:</strong> Expanding into 6 new international markets. Three-pillar plan: product creation, product activation, enterprise efficiency. Targeting 35% new-style penetration by Spring 2026. Entered NFL apparel via Fanatics.</div>
+    </div>
+
+    <!-- PUMA -->
+    <div class="comp-card" style="border-top-color: #e6b800;">
+      <h4 style="color: #e6b800;">Puma</h4>
+      <div class="comp-subtitle">Herzogenaurach, Germany &middot; ETR: PUM &middot; 2025</div>
+      <div class="comp-revenue" style="color: #e6b800;">~$9.5B</div>
+      <div class="comp-growth negative">H1 2025 net loss &euro;246.6M &middot; NA sales down 15.2%</div>
+      <hr class="comp-divider">
+      <div class="comp-bar-row"><span class="comp-bar-label">Culture</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:48%; background:#e6b800;"></div></div><span class="comp-bar-val">48</span></div>
+      <div class="comp-bar-row"><span class="comp-bar-label">Community</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:35%; background:#e6b800;"></div></div><span class="comp-bar-val">35</span></div>
+      <div class="comp-bar-row"><span class="comp-bar-label">Commerce</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:42%; background:#e6b800;"></div></div><span class="comp-bar-val">42</span></div>
+      <div class="comp-bar-row"><span class="comp-bar-label">Storytelling</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:40%; background:#e6b800;"></div></div><span class="comp-bar-val">40</span></div>
+      <hr class="comp-divider">
+      <div class="comp-section strength"><strong>Strengths:</strong> Global brand recognition. Football/soccer heritage and partnerships. Ambitious long-term vision (top-3 global sports brand). Strong Rihanna/Fenty heritage.</div>
+      <div class="comp-section weakness"><strong>Weaknesses:</strong> Significant financial losses in 2025. North America distribution mess — over-indexed on mass merchant. Scrapped dividend. 2026 is a declared "transition year." Clearing excess inventory.</div>
+      <div class="comp-section campaign"><strong>2025 Media:</strong> CEO Arthur Hoeld leading distribution cleanup. Revamping marketing in football, running, training. Currently in reset mode — limited major campaigns while they restructure.</div>
+    </div>
+
+    <!-- ASICS -->
+    <div class="comp-card" style="border-top-color: #ff4444;">
+      <h4 style="color: #ff4444;">ASICS</h4>
+      <div class="comp-subtitle">Kobe, Japan &middot; TYO: 7936 &middot; FY2025</div>
+      <div class="comp-revenue" style="color: #ff4444;">~$4.5B</div>
+      <div class="comp-growth positive">+19.5% YoY (record year) &middot; SportStyle up 43.6%</div>
+      <hr class="comp-divider">
+      <div class="comp-bar-row"><span class="comp-bar-label">Culture</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:55%; background:#ff4444;"></div></div><span class="comp-bar-val">55</span></div>
+      <div class="comp-bar-row"><span class="comp-bar-label">Community</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:60%; background:#ff4444;"></div></div><span class="comp-bar-val">60</span></div>
+      <div class="comp-bar-row"><span class="comp-bar-label">Commerce</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:50%; background:#ff4444;"></div></div><span class="comp-bar-val">50</span></div>
+      <div class="comp-bar-row"><span class="comp-bar-label">Storytelling</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:45%; background:#ff4444;"></div></div><span class="comp-bar-val">45</span></div>
+      <hr class="comp-divider">
+      <div class="comp-section strength"><strong>Strengths:</strong> #1 market share in performance running across major European markets. SportStyle segment (Gel-NYC) driving explosive lifestyle growth (+43.6%). Strong technical credibility. Targeting 25% NA running share by 2026.</div>
+      <div class="comp-section weakness"><strong>Weaknesses:</strong> Still limited North American brand awareness vs. Nike/NB. Historically "functional but not cool" perception (changing). Smaller apparel business. International focus may slow NA push.</div>
+      <div class="comp-section campaign"><strong>2025 Media:</strong> SportStyle sneakers (Gel-NYC, Gel-Kayano 14) driving cultural relevance. Dual-track strategy: performance running dominance + lifestyle breakout. Ambitious North American growth targets.</div>
+    </div>
+
+    <!-- VUORI -->
+    <div class="comp-card" style="border-top-color: #5ab8a0;">
+      <h4 style="color: #5ab8a0;">Vuori</h4>
+      <div class="comp-subtitle">Encinitas, CA &middot; Private &middot; 2024-25</div>
+      <div class="comp-revenue" style="color: #5ab8a0;">$5.5B valuation</div>
+      <div class="comp-growth positive">+23% YoY sales &middot; 85+ stores &middot; $825M funding round</div>
+      <hr class="comp-divider">
+      <div class="comp-bar-row"><span class="comp-bar-label">Culture</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:52%; background:#5ab8a0;"></div></div><span class="comp-bar-val">52</span></div>
+      <div class="comp-bar-row"><span class="comp-bar-label">Community</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:58%; background:#5ab8a0;"></div></div><span class="comp-bar-val">58</span></div>
+      <div class="comp-bar-row"><span class="comp-bar-label">Commerce</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:55%; background:#5ab8a0;"></div></div><span class="comp-bar-val">55</span></div>
+      <div class="comp-bar-row"><span class="comp-bar-label">Storytelling</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:50%; background:#5ab8a0;"></div></div><span class="comp-bar-val">50</span></div>
+      <hr class="comp-divider">
+      <div class="comp-section strength"><strong>Strengths:</strong> Positioned as the "men's Lululemon" expanding into women's. 23% sales growth in a market growing 4.3%. Premium DTC-first model. California lifestyle brand narrative.</div>
+      <div class="comp-section weakness"><strong>Weaknesses:</strong> Still primarily an apparel brand — no footwear. Limited international presence. Small scale relative to major competitors. Dependent on premium consumer spending.</div>
+      <div class="comp-section campaign"><strong>2025 Media:</strong> 85+ stores targeting 100+ by end of 2025 including 7 international. Directly taking share from Lululemon in premium athleisure. Strong social media and influencer presence.</div>
+    </div>
+
+    <!-- REEBOK -->
+    <div class="comp-card" style="border-top-color: #555;">
+      <h4 style="color: #999;">Reebok</h4>
+      <div class="comp-subtitle">Boston, MA &middot; Authentic Brands Group &middot; 2024-25</div>
+      <div class="comp-revenue" style="color: #999;">~$5B retail value</div>
+      <div class="comp-growth positive">Grew from $1.6B to ~$5B under ABG &middot; Licensing model</div>
+      <hr class="comp-divider">
+      <div class="comp-bar-row"><span class="comp-bar-label">Culture</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:35%; background:#999;"></div></div><span class="comp-bar-val">35</span></div>
+      <div class="comp-bar-row"><span class="comp-bar-label">Community</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:25%; background:#999;"></div></div><span class="comp-bar-val">25</span></div>
+      <div class="comp-bar-row"><span class="comp-bar-label">Commerce</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:40%; background:#999;"></div></div><span class="comp-bar-val">40</span></div>
+      <div class="comp-bar-row"><span class="comp-bar-label">Storytelling</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:30%; background:#999;"></div></div><span class="comp-bar-val">30</span></div>
+      <hr class="comp-divider">
+      <div class="comp-section strength"><strong>Strengths:</strong> Brand nostalgia and heritage. Low-overhead ABG licensing model. Basketball re-entry with Angel Reese signature shoe. Classic silhouettes (Club C, Classic Leather) have retro appeal.</div>
+      <div class="comp-section weakness"><strong>Weaknesses:</strong> Licensing model limits brand control and product quality. Fragmented operational structure. No longer a real performance competitor. Limited innovation pipeline.</div>
+      <div class="comp-section campaign"><strong>2025 Media:</strong> Angel Reese WNBA signature shoe for 2026. Slam Jam partnership for premium positioning. TikTok Shop selling acceleration. Largely a nostalgia/licensing play.</div>
+    </div>
+
+  </div>
+
+  <!-- Strategic Takeaways -->
+  <div class="comp-takeaway">
+    <h3 class="heading">Strategic Takeaways for Adidas</h3>
+    <ol style="margin-left: 20px;">
+      <li><strong>The Nike window is real but closing.</strong> Nike is in turnaround mode with a 15% marketing spend increase and renewed brand focus. Adidas should press the advantage now, especially in lifestyle/culture where Nike has lost ground.</li>
+      <li><strong>New Balance is the primary lifestyle/culture threat.</strong> Five consecutive years of 20%+ growth, private ownership patience, and strong collaborations make them the most dangerous competitor in the space Adidas Originals dominates.</li>
+      <li><strong>Performance running is crowded.</strong> On, Hoka, ASICS, and Brooks all have stronger running credibility. Competing here requires genuine product innovation, not just marketing.</li>
+      <li><strong>The retro silhouette boom benefits Adidas but carries risk.</strong> ASICS (Gel-NYC), New Balance (550/990), and Reebok are all playing the same heritage game. Samba/Gazelle fatigue is a real risk without lifecycle management.</li>
+      <li><strong>Puma's and UA's weakness = Adidas's opportunity.</strong> Both are in reset mode, creating shelf space and consumer attention gaps Adidas can fill — especially in wholesale.</li>
+      <li><strong>Apparel is underexploited.</strong> Lululemon is softening in NA while Vuori/Alo prove demand for premium athletic apparel. Adidas has the brand to compete but needs sharper product and positioning.</li>
+    </ol>
+  </div>
+</div>
 
 <!-- ==================== STRATEGY ==================== -->
 <div class="section" id="section-strategy">
