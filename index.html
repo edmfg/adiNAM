@@ -6,7 +6,6 @@
 <title>YOU GOT THIS | Adidas North America Strategy Dashboard</title>
 <link rel="icon" type="image/jpeg" href="689347.jpg">
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -402,6 +401,42 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
 .light-mode ::-webkit-scrollbar-track { background: #e8e8e8; }
 .light-mode ::-webkit-scrollbar-thumb { background: #ccc; }
 
+/* ── TODO SECTION ── */
+.todo-item {
+  display: flex; align-items: center; gap: 10px; padding: 10px 14px;
+  background: var(--card); border: 1px solid var(--border); border-radius: 3px;
+  margin-bottom: 6px; transition: all 0.15s var(--ease);
+  animation: noteIn 0.15s var(--ease);
+}
+.todo-item:hover { border-color: var(--border-hover); }
+.todo-item.todo-done { opacity: 0.5; }
+.todo-item.todo-done .todo-text-input { text-decoration: line-through; color: var(--text-dim); }
+.todo-check {
+  width: 24px; height: 24px; min-width: 24px; border-radius: 3px;
+  border: 2px solid var(--text-dim); background: none; color: #fff;
+  cursor: pointer; font-size: 12px; display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s var(--ease);
+}
+.todo-check:hover { border-color: var(--amber); }
+.todo-text-input {
+  flex: 1; background: none; border: none; color: var(--text-light);
+  font-size: 14px; font-family: 'JetBrains Mono', monospace; padding: 4px 0;
+}
+.todo-text-input:focus { outline: none; color: var(--amber); }
+.todo-text-input::placeholder { color: var(--text-dim); }
+.todo-priority {
+  font-size: 9px; font-family: 'Oswald', sans-serif; text-transform: uppercase;
+  letter-spacing: 0.08em; padding: 3px 8px; border-radius: 2px;
+  border: 1px solid var(--text-dim); background: none; cursor: pointer;
+  transition: all 0.15s var(--ease); white-space: nowrap;
+}
+.todo-priority:hover { opacity: 0.8; }
+.todo-delete {
+  background: none; border: none; color: var(--text-dim); font-size: 16px;
+  cursor: pointer; padding: 0 4px; transition: color 0.15s;
+}
+.todo-delete:hover { color: var(--red); }
+
 /* ── COMPETITIVE SECTION ── */
 .comp-card {
   background: var(--card); border: 1px solid var(--border); border-radius: 3px; padding: 20px;
@@ -532,9 +567,6 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
 .metric-value[contenteditable]:focus { color: var(--amber); }
 
 /* ── CHART ── */
-.chart-container { position: relative; width: 100%; max-height: 260px; }
-.chart-container canvas { width: 100% !important; }
-.chart-actions { display: flex; gap: 6px; margin-top: 8px; justify-content: flex-end; }
 
 /* ── SCROLLBAR ── */
 ::-webkit-scrollbar { width: 4px; height: 4px; }
@@ -871,7 +903,7 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
     <button class="nav-tab" data-tab="journey" onclick="switchTab('journey')">Consumer Journey</button>
     <button class="nav-tab" data-tab="competitive" onclick="switchTab('competitive')">Competitive</button>
     <button class="nav-tab" data-tab="strategy" onclick="switchTab('strategy')">Strategy</button>
-    <button class="nav-tab" data-tab="math" onclick="switchTab('math')">Math</button>
+    <button class="nav-tab" data-tab="todo" onclick="switchTab('todo')">To-Do</button>
     <button class="nav-tab" data-tab="whiteboard" onclick="switchTab('whiteboard')">Whiteboard</button>
   </div>
   <div style="margin-left:auto; display:flex; align-items:center; gap:8px;">
@@ -1446,125 +1478,37 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
 </div>
 
 <!-- ==================== MATH ==================== -->
-<div class="section" id="section-math">
-  <div class="section-header">
-    <h2>The Math</h2>
-    <p>Illustrative growth modeling to frame the scale of the challenge.</p>
-  </div>
-
-  <!-- Sub-tabs for Math -->
-  <div class="sub-tabs mb-32">
-    <button class="sub-tab active" onclick="switchMathTab('assumptions', this)">Assumptions</button>
-    <button class="sub-tab" onclick="switchMathTab('scenarios', this)">Scenarios</button>
-    <button class="sub-tab" onclick="switchMathTab('timeline', this)">Timeline</button>
-    <button class="sub-tab" onclick="switchMathTab('charts', this)">Charts</button>
-  </div>
-
-  <!-- Assumptions Panel -->
-  <div class="sub-panel active" id="math-assumptions">
-    <div class="grid grid-2 gap-24">
-      <div class="card">
-        <div class="card-label">Revenue Targets</div>
-        <div class="space-y">
-          <div><label>Current Revenue ($B)</label><input type="text" id="math-current-rev" value="5.1" onchange="updateMathModel()"></div>
-          <div><label>Target Revenue ($B)</label><input type="text" id="math-target-rev" value="8.0" onchange="updateMathModel()"></div>
-          <div><label>Target Year</label><input type="number" id="math-target-year" value="2028" onchange="updateMathModel()"></div>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-label">Model Parameters</div>
-        <div class="space-y">
-          <div><label>Assumed ROAS (x)</label><input type="text" id="math-roas" value="4.2" onchange="updateMathModel()"></div>
-          <div><label>Media Contribution (%)</label><input type="text" id="math-media-contrib" value="35" onchange="updateMathModel()"></div>
-          <div><label>Base Growth Rate (%)</label><input type="text" id="math-base-growth" value="3" onchange="updateMathModel()"></div>
-        </div>
-      </div>
+<!-- ==================== TO-DO ==================== -->
+<div class="section" id="section-todo">
+  <div class="section-header" style="display:flex; align-items:flex-start; justify-content:space-between;">
+    <div>
+      <h2>To-Do</h2>
+      <p>Track tasks, deliverables, and action items for the pitch.</p>
     </div>
-    <div class="divider"></div>
-    <div class="card">
-      <div class="card-label">Strategic Readout</div>
-      <div id="math-readout" style="font-size:14px; color:var(--text-light); line-height:1.8;"></div>
+    <button class="btn btn-sm btn-fill" onclick="addTodoItem()" style="margin-top:4px; white-space:nowrap;">+ Add Task</button>
+  </div>
+
+  <!-- Filters -->
+  <div class="filter-bar" style="margin-bottom:16px;">
+    <button class="filter-btn active" data-filter="all" onclick="filterTodos('all',this)">All</button>
+    <button class="filter-btn" data-filter="todo" onclick="filterTodos('todo',this)">To Do</button>
+    <button class="filter-btn" data-filter="in-progress" onclick="filterTodos('in-progress',this)">In Progress</button>
+    <button class="filter-btn" data-filter="done" onclick="filterTodos('done',this)">Done</button>
+  </div>
+
+  <!-- Progress bar -->
+  <div class="card" style="padding:12px 16px; margin-bottom:20px;">
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
+      <span class="card-label" style="margin:0;">Progress</span>
+      <span id="todo-progress-text" style="font-family:'Oswald',sans-serif; font-size:16px; color:var(--amber);">0 / 0</span>
+    </div>
+    <div style="width:100%; height:6px; background:var(--card3); border-radius:3px; overflow:hidden;">
+      <div id="todo-progress-bar" style="width:0%; height:100%; background:var(--green); border-radius:3px; transition:width 0.4s var(--ease);"></div>
     </div>
   </div>
 
-  <!-- Scenario Simulator -->
-  <div class="sub-panel" id="math-scenarios">
-    <div class="grid grid-3 gap-24">
-      <div class="card">
-        <div class="card-label" style="color:var(--green);">Level Spend</div>
-        <label>Annual Spend ($B)</label>
-        <input type="range" id="slider-level" min="0.5" max="3" step="0.1" value="1.4" oninput="updateScenarios()">
-        <div class="flex items-center justify-between mt-12">
-          <span class="text-xs text-dim">$0.5B</span>
-          <span class="text-green" style="font-family:'Oswald'; font-size:24px; font-weight:700;" id="val-level">$1.4B</span>
-          <span class="text-xs text-dim">$3.0B</span>
-        </div>
-        <div class="mt-20 text-sm" id="out-level"></div>
-      </div>
-      <div class="card">
-        <div class="card-label" style="color:var(--red);">Graded Spend</div>
-        <label>Year 1 Spend ($B)</label>
-        <input type="range" id="slider-graded" min="0.5" max="3" step="0.1" value="1.6" oninput="updateScenarios()">
-        <div class="flex items-center justify-between mt-12">
-          <span class="text-xs text-dim">$0.5B</span>
-          <span class="text-red" style="font-family:'Oswald'; font-size:24px; font-weight:700;" id="val-graded">$1.6B</span>
-          <span class="text-xs text-dim">$3.0B</span>
-        </div>
-        <div class="mt-20 text-sm" id="out-graded"></div>
-      </div>
-      <div class="card">
-        <div class="card-label" style="color:#5a9eff;">Efficiency-Led</div>
-        <label>ROAS Improvement (%/yr)</label>
-        <input type="range" id="slider-efficiency" min="0" max="30" step="1" value="10" oninput="updateScenarios()">
-        <div class="flex items-center justify-between mt-12">
-          <span class="text-xs text-dim">0%</span>
-          <span class="text-blue" style="font-family:'Oswald'; font-size:24px; font-weight:700;" id="val-efficiency">10%/yr</span>
-          <span class="text-xs text-dim">30%</span>
-        </div>
-        <div class="mt-20 text-sm" id="out-efficiency"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Timeline Model -->
-  <div class="sub-panel" id="math-timeline">
-    <div class="card">
-      <div class="overflow-x">
-        <table class="data-table" id="timeline-table">
-          <thead>
-            <tr><th>Year</th><th>Spend ($B)</th><th>Revenue ($B)</th><th>Gap to Target ($B)</th><th>CAGR from Base</th></tr>
-          </thead>
-          <tbody id="timeline-tbody"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-
-  <!-- Charts -->
-  <div class="sub-panel" id="math-charts">
-    <div class="grid grid-2 gap-24 mb-24">
-      <div class="card">
-        <div class="card-label">Revenue Trajectory</div>
-        <div class="chart-container"><canvas id="chart-revenue"></canvas></div>
-        <div class="chart-actions"><button class="btn btn-sm" onclick="exportChart('chart-revenue')">Export PNG</button></div>
-      </div>
-      <div class="card">
-        <div class="card-label">Spend vs Growth</div>
-        <div class="chart-container"><canvas id="chart-spend"></canvas></div>
-        <div class="chart-actions"><button class="btn btn-sm" onclick="exportChart('chart-spend')">Export PNG</button></div>
-      </div>
-    </div>
-    <div class="grid grid-2 gap-24">
-      <div class="card">
-        <div class="card-label">CAGR Visualization</div>
-        <div class="chart-container"><canvas id="chart-cagr"></canvas></div>
-        <div class="chart-actions"><button class="btn btn-sm" onclick="exportChart('chart-cagr')">Export PNG</button></div>
-      </div>
-      <div class="card" style="display:flex; align-items:center; justify-content:center;">
-        <p class="text-dim text-sm" style="text-align:center; max-width:280px; line-height:1.7;">Select different assumptions or scenarios to see how the charts respond in real time.</p>
-      </div>
-    </div>
-  </div>
+  <!-- Todo list -->
+  <div id="todo-list"></div>
 </div>
 
 <!-- ==================== WHITEBOARD ==================== -->
@@ -1617,7 +1561,8 @@ const STATE = {
   conditionsOrder: [],
   fontSize: 16,
   floatingNotes: [],
-  theme: 'dark'
+  theme: 'dark',
+  todos: []
 };
 
 function loadState() {
@@ -1738,7 +1683,7 @@ function switchTab(tab) {
   if (sec) sec.classList.add('active');
   const tabBtn = document.querySelector(`.nav-tab[data-tab="${tab}"]`);
   if (tabBtn) tabBtn.classList.add('active');
-  if (tab === 'math') { setTimeout(() => { updateMathModel(); updateScenarios(); }, 100); }
+  if (tab === 'todo') { renderTodos(); }
   if (tab === 'conditions') { renderConditions(); }
   if (tab === 'strategy') { renderStrategy(); }
   if (tab === 'whiteboard') { renderWhiteboard(); }
@@ -1759,16 +1704,6 @@ function showFloatingNotesForTab(tab) {
   });
 }
 
-// ==================== MATH SUB-TABS ====================
-function switchMathTab(panel, btn) {
-  document.querySelectorAll('#section-math .sub-panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('#section-math .sub-tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('math-' + panel).classList.add('active');
-  btn.classList.add('active');
-  if (panel === 'charts') { setTimeout(() => { updateMathModel(); }, 50); }
-  if (panel === 'scenarios') { setTimeout(updateScenarios, 50); }
-  if (panel === 'timeline') { setTimeout(updateMathModel, 50); }
-}
 
 // ==================== ACCORDION ====================
 function toggleAccordion(header) {
@@ -1786,7 +1721,7 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'g' || e.key === 'G') { gPressed = true; clearTimeout(gTimeout); gTimeout = setTimeout(() => gPressed = false, 1000); return; }
   if (gPressed) {
     gPressed = false;
-    if (e.key === 'm' || e.key === 'M') { switchTab('math'); e.preventDefault(); }
+    if (e.key === 'm' || e.key === 'M') { switchTab('todo'); e.preventDefault(); }
     if (e.key === 'c' || e.key === 'C') { switchTab('conditions'); e.preventDefault(); }
     if (e.key === 'j' || e.key === 'J') { switchTab('journey'); e.preventDefault(); }
     return;
@@ -1825,143 +1760,100 @@ function unpinInsight(id) {
   saveState();
 }
 
-// ==================== MATH ====================
-let chartRevenue, chartSpend, chartCagr;
+// ==================== TODO ====================
+let activeTodoFilter = 'all';
 
-function updateMathModel() {
-  const curRev = parseFloat(document.getElementById('math-current-rev').value) || 5.1;
-  const targetRev = parseFloat(document.getElementById('math-target-rev').value) || 8;
-  const targetYear = parseInt(document.getElementById('math-target-year').value) || 2028;
-  const roas = parseFloat(document.getElementById('math-roas').value) || 4.2;
-  const mediaContrib = (parseFloat(document.getElementById('math-media-contrib').value) || 35) / 100;
-  const baseGrowth = (parseFloat(document.getElementById('math-base-growth').value) || 3) / 100;
-  const baseYear = 2024;
-  const years = targetYear - baseYear;
-  const cagr = Math.pow(targetRev / curRev, 1 / years) - 1;
-  const tbody = document.getElementById('timeline-tbody');
-  const rows = [];
-  const revData = [curRev];
-  const spendData = [];
-  const cagrData = [];
-  const labels = [baseYear.toString()];
-  for (let i = 1; i <= years; i++) {
-    const yr = baseYear + i;
-    const rev = curRev * Math.pow(1 + cagr, i);
-    const prevRev = curRev * Math.pow(1 + cagr, i - 1);
-    const baseRev = prevRev * (1 + baseGrowth);
-    const mediaRev = rev - baseRev;
-    const spend = Math.max(0, mediaRev / roas);
-    const gap = targetRev - rev;
-    const yrCagr = (Math.pow(rev / curRev, 1 / i) - 1) * 100;
-    revData.push(parseFloat(rev.toFixed(2)));
-    spendData.push(parseFloat(spend.toFixed(2)));
-    cagrData.push(parseFloat(yrCagr.toFixed(1)));
-    labels.push(yr.toString());
-    rows.push(`<tr><td style="font-family:Oswald; font-weight:600;">${yr}</td><td contenteditable="true">$${spend.toFixed(2)}B</td><td contenteditable="true">$${rev.toFixed(2)}B</td><td>${gap > 0.01 ? '$' + gap.toFixed(2) + 'B' : '<span style="color:var(--green)">Target Met</span>'}</td><td>${yrCagr.toFixed(1)}%</td></tr>`);
-  }
-  tbody.innerHTML = rows.join('');
-  updateCharts(labels, revData, spendData, cagrData, curRev, targetRev, years, cagr);
-  const totalSpend = spendData.reduce((a, b) => a + b, 0);
-  document.getElementById('math-readout').innerHTML =
-    `<p><strong style="color:var(--green)">Required CAGR:</strong> ${(cagr * 100).toFixed(1)}% annually over ${years} years to grow from $${curRev}B to $${targetRev}B.</p>
-    <p class="mt-16"><strong style="color:var(--red)">Estimated total media spend:</strong> $${totalSpend.toFixed(1)}B over the period at ${roas}x ROAS and ${(mediaContrib * 100).toFixed(0)}% media contribution.</p>
-    <p class="mt-16"><strong style="color:#5a9eff">Key tension:</strong> Base organic growth of ${(baseGrowth * 100).toFixed(0)}% covers only a fraction of the gap. Media-driven growth must deliver $${(targetRev - curRev * Math.pow(1 + baseGrowth, years)).toFixed(1)}B in incremental revenue beyond organic.</p>
-    <p class="mt-16" style="color:var(--text-dim)">This illustrates why efficiency (ROAS improvement) and portfolio rebalancing are required to make the math work without unsustainable spend levels.</p>`;
+function getTodos() { return STATE.todos || []; }
+
+function addTodoItem() {
+  if (!STATE.todos) STATE.todos = [];
+  STATE.todos.push({
+    id: 'todo_' + Date.now(),
+    text: '',
+    status: 'todo',
+    priority: 'medium',
+    created: new Date().toISOString()
+  });
+  saveState();
+  renderTodos();
+  // Focus the new item
+  setTimeout(() => {
+    const inputs = document.querySelectorAll('.todo-text-input');
+    if (inputs.length) inputs[inputs.length - 1].focus();
+  }, 50);
 }
 
-function updateCharts(labels, revData, spendData, cagrData, curRev, targetRev, years, cagr) {
-  const chartOpts = {
-    responsive: true, maintainAspectRatio: false,
-    animation: { duration: 400, easing: 'easeOutQuart' },
-    plugins: { legend: { labels: { color: '#888', font: { family: 'JetBrains Mono', size: 9 }, padding: 16 } } },
-    scales: {
-      x: { ticks: { color: '#666', font: { family: 'JetBrains Mono', size: 9 } }, grid: { color: 'rgba(0,200,255,0.06)' } },
-      y: { ticks: { color: '#666', font: { family: 'JetBrains Mono', size: 9 } }, grid: { color: 'rgba(0,200,255,0.06)' } }
-    }
-  };
-  if (chartRevenue) chartRevenue.destroy();
-  chartRevenue = new Chart(document.getElementById('chart-revenue'), {
-    type: 'line', data: {
-      labels,
-      datasets: [
-        { label: 'Required Revenue', data: revData, borderColor: '#00d26a', backgroundColor: 'rgba(0,210,106,0.06)', fill: true, tension: 0.4, borderWidth: 2, pointRadius: 3, pointBackgroundColor: '#00d26a' },
-        { label: 'Target', data: labels.map(() => targetRev), borderColor: 'rgba(0,200,255,0.5)', borderDash: [5, 5], pointRadius: 0, borderWidth: 1 },
-        { label: 'Base Growth Only', data: labels.map((_, i) => parseFloat((curRev * Math.pow(1.03, i)).toFixed(2))), borderColor: 'rgba(255,255,255,0.1)', borderDash: [3, 3], pointRadius: 0, borderWidth: 1 }
-      ]
-    }, options: chartOpts
-  });
-  const spendLabels = labels.slice(1);
-  if (chartSpend) chartSpend.destroy();
-  chartSpend = new Chart(document.getElementById('chart-spend'), {
-    type: 'bar', data: {
-      labels: spendLabels,
-      datasets: [{ label: 'Media Spend ($B)', data: spendData, backgroundColor: 'rgba(255,49,49,0.4)', borderColor: 'rgba(255,49,49,0.6)', borderWidth: 1, borderRadius: 6 }]
-    }, options: chartOpts
-  });
-  if (chartCagr) chartCagr.destroy();
-  chartCagr = new Chart(document.getElementById('chart-cagr'), {
-    type: 'bar', data: {
-      labels: spendLabels,
-      datasets: [{ label: 'Running CAGR %', data: cagrData, backgroundColor: 'rgba(0,71,171,0.4)', borderColor: 'rgba(0,71,171,0.6)', borderWidth: 1, borderRadius: 6 }]
-    }, options: chartOpts
-  });
+function updateTodoText(id, text) {
+  const todo = (STATE.todos || []).find(t => t.id === id);
+  if (todo) { todo.text = text; saveState(); }
 }
 
-function exportChart(canvasId) {
-  const canvas = document.getElementById(canvasId);
-  const link = document.createElement('a');
-  link.download = canvasId + '.png';
-  link.href = canvas.toDataURL('image/png');
-  link.click();
+function cycleTodoStatus(id) {
+  const todo = (STATE.todos || []).find(t => t.id === id);
+  if (!todo) return;
+  const cycle = ['todo', 'in-progress', 'done'];
+  todo.status = cycle[(cycle.indexOf(todo.status) + 1) % cycle.length];
+  saveState();
+  renderTodos();
 }
 
-function updateScenarios() {
-  const curRev = parseFloat(document.getElementById('math-current-rev').value) || 5.1;
-  const targetRev = parseFloat(document.getElementById('math-target-rev').value) || 8;
-  const targetYear = parseInt(document.getElementById('math-target-year').value) || 2028;
-  const roas = parseFloat(document.getElementById('math-roas').value) || 4.2;
-  const years = targetYear - 2024;
+function cycleTodoPriority(id) {
+  const todo = (STATE.todos || []).find(t => t.id === id);
+  if (!todo) return;
+  const cycle = ['low', 'medium', 'high', 'urgent'];
+  todo.priority = cycle[(cycle.indexOf(todo.priority) + 1) % cycle.length];
+  saveState();
+  renderTodos();
+}
 
-  const levelSpend = parseFloat(document.getElementById('slider-level').value);
-  document.getElementById('val-level').textContent = '$' + levelSpend.toFixed(1) + 'B';
-  const levelRev = curRev + (levelSpend * roas * years * 0.35);
-  document.getElementById('out-level').innerHTML =
-    `<div style="padding:16px; background:var(--card2); border-radius:10px;">
-      <p style="color:var(--text-light); margin-bottom:8px;">Projected: <strong style="color:var(--green)">$${Math.min(levelRev, 12).toFixed(1)}B</strong></p>
-      <p style="color:var(--text-mid); margin-bottom:8px;">${levelRev >= targetRev ? '<span style="color:var(--green)">Target Met</span>' : 'Gap: <span style="color:var(--red)">$' + (targetRev - levelRev).toFixed(1) + 'B</span>'}</p>
-      <p style="color:var(--text-dim);">Total: $${(levelSpend * years).toFixed(1)}B</p>
-    </div>`;
+function deleteTodo(id) {
+  STATE.todos = (STATE.todos || []).filter(t => t.id !== id);
+  saveState();
+  renderTodos();
+}
 
-  const gradedY1 = parseFloat(document.getElementById('slider-graded').value);
-  document.getElementById('val-graded').textContent = '$' + gradedY1.toFixed(1) + 'B';
-  let gradedTotal = 0, gradedRev = curRev;
-  for (let i = 0; i < years; i++) {
-    const yrSpend = gradedY1 + (i * 0.15);
-    gradedTotal += yrSpend;
-    gradedRev += yrSpend * roas * 0.35 + gradedRev * 0.03;
+function filterTodos(filter, btn) {
+  activeTodoFilter = filter;
+  document.querySelectorAll('#section-todo .filter-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderTodos();
+}
+
+function renderTodos() {
+  const todos = getTodos();
+  const filtered = activeTodoFilter === 'all' ? todos : todos.filter(t => t.status === activeTodoFilter);
+  const done = todos.filter(t => t.status === 'done').length;
+  const total = todos.length;
+
+  // Progress
+  const pct = total > 0 ? (done / total * 100) : 0;
+  const progBar = document.getElementById('todo-progress-bar');
+  const progText = document.getElementById('todo-progress-text');
+  if (progBar) progBar.style.width = pct + '%';
+  if (progText) progText.textContent = done + ' / ' + total;
+
+  const list = document.getElementById('todo-list');
+  if (!list) return;
+
+  if (filtered.length === 0) {
+    list.innerHTML = '<div class="text-sm text-dim" style="text-align:center; padding:40px;">No tasks yet. Click + Add Task to get started.</div>';
+    return;
   }
-  document.getElementById('out-graded').innerHTML =
-    `<div style="padding:16px; background:var(--card2); border-radius:10px;">
-      <p style="color:var(--text-light); margin-bottom:8px;">Projected: <strong style="color:var(--red)">$${gradedRev.toFixed(1)}B</strong></p>
-      <p style="color:var(--text-mid); margin-bottom:8px;">${gradedRev >= targetRev ? '<span style="color:var(--green)">Target Met</span>' : 'Gap: <span style="color:var(--red)">$' + (targetRev - gradedRev).toFixed(1) + 'B</span>'}</p>
-      <p style="color:var(--text-dim);">Total: $${gradedTotal.toFixed(1)}B (graded)</p>
-    </div>`;
 
-  const effGain = parseInt(document.getElementById('slider-efficiency').value);
-  document.getElementById('val-efficiency').textContent = effGain + '%/yr';
-  let effRev = curRev, effRoas = roas, effTotalSpend = 0;
-  for (let i = 0; i < years; i++) {
-    effRoas *= (1 + effGain / 100);
-    const yrSpend = 1.4;
-    effTotalSpend += yrSpend;
-    effRev += yrSpend * effRoas * 0.35 + effRev * 0.03;
-  }
-  document.getElementById('out-efficiency').innerHTML =
-    `<div style="padding:16px; background:var(--card2); border-radius:10px;">
-      <p style="color:var(--text-light); margin-bottom:8px;">Projected: <strong style="color:#5a9eff">$${effRev.toFixed(1)}B</strong></p>
-      <p style="color:var(--text-mid); margin-bottom:8px;">${effRev >= targetRev ? '<span style="color:var(--green)">Target Met</span>' : 'Gap: <span style="color:#5a9eff">$' + (targetRev - effRev).toFixed(1) + 'B</span>'}</p>
-      <p style="color:var(--text-dim);">End ROAS: ${effRoas.toFixed(1)}x &middot; Total: $${effTotalSpend.toFixed(1)}B</p>
-    </div>`;
+  const statusLabels = { 'todo': 'TO DO', 'in-progress': 'IN PROGRESS', 'done': 'DONE' };
+  const statusColors = { 'todo': 'var(--text-dim)', 'in-progress': 'var(--amber)', 'done': 'var(--green)' };
+  const priorityColors = { 'low': 'var(--text-dim)', 'medium': 'var(--blue)', 'high': 'var(--amber)', 'urgent': 'var(--red)' };
+
+  list.innerHTML = filtered.map(t => `
+    <div class="todo-item ${t.status === 'done' ? 'todo-done' : ''}" data-id="${t.id}">
+      <button class="todo-check" onclick="cycleTodoStatus('${t.id}')" style="border-color:${statusColors[t.status]}; ${t.status === 'done' ? 'background:var(--green);' : ''}" title="${statusLabels[t.status]}">
+        ${t.status === 'done' ? '&#10003;' : t.status === 'in-progress' ? '&#9654;' : ''}
+      </button>
+      <input type="text" class="todo-text-input" value="${escHtml(t.text)}" placeholder="Task description..." onblur="updateTodoText('${t.id}',this.value)">
+      <button class="todo-priority" onclick="cycleTodoPriority('${t.id}')" style="color:${priorityColors[t.priority]}; border-color:${priorityColors[t.priority]};" title="Priority: ${t.priority}">${t.priority.toUpperCase()}</button>
+      <button class="todo-delete" onclick="deleteTodo('${t.id}')" title="Delete">&times;</button>
+    </div>
+  `).join('');
 }
 
 // ==================== CONDITIONS ====================
@@ -2721,7 +2613,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderPinned();
   renderStrategy();
   renderWhiteboard();
-  setTimeout(() => { updateMathModel(); updateScenarios(); }, 200);
+  renderTodos();
 });
 
 // Close modal on overlay click
