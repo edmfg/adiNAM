@@ -403,6 +403,47 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
 .light-mode ::-webkit-scrollbar-thumb { background: #ccc; }
 .light-mode .eco-tooltip { background: #fff !important; color: #222 !important; border-color: #ddd !important; }
 
+/* ── MEDIA PANELS ── */
+.media-panel { display: none; }
+.media-panel.active { display: block; }
+.heatmap-cell {
+  text-align: center; cursor: pointer; font-weight: 700; font-size: 16px;
+  transition: background 0.15s, color 0.15s; min-width: 60px; user-select: none;
+}
+.heatmap-cell:hover { outline: 2px solid var(--amber); }
+.heat-1 { background: rgba(0,200,255,0.05); color: var(--text-dim); }
+.heat-2 { background: rgba(0,200,255,0.12); color: var(--text-mid); }
+.heat-3 { background: rgba(0,200,255,0.22); color: var(--text-light); }
+.heat-4 { background: rgba(0,200,255,0.35); color: #fff; }
+.heat-5 { background: rgba(0,200,255,0.55); color: #fff; font-size: 18px; }
+.comp-card {
+  background: var(--card); border: 1px solid var(--border); border-radius: 2px; padding: 16px;
+  border-top: 3px solid var(--border);
+}
+.comp-card h4 { font-family: 'Oswald', sans-serif; font-size: 16px; text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.06em; }
+.comp-bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.comp-bar-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-dim); width: 100px; flex-shrink: 0; }
+.comp-bar-track { flex: 1; height: 8px; background: var(--card3); border-radius: 2px; overflow: hidden; }
+.comp-bar-fill { height: 100%; border-radius: 2px; transition: width 0.6s var(--ease); }
+.comp-bar-val { font-size: 11px; color: var(--text-mid); width: 30px; text-align: right; }
+.thread-card {
+  background: var(--card); border: 1px solid var(--border); border-radius: 2px; padding: 16px; margin-bottom: 12px;
+  border-left: 3px solid var(--amber);
+}
+.thread-step { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 8px; }
+.thread-arrow { color: var(--amber); font-size: 14px; flex-shrink: 0; margin-top: 2px; }
+.thread-input { flex: 1; }
+.thread-input input { font-size: 13px; padding: 6px 10px; }
+.thread-input label { font-size: 9px; margin-bottom: 3px; }
+.prompt-card {
+  background: var(--card); border: 1px solid var(--border); border-radius: 2px; padding: 16px;
+  border-left: 3px solid var(--amber); cursor: default;
+  transition: border-color 0.15s;
+}
+.prompt-card:hover { border-color: var(--amber); }
+.prompt-card .prompt-q { font-size: 14px; color: var(--text-light); line-height: 1.6; font-style: italic; }
+.prompt-card .prompt-cat { font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--amber); margin-bottom: 6px; font-weight: 600; }
+
 /* ── WHITEBOARD canvas ── */
 .canvas-area {
   position: relative; width: 100%; min-height: 640px;
@@ -465,15 +506,17 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
 }
 
 /* ── JOURNEY TABLE ── */
-.journey-table { width: 100%; border-collapse: collapse; font-family: 'JetBrains Mono', monospace; }
+.journey-table { width: 100%; min-width: 1200px; border-collapse: collapse; font-family: 'JetBrains Mono', monospace; }
 .journey-table th {
   text-transform: uppercase; font-size: 9px;
   font-weight: 600; color: var(--amber); letter-spacing: 0.12em;
-  text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--amber);
+  text-align: left; padding: 8px 8px; border-bottom: 1px solid var(--amber);
+  white-space: nowrap;
 }
 .journey-table td {
-  padding: 8px 10px; border-bottom: 1px solid var(--border);
-  font-size: 13px; color: var(--text-mid); line-height: 1.5; vertical-align: top;
+  padding: 6px 8px; border-bottom: 1px solid var(--border);
+  font-size: 12px; color: var(--text-mid); line-height: 1.4; vertical-align: top;
+  min-width: 100px;
 }
 .journey-table td[contenteditable]:focus { outline: none; color: var(--amber); background: rgba(0,200,255,0.03); }
 .journey-table tr:hover td { background: rgba(0,200,255,0.02); }
@@ -597,7 +640,9 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
 .insight-card.collapsed .insight-headline { margin-bottom: 0; }
 .insight-card.collapsed .insight-implication,
 .insight-card.collapsed .insight-source,
-.insight-card.collapsed .insight-actions { display: none; }
+.insight-card.collapsed .insight-actions,
+.insight-card.collapsed .media-chain,
+.insight-card.collapsed .signal-score { display: none; }
 .insight-card .expand-toggle {
   position: absolute; top: 6px; right: 6px;
   background: none; border: none; color: var(--text-dim); cursor: pointer;
@@ -613,6 +658,51 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
   margin: 2px 0 8px; opacity: 0.85;
 }
 .insight-implication::before { content: '> '; color: var(--amber); font-style: normal; font-family: 'JetBrains Mono', monospace; }
+
+/* ── MEDIA CHAIN ── */
+.media-chain {
+  margin: 8px 0; padding: 10px 12px; background: rgba(0,200,255,0.04);
+  border: 1px solid rgba(0,200,255,0.1); border-radius: 4px;
+}
+.media-chain-toggle {
+  background: none; border: none; color: var(--amber); cursor: pointer;
+  font-size: 11px; font-family: 'Oswald', sans-serif; text-transform: uppercase;
+  letter-spacing: 0.08em; padding: 0; display: flex; align-items: center; gap: 6px;
+}
+.media-chain-toggle:hover { color: #fff; }
+.media-chain-toggle .chain-arrow { font-size: 8px; transition: transform 0.2s var(--ease); }
+.media-chain-toggle.open .chain-arrow { transform: rotate(90deg); }
+.media-chain-steps { display: none; margin-top: 10px; }
+.media-chain-steps.show { display: block; }
+.media-chain-step {
+  display: flex; align-items: flex-start; gap: 8px; margin-bottom: 8px;
+  padding: 6px 8px; border-radius: 3px; font-size: 12px; line-height: 1.5;
+}
+.media-chain-step:last-child { margin-bottom: 0; }
+.chain-step-label {
+  font-family: 'Oswald', sans-serif; text-transform: uppercase; font-size: 9px;
+  letter-spacing: 0.1em; white-space: nowrap; min-width: 100px; padding-top: 2px; font-weight: 600;
+}
+.chain-step-text { color: var(--text-mid); }
+.chain-step-media-behavior { background: rgba(74,158,255,0.06); }
+.chain-step-media-behavior .chain-step-label { color: var(--blue); }
+.chain-step-media-opp { background: rgba(0,200,255,0.06); }
+.chain-step-media-opp .chain-step-label { color: var(--amber); }
+
+/* ── SIGNAL STRENGTH ── */
+.signal-score {
+  display: flex; align-items: center; gap: 8px; margin: 6px 0 4px;
+  font-size: 11px; color: var(--text-dim);
+}
+.signal-bar-track {
+  width: 80px; height: 4px; background: rgba(255,255,255,0.06);
+  border-radius: 2px; overflow: hidden;
+}
+.signal-bar-fill {
+  height: 100%; border-radius: 2px;
+  transition: width 0.4s var(--ease);
+}
+.signal-label { font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: 0.06em; font-size: 10px; }
 
 /* ── SOURCE LINK ── */
 .insight-source a { color: var(--text-dim); text-decoration: none; transition: color 0.15s; }
@@ -802,6 +892,7 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
   <div class="nav-tabs">
     <button class="nav-tab active" data-tab="conditions" onclick="switchTab('conditions')">Conditions</button>
     <button class="nav-tab" data-tab="journey" onclick="switchTab('journey')">Consumer Journey</button>
+    <button class="nav-tab" data-tab="media" onclick="switchTab('media')">Media</button>
     <button class="nav-tab" data-tab="strategy" onclick="switchTab('strategy')">Strategy</button>
     <button class="nav-tab" data-tab="math" onclick="switchTab('math')">Math</button>
     <button class="nav-tab" data-tab="whiteboard" onclick="switchTab('whiteboard')">Whiteboard</button>
@@ -1067,56 +1158,84 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
     <div class="overflow-x">
       <table class="journey-table">
         <thead>
-          <tr><th>Day</th><th>Context</th><th>Media</th><th>Community</th><th>Adidas Opportunity</th></tr>
+          <tr><th>Day</th><th>Context</th><th>Emotion / Mindset</th><th>Media Behavior</th><th>Community</th><th>Content Format</th><th>Brand Role</th><th>Commerce Trigger</th><th>Adidas Opportunity</th></tr>
         </thead>
         <tbody>
           <tr>
             <td><span class="journey-day">Mon</span></td>
             <td contenteditable="true">Morning training. Afternoon classes. Evening film review.</td>
+            <td contenteditable="true">Focused, disciplined. Pre-week energy.</td>
             <td contenteditable="true">TikTok between classes. YouTube highlights. Spotify during training.</td>
             <td contenteditable="true">Team group chat. Posts training clip to IG story.</td>
+            <td contenteditable="true">Short-form vertical. Training clips. Music-driven.</td>
+            <td contenteditable="true">Enabler — gear that supports the grind.</td>
+            <td contenteditable="true">Low — focused on performance, not shopping.</td>
             <td contenteditable="true">Training gear visibility. Post-training recovery content.</td>
           </tr>
           <tr>
             <td><span class="journey-day">Tue</span></td>
             <td contenteditable="true">Light training. Study groups. NIL meeting with advisor.</td>
+            <td contenteditable="true">Entrepreneurial, curious. Exploring opportunity.</td>
             <td contenteditable="true">Instagram Reels. StockX drop checks. Reddit soccer threads.</td>
             <td contenteditable="true">NIL discussion with teammates. Group chat about match.</td>
+            <td contenteditable="true">Product discovery. Price comparison. UGC reviews.</td>
+            <td contenteditable="true">Partner — NIL enablement and brand credibility.</td>
+            <td contenteditable="true">Medium — browsing drops and checking prices.</td>
             <td contenteditable="true">NIL partnership touchpoint. Campus retail activation.</td>
           </tr>
           <tr>
             <td><span class="journey-day">Wed</span></td>
             <td contenteditable="true">Full practice. Weights. Campus life — dining, library.</td>
+            <td contenteditable="true">Balanced, social. Campus culture mode.</td>
             <td contenteditable="true">MLS highlights on Apple TV. Creator commentary on TikTok.</td>
             <td contenteditable="true">Casual pickup with friends. Soccer culture chat.</td>
+            <td contenteditable="true">Long-form highlights. Creator commentary. Lifestyle content.</td>
+            <td contenteditable="true">Cultural connector — sport meets lifestyle.</td>
+            <td contenteditable="true">Low-medium — lifestyle browsing, not intent-driven.</td>
             <td contenteditable="true">Lifestyle-to-pitch crossover. Pickup culture content.</td>
           </tr>
           <tr>
             <td><span class="journey-day">Thu</span></td>
             <td contenteditable="true">Pre-match prep. Travel day if away. Kit check and ritual.</td>
+            <td contenteditable="true">Building intensity. Ritual-driven. Superstitious.</td>
             <td contenteditable="true">Match preview on ESPN+. Pre-game playlist. Team hype videos.</td>
             <td contenteditable="true">Team bonding. Pre-match rituals. Coach sessions.</td>
+            <td contenteditable="true">Playlist curation. Hype video sharing. Private team content.</td>
+            <td contenteditable="true">Ritual anchor — match-day kit as armor.</td>
+            <td contenteditable="true">Low — no shopping mindset. Kit is already chosen.</td>
             <td contenteditable="true">Match-day kit experience. Travel gear integration.</td>
           </tr>
           <tr>
             <td><span class="journey-day">Fri</span></td>
             <td contenteditable="true">MATCH DAY. Pre-match routine. Post-match recovery.</td>
+            <td contenteditable="true">Peak energy → release → pride or frustration.</td>
             <td contenteditable="true">Dark pre-match. Post: highlights, stats, group FaceTimes.</td>
             <td contenteditable="true">Peak social — match photos, fans, team celebration.</td>
+            <td contenteditable="true">Post-match highlights. Celebration content. Stats graphics.</td>
+            <td contenteditable="true">Stage — brand visible in peak performance moments.</td>
+            <td contenteditable="true">Post-match high — "I want what she wore" from spectators.</td>
             <td contenteditable="true">On-field performance showcase. Post-match social content.</td>
           </tr>
           <tr>
             <td><span class="journey-day">Sat</span></td>
             <td contenteditable="true">Recovery. Brunch with friends. Shopping/thrifting. Going out.</td>
+            <td contenteditable="true">Relaxed, social, reward-seeking. Self-expression mode.</td>
             <td contenteditable="true">Premier League on Peacock. Football on ESPN. TikTok deep scroll.</td>
             <td contenteditable="true">Non-sport friend groups. Social scene. Cultural life.</td>
+            <td contenteditable="true">Deep scroll. Haul videos. Style content. Going-out prep.</td>
+            <td contenteditable="true">Style partner — retro/lifestyle for self-expression.</td>
+            <td contenteditable="true">High — shopping mode active. Reward purchase mindset.</td>
             <td contenteditable="true">Lifestyle product moments. Retro silhouettes (Samba/Gazelle).</td>
           </tr>
           <tr>
             <td><span class="journey-day">Sun</span></td>
             <td contenteditable="true">Light recovery. Meal prep. Content creation for personal brand.</td>
+            <td contenteditable="true">Reflective, creative. Building personal brand.</td>
             <td contenteditable="true">NFL streaming. Creating TikTok/IG content. Watching creators.</td>
             <td contenteditable="true">Family FaceTime. NIL content calendar. Engaging followers.</td>
+            <td contenteditable="true">Content creation. Batch editing. Creator-mode tools.</td>
+            <td contenteditable="true">Creator enabler — tools and support for athlete-creators.</td>
+            <td contenteditable="true">Medium — Sunday browsing and planning purchases.</td>
             <td contenteditable="true">Creator tools/support. Content creation partnership.</td>
           </tr>
         </tbody>
@@ -1146,6 +1265,139 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
     <canvas id="eco-canvas" class="eco-map"></canvas>
     <div class="eco-tooltip" id="eco-tooltip"></div>
     <div class="eco-context-menu" id="eco-context-menu" style="display:none;"></div>
+  </div>
+</div>
+
+<!-- ==================== MEDIA ==================== -->
+<div class="section" id="section-media">
+  <div class="section-header">
+    <h2>Media Strategy Engine</h2>
+    <p>Translate conditions and consumer behavior into media architecture, channel strategy, and narrative.</p>
+  </div>
+
+  <!-- Sub-tabs for media section -->
+  <div class="filter-bar" style="margin-bottom:20px;">
+    <button class="filter-btn active" data-mtab="channel-heat" onclick="switchMediaTab('channel-heat',this)">Channel Heatmap</button>
+    <button class="filter-btn" data-mtab="gravity-map" onclick="switchMediaTab('gravity-map',this)">Media Gravity Map</button>
+    <button class="filter-btn" data-mtab="competitive" onclick="switchMediaTab('competitive',this)">Competitive Map</button>
+    <button class="filter-btn" data-mtab="campaign-sim" onclick="switchMediaTab('campaign-sim',this)">Campaign Sim</button>
+    <button class="filter-btn" data-mtab="narrative" onclick="switchMediaTab('narrative',this)">Narrative Builder</button>
+    <button class="filter-btn" data-mtab="threads" onclick="switchMediaTab('threads',this)">Strategy Threads</button>
+    <button class="filter-btn" data-mtab="prompts" onclick="switchMediaTab('prompts',this)">Thinking Prompts</button>
+  </div>
+
+  <!-- ====== CHANNEL HEATMAP ====== -->
+  <div class="media-panel active" id="mpanel-channel-heat">
+    <div class="card-label">Channel × Impact Heatmap</div>
+    <p class="text-sm text-dim mb-12">Score each channel 1-5 for its role in Culture, Community, and Commerce. Click cells to edit.</p>
+    <div class="card" style="overflow-x:auto;">
+      <table class="data-table" id="channel-heatmap-table">
+        <thead>
+          <tr>
+            <th style="min-width:160px;">Channel</th>
+            <th style="width:100px; text-align:center;">Culture</th>
+            <th style="width:100px; text-align:center;">Community</th>
+            <th style="width:100px; text-align:center;">Commerce</th>
+            <th style="width:80px; text-align:center;">Total</th>
+            <th style="min-width:200px;">Strategic Role</th>
+          </tr>
+        </thead>
+        <tbody id="channel-heatmap-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ====== MEDIA GRAVITY MAP ====== -->
+  <div class="media-panel" id="mpanel-gravity-map">
+    <div class="card-label">Media Gravity Map</div>
+    <p class="text-sm text-dim mb-12">X-axis: Culture Formation. Y-axis: Commerce Conversion. Plot channels and opportunities in this strategic space.</p>
+    <div class="card" style="position:relative; height:500px; overflow:hidden;">
+      <canvas id="gravity-canvas" style="width:100%; height:100%;"></canvas>
+      <div style="position:absolute; bottom:8px; left:50%; transform:translateX(-50%); font-size:10px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.1em;">Culture Formation →</div>
+      <div style="position:absolute; left:8px; top:50%; transform:translateY(-50%) rotate(-90deg); font-size:10px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.1em;">Commerce Conversion →</div>
+    </div>
+  </div>
+
+  <!-- ====== COMPETITIVE MEDIA MAP ====== -->
+  <div class="media-panel" id="mpanel-competitive">
+    <div class="card-label">Competitive Media Posture</div>
+    <p class="text-sm text-dim mb-12">Compare Adidas against key competitors across strategic media dimensions.</p>
+    <div class="grid grid-2" id="competitive-grid"></div>
+    <div class="card mt-24">
+      <div class="card-label">White Space Analysis</div>
+      <div id="whitespace-analysis" class="text-sm" style="line-height:1.8; color:var(--text-light);"></div>
+    </div>
+  </div>
+
+  <!-- ====== CAMPAIGN SIMULATION ====== -->
+  <div class="media-panel" id="mpanel-campaign-sim">
+    <div class="card-label">Campaign / Media Simulation</div>
+    <p class="text-sm text-dim mb-12">Sketch a media plan architecture. Illustrative — not econometric.</p>
+    <div class="grid grid-2">
+      <div class="card">
+        <label>Campaign Name</label>
+        <input type="text" id="sim-name" placeholder="e.g., College Football Takeover" oninput="saveCampaignSim()">
+        <label style="margin-top:12px;">Objective</label>
+        <textarea id="sim-objective" placeholder="What does this campaign achieve?" rows="2" oninput="saveCampaignSim()"></textarea>
+        <label style="margin-top:12px;">Target Community</label>
+        <input type="text" id="sim-community" placeholder="e.g., D1 soccer athletes, HBCU culture" oninput="saveCampaignSim()">
+        <label style="margin-top:12px;">Strategic Audience</label>
+        <input type="text" id="sim-audience" placeholder="e.g., 18-24 Gen Z athletes" oninput="saveCampaignSim()">
+      </div>
+      <div class="card">
+        <label>Key Channel Mix</label>
+        <textarea id="sim-channels" placeholder="TikTok (culture seeding)&#10;Instagram (community)&#10;Streaming (tentpole)&#10;Retail media (conversion)" rows="4" oninput="saveCampaignSim()"></textarea>
+        <label style="margin-top:12px;">Content Roles by Channel</label>
+        <textarea id="sim-content-roles" placeholder="TikTok: creator-led athlete content&#10;IG: community stories + UGC&#10;Streaming: match-day integration" rows="3" oninput="saveCampaignSim()"></textarea>
+        <label style="margin-top:12px;">Commerce / Business Outcome</label>
+        <textarea id="sim-outcome" placeholder="Expected impact on share, revenue, brand metrics..." rows="2" oninput="saveCampaignSim()"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== NARRATIVE BUILDER ====== -->
+  <div class="media-panel" id="mpanel-narrative">
+    <div class="card-label">Narrative Builder</div>
+    <p class="text-sm text-dim mb-12">Assemble deck-ready strategic narratives. Fill each section to build a story arc.</p>
+    <div class="card">
+      <div style="display:grid; gap:16px;">
+        <div>
+          <label style="color:var(--red);">The Cultural Tension</label>
+          <textarea id="narr-tension" placeholder="What cultural tension does this strategy address?" rows="2" oninput="saveNarrative()"></textarea>
+        </div>
+        <div>
+          <label style="color:var(--green);">The System Insight</label>
+          <textarea id="narr-insight" placeholder="What structural insight about the market/media/consumer makes this possible?" rows="2" oninput="saveNarrative()"></textarea>
+        </div>
+        <div>
+          <label style="color:var(--blue);">The Strategic Unlock</label>
+          <textarea id="narr-unlock" placeholder="What does Adidas uniquely understand or do that competitors cannot?" rows="2" oninput="saveNarrative()"></textarea>
+        </div>
+        <div>
+          <label style="color:var(--amber);">The Media Role</label>
+          <textarea id="narr-media" placeholder="How does media specifically enable this strategy?" rows="2" oninput="saveNarrative()"></textarea>
+        </div>
+        <div>
+          <label style="color:#a050ff;">The Business Impact</label>
+          <textarea id="narr-impact" placeholder="What is the plausible business logic and expected outcome?" rows="2" oninput="saveNarrative()"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== STRATEGY THREADS ====== -->
+  <div class="media-panel" id="mpanel-threads">
+    <div class="card-label">Strategy Threads</div>
+    <p class="text-sm text-dim mb-12">Connect insights across sections into coherent strategic spines.</p>
+    <button class="btn btn-sm btn-fill mb-12" onclick="addStrategyThread()">+ New Thread</button>
+    <div id="threads-container"></div>
+  </div>
+
+  <!-- ====== THINKING PROMPTS ====== -->
+  <div class="media-panel" id="mpanel-prompts">
+    <div class="card-label">Strategist Thinking Prompts</div>
+    <p class="text-sm text-dim mb-12">Provocations designed to sharpen media strategy thinking.</p>
+    <div class="grid grid-2" id="prompts-grid"></div>
   </div>
 </div>
 
@@ -1800,6 +2052,95 @@ function renderViz(viz) {
   }
 }
 
+// ---- Media Chain & Signal Strength Data ----
+const MEDIA_CHAIN_DATA = {
+  c1: { mediaBehavior: 'Players consume highlights on TikTok/YouTube; parents research gear on Amazon/Dick\'s.', mediaOpp: 'Sponsor HS highlight accounts. Team gear configurator ads. Seed through coaching networks.', signal: { evidence: 5, scale: 5, relevance: 4, whiteSpace: 3 } },
+  c2: { mediaBehavior: 'State championship content goes viral regionally. Local broadcast + social media coverage peaks.', mediaOpp: 'Event sponsorship with live social content. Geo-targeted retail activations around championship venues.', signal: { evidence: 4, scale: 3, relevance: 4, whiteSpace: 4 } },
+  c3: { mediaBehavior: 'Youth sport discovery happens through parent networks, school channels, and community social.', mediaOpp: 'Community-level brand programs. Youth-first product strategy with school partnerships.', signal: { evidence: 5, scale: 5, relevance: 5, whiteSpace: 3 } },
+  c4: { mediaBehavior: 'Hockey content consumed on TSN/Sportsnet apps. Hockey Twitter/Reddit highly active.', mediaOpp: 'Hockey-adjacent lifestyle capsules. Training content with Canadian hockey creators.', signal: { evidence: 4, scale: 4, relevance: 3, whiteSpace: 4 } },
+  c5: { mediaBehavior: 'Near-universal Canadian viewership during playoff runs. Second-screen social surges.', mediaOpp: 'Tentpole brand moments during Stanley Cup. Real-time commerce tied to game events.', signal: { evidence: 5, scale: 4, relevance: 3, whiteSpace: 3 } },
+  c6: { mediaBehavior: 'NIL athletes building personal brands on IG/TikTok. Agents using LinkedIn/email for deals.', mediaOpp: 'Build NIL operating system: content tools, compliance, commerce for 500+ athletes simultaneously.', signal: { evidence: 5, scale: 4, relevance: 5, whiteSpace: 5 } },
+  c7: { mediaBehavior: 'CFP content concentrated on ESPN ecosystem. Fandom peaks around playoff windows.', mediaOpp: 'Align campus retail promotions to CFP calendar. ESPN-adjacent digital activations.', signal: { evidence: 4, scale: 4, relevance: 4, whiteSpace: 3 } },
+  c8: { mediaBehavior: 'Post-pandemic participation driving gear research surges. Parents shopping online + in-store.', mediaOpp: 'Performance apparel content targeting returning athletes. Retail media during back-to-sport seasons.', signal: { evidence: 4, scale: 5, relevance: 4, whiteSpace: 3 } },
+  c9: { mediaBehavior: 'Canadian youth sport discovery through community associations and municipal programs.', mediaOpp: 'Community-level sponsorships. Bilingual social campaigns targeting youth sport parents.', signal: { evidence: 3, scale: 4, relevance: 3, whiteSpace: 4 } },
+  c10: { mediaBehavior: 'Streaming viewers engage in real-time social commentary. Limited drops align with live events.', mediaOpp: 'Shoppable streaming ad formats. Real-time merch drops synced to NFL moments.', signal: { evidence: 5, scale: 5, relevance: 5, whiteSpace: 4 } },
+  c11: { mediaBehavior: 'Amazon NBA viewers can browse/buy without leaving platform. Social commentary parallels viewing.', mediaOpp: 'Build shoppable content natively for Amazon NBA integration. Creator commentary partnerships.', signal: { evidence: 5, scale: 5, relevance: 5, whiteSpace: 5 } },
+  c12: { mediaBehavior: 'Subscription viewers more engaged, less ad-tolerant. In-app brand integration is the model.', mediaOpp: 'First-mover brand integration as MLS kit partner on Apple TV. Native content formats.', signal: { evidence: 4, scale: 4, relevance: 5, whiteSpace: 5 } },
+  c13: { mediaBehavior: 'Local fans migrating from RSN to streaming. Discovery patterns fragmenting.', mediaOpp: 'DTC and retail media must follow fans to streaming. Geo-targeted digital activations.', signal: { evidence: 4, scale: 4, relevance: 4, whiteSpace: 3 } },
+  c14: { mediaBehavior: 'League-controlled distribution changes local ad inventory dynamics.', mediaOpp: 'Geo-targeted promotions through league-owned local broadcast infrastructure.', signal: { evidence: 3, scale: 3, relevance: 3, whiteSpace: 3 } },
+  c15: { mediaBehavior: 'Local sponsorship inventory in flux as revenue model restructures.', mediaOpp: 'Acquire undervalued local sports media inventory during RSN transition.', signal: { evidence: 3, scale: 4, relevance: 4, whiteSpace: 4 } },
+  c16: { mediaBehavior: 'Latino fans discover sports through TikTok first, then streaming. WhatsApp for community.', mediaOpp: 'Bilingual TikTok-native creator strategy. WhatsApp community integration for drops.', signal: { evidence: 5, scale: 4, relevance: 5, whiteSpace: 5 } },
+  c17: { mediaBehavior: 'Creator commentary replacing traditional sports media for discovery. Algorithm-driven reach.', mediaOpp: 'Invest in creator co-production tools. Shift from ad placement to creator infrastructure.', signal: { evidence: 5, scale: 5, relevance: 5, whiteSpace: 4 } },
+  c18: { mediaBehavior: 'CFL hybrid model shows even smaller leagues go streaming-first. Free tier expands reach.', mediaOpp: 'Use CFL streaming model as test case for digital-first brand integration in niche sports.', signal: { evidence: 2, scale: 2, relevance: 3, whiteSpace: 3 } },
+  c19: { mediaBehavior: 'Fans buy licensed gear through Fanatics platforms. Commerce is platform-mediated.', mediaOpp: 'Win in adjacent categories Fanatics doesn\'t control: training, lifestyle, footwear.', signal: { evidence: 5, scale: 5, relevance: 5, whiteSpace: 3 } },
+  c20: { mediaBehavior: 'NFL fans buy through Nike/Fanatics ecosystem. Training and lifestyle are separate decisions.', mediaOpp: 'Training, lifestyle, and athlete-adjacent content as NFL workaround strategy.', signal: { evidence: 5, scale: 5, relevance: 5, whiteSpace: 3 } },
+  c21: { mediaBehavior: 'Hockey fans buy jerseys through Fanatics. Training and lifestyle gear purchased separately.', mediaOpp: 'Hockey-adjacent lifestyle and training collections outside Fanatics control.', signal: { evidence: 4, scale: 3, relevance: 3, whiteSpace: 4 } },
+  c22: { mediaBehavior: 'NIL jerseys sold through Fanatics/OneTeam. Athletes promote on personal social channels.', mediaOpp: 'Build infrastructure around group NIL licensing. Athlete-powered social commerce.', signal: { evidence: 4, scale: 4, relevance: 5, whiteSpace: 5 } },
+  c23: { mediaBehavior: 'Samba/Gazelle discovery through style TikTok, fashion creators, and street photography.', mediaOpp: 'Disciplined scarcity + creator seeding. Style culture content over performance messaging.', signal: { evidence: 5, scale: 5, relevance: 5, whiteSpace: 2 } },
+  c24: { mediaBehavior: 'Resellers/collectors use StockX/GOAT for price discovery. Authentication is purchase driver.', mediaOpp: 'Pair drops with anti-counterfeit signaling. Verified authentic commerce experience.', signal: { evidence: 3, scale: 3, relevance: 3, whiteSpace: 3 } },
+  c25: { mediaBehavior: 'Wholesale discovery in-store; DTC through app/web. Retailer media is brand media.', mediaOpp: 'Build retailer-specific storytelling. Treat wholesale partners as media channels.', signal: { evidence: 5, scale: 5, relevance: 5, whiteSpace: 4 } },
+  c26: { mediaBehavior: 'Pricing sensitivity increases. Consumers research more before purchasing.', mediaOpp: 'Stress-test pricing and promo cadence. Value messaging in media mix under tariff scenarios.', signal: { evidence: 4, scale: 5, relevance: 4, whiteSpace: 2 } },
+  c27: { mediaBehavior: 'Versatility-seeking consumers watch style content, read reviews, compare across categories.', mediaOpp: 'Cross-category styling content. Retro/lifestyle positioning over narrow performance messaging.', signal: { evidence: 4, scale: 5, relevance: 4, whiteSpace: 3 } },
+  c28: { mediaBehavior: 'Premium athleisure in fandom context. Lululemon reaching NFL fans through Fanatics.', mediaOpp: 'Defend lifestyle territory with culture-credible content. Counter premium athleisure encroachment.', signal: { evidence: 4, scale: 4, relevance: 5, whiteSpace: 3 } },
+  c29: { mediaBehavior: 'Market share gains driving positive media coverage. Analyst and consumer attention increasing.', mediaOpp: 'Protect momentum with sustained cultural relevance content. Don\'t let earned media momentum fade.', signal: { evidence: 5, scale: 5, relevance: 5, whiteSpace: 2 } },
+  c30: { mediaBehavior: 'NA revenue baseline drives all growth projections. Every CAGR point requires media + product.', mediaOpp: 'Align media investment to growth model. Every channel must show path to revenue contribution.', signal: { evidence: 5, scale: 5, relevance: 5, whiteSpace: 2 } },
+  c31: { mediaBehavior: 'NB growing through authentic creator relationships and running community content.', mediaOpp: 'Differentiate from NB\'s grassroots play with scale advantages in team sports and global athlete roster.', signal: { evidence: 5, scale: 4, relevance: 5, whiteSpace: 3 } },
+  c32: { mediaBehavior: 'Hispanic fans are younger, more digital, more responsive to brand sponsorship in sports.', mediaOpp: 'Build multicultural-first campaigns. Lead with bilingual creator content, not translated English ads.', signal: { evidence: 5, scale: 4, relevance: 5, whiteSpace: 5 } },
+  c33: { mediaBehavior: 'Youth choose brands before league fandom solidifies. Community sports are the acquisition funnel.', mediaOpp: 'Invest in community sports media before competitors. Own the youth-to-brand pipeline.', signal: { evidence: 4, scale: 5, relevance: 5, whiteSpace: 4 } },
+  c34: { mediaBehavior: 'Multicultural audiences are primary digital sports consumers, not niche segments.', mediaOpp: 'Default media planning to multicultural-first. Build campaigns that lead with multicultural identity.', signal: { evidence: 5, scale: 5, relevance: 5, whiteSpace: 5 } },
+  c35: { mediaBehavior: 'Linear broadcast declining. Streaming-native and creator-distributed content ascending.', mediaOpp: 'Reallocate media mix: less linear, more streaming-native and creator partnerships.', signal: { evidence: 5, scale: 5, relevance: 5, whiteSpace: 3 } },
+  c36: { mediaBehavior: 'NIL athletes need content tools, compliance help, and commerce infrastructure.', mediaOpp: 'Build the NIL operating system: compliance + content + commerce toolkit for 500+ athletes.', signal: { evidence: 4, scale: 4, relevance: 5, whiteSpace: 5 } },
+  c37: { mediaBehavior: 'In-store discovery bridges sport and lifestyle. Wholesale is brand media.', mediaOpp: 'Design wholesale merchandising that bridges sport and lifestyle. Retailer-specific storytelling.', signal: { evidence: 4, scale: 4, relevance: 4, whiteSpace: 3 } },
+  c38: { mediaBehavior: 'Canadian market requires bilingual execution across all media channels.', mediaOpp: 'Quebec-ready bilingual execution upstream in creative design, not as late-stage translation.', signal: { evidence: 3, scale: 3, relevance: 3, whiteSpace: 3 } },
+};
+
+function getSignalScore(signal) {
+  if (!signal) return 0;
+  return Math.round((signal.evidence + signal.scale + signal.relevance + signal.whiteSpace) / 4 * 20);
+}
+
+function getSignalColor(score) {
+  if (score >= 80) return 'var(--green)';
+  if (score >= 60) return 'var(--amber)';
+  if (score >= 40) return 'var(--yellow)';
+  return 'var(--text-dim)';
+}
+
+function renderMediaChain(id) {
+  const chain = MEDIA_CHAIN_DATA[id];
+  if (!chain) return '';
+  const score = getSignalScore(chain.signal);
+  const scoreColor = getSignalColor(score);
+  return `
+    <div class="signal-score">
+      <span class="signal-label">Signal</span>
+      <div class="signal-bar-track"><div class="signal-bar-fill" style="width:${score}%; background:${scoreColor};"></div></div>
+      <span style="color:${scoreColor}; font-weight:600;">${score}</span>
+      <span style="font-size:9px; color:var(--text-dim); margin-left:4px;">E:${chain.signal.evidence} S:${chain.signal.scale} R:${chain.signal.relevance} W:${chain.signal.whiteSpace}</span>
+    </div>
+    <div class="media-chain">
+      <button class="media-chain-toggle" onclick="toggleMediaChain(this)">
+        <span class="chain-arrow">&#9654;</span> Media Strategy Chain
+      </button>
+      <div class="media-chain-steps">
+        <div class="media-chain-step chain-step-media-behavior">
+          <span class="chain-step-label">Media Behavior</span>
+          <span class="chain-step-text">${escHtml(chain.mediaBehavior)}</span>
+        </div>
+        <div class="media-chain-step chain-step-media-opp">
+          <span class="chain-step-label">Media Opportunity</span>
+          <span class="chain-step-text">${escHtml(chain.mediaOpp)}</span>
+        </div>
+      </div>
+    </div>`;
+}
+
+function toggleMediaChain(btn) {
+  btn.classList.toggle('open');
+  const steps = btn.nextElementSibling;
+  steps.classList.toggle('show');
+}
+
 let conditionsViewMode = 'grid';
 
 let activeConditionFilters = new Set(['all']);
@@ -1883,6 +2224,7 @@ function renderConditions() {
       <div class="insight-text" onclick="expandCardFromText(this)">${escHtml(item.text)}</div>
       ${vizHtml}
       <div class="insight-implication">${escHtml(item.implication)}</div>
+      ${renderMediaChain(item.id)}
       <div class="insight-source">${sourceHtml}</div>
       <div class="insight-actions">
         <button class="pin-btn ${isPinned ? 'pinned' : ''}" onclick="togglePin('${item.id}')">${isPinned ? 'Pinned' : 'Pin'}</button>
@@ -3041,12 +3383,353 @@ function handleFiles(files) {
 function escHtml(str) { const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
 function escAttr(str) { return str.replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
 
+// ==================== MEDIA SECTION ====================
+function switchMediaTab(tab, btn) {
+  document.querySelectorAll('.media-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('#section-media .filter-btn').forEach(b => b.classList.remove('active'));
+  const panel = document.getElementById('mpanel-' + tab);
+  if (panel) panel.classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (tab === 'gravity-map') setTimeout(drawGravityMap, 100);
+  if (tab === 'competitive') renderCompetitiveMap();
+  if (tab === 'prompts') renderPrompts();
+  if (tab === 'threads') renderThreads();
+  if (tab === 'channel-heat') renderChannelHeatmap();
+}
+
+// ---- Channel Heatmap ----
+const CHANNELS = [
+  { name: 'TikTok', culture: 5, community: 4, commerce: 2, role: 'Culture seeding & creator discovery' },
+  { name: 'YouTube', culture: 4, community: 3, commerce: 3, role: 'Long-form storytelling & education' },
+  { name: 'Instagram', culture: 4, community: 5, commerce: 3, role: 'Community building & UGC amplification' },
+  { name: 'Streaming Sports', culture: 5, community: 3, commerce: 4, role: 'Tentpole moments & shoppable content' },
+  { name: 'Broadcast TV', culture: 3, community: 1, commerce: 2, role: 'Mass awareness & cultural legitimacy' },
+  { name: 'Retail Media', culture: 1, community: 2, commerce: 5, role: 'Commerce conversion at point of purchase' },
+  { name: 'Search / SEO', culture: 1, community: 1, commerce: 4, role: 'Intent capture & product discovery' },
+  { name: 'Creator Partnerships', culture: 5, community: 5, commerce: 3, role: 'Authentic voice & community trust' },
+  { name: 'Local Sports Media', culture: 4, community: 5, commerce: 2, role: 'Hyper-local identity & fandom' },
+  { name: 'Team / School Channels', culture: 3, community: 5, commerce: 2, role: 'Institutional community access' },
+  { name: 'Podcasts', culture: 3, community: 3, commerce: 1, role: 'Deep engagement & opinion influence' },
+  { name: 'OOH / Experiential', culture: 4, community: 3, commerce: 2, role: 'Physical culture presence & moments' },
+];
+
+function getChannelData() {
+  return (STATE.channelHeatmap || CHANNELS).map((c, i) => ({
+    ...CHANNELS[i],
+    ...c
+  }));
+}
+
+function renderChannelHeatmap() {
+  const data = getChannelData();
+  const body = document.getElementById('channel-heatmap-body');
+  if (!body) return;
+  body.innerHTML = data.map((ch, i) => {
+    const total = ch.culture + ch.community + ch.commerce;
+    return `<tr>
+      <td style="font-weight:600; color:var(--text-light);">${ch.name}</td>
+      <td class="heatmap-cell heat-${ch.culture}" onclick="cycleHeat(${i},'culture')">${ch.culture}</td>
+      <td class="heatmap-cell heat-${ch.community}" onclick="cycleHeat(${i},'community')">${ch.community}</td>
+      <td class="heatmap-cell heat-${ch.commerce}" onclick="cycleHeat(${i},'commerce')">${ch.commerce}</td>
+      <td style="text-align:center; font-weight:700; color:var(--amber);">${total}</td>
+      <td contenteditable="true" style="font-size:12px; color:var(--text-mid);" onblur="updateChannelRole(${i},this.textContent)">${ch.role}</td>
+    </tr>`;
+  }).join('');
+}
+
+function cycleHeat(idx, dim) {
+  if (!STATE.channelHeatmap) STATE.channelHeatmap = JSON.parse(JSON.stringify(CHANNELS));
+  STATE.channelHeatmap[idx][dim] = (STATE.channelHeatmap[idx][dim] % 5) + 1;
+  saveState();
+  renderChannelHeatmap();
+}
+
+function updateChannelRole(idx, text) {
+  if (!STATE.channelHeatmap) STATE.channelHeatmap = JSON.parse(JSON.stringify(CHANNELS));
+  STATE.channelHeatmap[idx].role = text;
+  saveState();
+}
+
+// ---- Media Gravity Map ----
+const GRAVITY_ITEMS = [
+  { label: 'TikTok', x: 0.85, y: 0.25, color: '#FF3131' },
+  { label: 'YouTube', x: 0.65, y: 0.45, color: '#FF3131' },
+  { label: 'Instagram', x: 0.70, y: 0.50, color: '#FF3131' },
+  { label: 'Streaming Sports', x: 0.75, y: 0.65, color: '#00C8FF' },
+  { label: 'Broadcast', x: 0.40, y: 0.35, color: '#666' },
+  { label: 'Retail Media', x: 0.15, y: 0.85, color: '#00d26a' },
+  { label: 'Creator Partners', x: 0.80, y: 0.40, color: '#c080ff' },
+  { label: 'Local Sports', x: 0.75, y: 0.30, color: '#e6b800' },
+  { label: 'School/Team', x: 0.60, y: 0.20, color: '#0047AB' },
+  { label: 'Search', x: 0.10, y: 0.75, color: '#666' },
+  { label: 'Podcasts', x: 0.55, y: 0.15, color: '#666' },
+  { label: 'OOH', x: 0.50, y: 0.30, color: '#e6b800' },
+];
+
+function drawGravityMap() {
+  const canvas = document.getElementById('gravity-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const rect = canvas.parentElement.getBoundingClientRect();
+  canvas.width = rect.width;
+  canvas.height = rect.height || 500;
+  const w = canvas.width, h = canvas.height;
+  const pad = 50;
+
+  ctx.clearRect(0, 0, w, h);
+
+  // Grid
+  ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+  ctx.lineWidth = 1;
+  for (let i = 0; i <= 4; i++) {
+    const x = pad + (w - 2 * pad) * (i / 4);
+    const y = pad + (h - 2 * pad) * (i / 4);
+    ctx.beginPath(); ctx.moveTo(x, pad); ctx.lineTo(x, h - pad); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(pad, y); ctx.lineTo(w - pad, y); ctx.stroke();
+  }
+
+  // Quadrant labels
+  ctx.font = '10px JetBrains Mono';
+  ctx.fillStyle = 'rgba(255,255,255,0.12)';
+  ctx.textAlign = 'center';
+  ctx.fillText('AWARENESS', pad + (w - 2 * pad) * 0.25, pad + (h - 2 * pad) * 0.25);
+  ctx.fillText('CULTURE AUTHORITY', pad + (w - 2 * pad) * 0.75, pad + (h - 2 * pad) * 0.25);
+  ctx.fillText('TRANSACTION', pad + (w - 2 * pad) * 0.25, pad + (h - 2 * pad) * 0.75);
+  ctx.fillText('FULL FUNNEL', pad + (w - 2 * pad) * 0.75, pad + (h - 2 * pad) * 0.75);
+
+  // Items
+  const items = STATE.gravityItems || GRAVITY_ITEMS;
+  items.forEach(item => {
+    const x = pad + item.x * (w - 2 * pad);
+    const y = h - pad - item.y * (h - 2 * pad);
+
+    // Glow
+    ctx.beginPath();
+    ctx.arc(x, y, 24, 0, Math.PI * 2);
+    ctx.fillStyle = item.color + '15';
+    ctx.fill();
+
+    // Dot
+    ctx.beginPath();
+    ctx.arc(x, y, 8, 0, Math.PI * 2);
+    ctx.fillStyle = item.color;
+    ctx.fill();
+
+    // Label
+    ctx.font = '11px JetBrains Mono';
+    ctx.fillStyle = '#ccc';
+    ctx.textAlign = 'center';
+    ctx.fillText(item.label, x, y - 14);
+  });
+}
+
+// ---- Competitive Map ----
+const COMPETITORS = [
+  {
+    name: 'Adidas', color: '#00C8FF', borderColor: 'var(--amber)',
+    scores: { culture: 72, community: 65, commerce: 68, storytelling: 70 },
+    posture: 'Global sport-meets-style. Cultural credibility through heritage silhouettes and athlete partnerships. Growing community play through NIL and campus ecosystems.',
+    strength: 'Retro lifestyle credibility (Samba/Gazelle). European football heritage. Terrace culture crossover.',
+    gap: 'Community depth in US youth sports. Creator ecosystem. Local market activation.'
+  },
+  {
+    name: 'Nike', color: '#ff6b35', borderColor: '#ff6b35',
+    scores: { culture: 95, community: 70, commerce: 85, storytelling: 95 },
+    posture: 'Dominant cultural storyteller. Athlete-hero narrative model. Premium DTC ecosystem.',
+    strength: 'Unmatched athlete roster. SNKRS ecosystem. Brand storytelling at scale.',
+    gap: 'Community authenticity. Over-indexed on hero worship vs. grassroots. DTC friction.'
+  },
+  {
+    name: 'New Balance', color: '#00d26a', borderColor: '#00d26a',
+    scores: { culture: 60, community: 80, commerce: 55, storytelling: 65 },
+    posture: 'Grassroots authenticity. "Made in USA" credibility. Running + lifestyle crossover.',
+    strength: 'Community credibility. Authentic influencer relationships. Quality perception.',
+    gap: 'Scale in team sports. Limited sport-specific innovation storytelling. Smaller media footprint.'
+  },
+  {
+    name: 'Under Armour', color: '#888', borderColor: '#888',
+    scores: { culture: 35, community: 40, commerce: 40, storytelling: 30 },
+    posture: 'Performance-first positioning. Underdog narrative fading. Trying to rebuild cultural relevance.',
+    strength: 'Training/performance credibility with serious athletes. College team deals.',
+    gap: 'Cultural relevance. Lifestyle crossover. Storytelling quality. Community engagement.'
+  }
+];
+
+function renderCompetitiveMap() {
+  const grid = document.getElementById('competitive-grid');
+  if (!grid) return;
+  grid.innerHTML = COMPETITORS.map(c => {
+    const dims = ['culture', 'community', 'commerce', 'storytelling'];
+    const bars = dims.map(d => `
+      <div class="comp-bar-row">
+        <span class="comp-bar-label">${d}</span>
+        <div class="comp-bar-track"><div class="comp-bar-fill" style="width:${c.scores[d]}%; background:${c.color};"></div></div>
+        <span class="comp-bar-val">${c.scores[d]}</span>
+      </div>
+    `).join('');
+    return `<div class="comp-card" style="border-top-color:${c.borderColor};">
+      <h4 style="color:${c.color};">${c.name}</h4>
+      ${bars}
+      <div class="divider"></div>
+      <div style="font-size:12px; color:var(--text-mid); line-height:1.6; margin-bottom:8px;"><strong style="color:var(--text-light);">Posture:</strong> ${c.posture}</div>
+      <div style="font-size:12px; color:var(--text-mid); line-height:1.6; margin-bottom:8px;"><strong style="color:var(--green);">Strength:</strong> ${c.strength}</div>
+      <div style="font-size:12px; color:var(--text-mid); line-height:1.6;"><strong style="color:var(--red);">Gap:</strong> ${c.gap}</div>
+    </div>`;
+  }).join('');
+
+  // White space analysis
+  const ws = document.getElementById('whitespace-analysis');
+  if (ws) ws.innerHTML = `
+    <p><strong style="color:var(--amber);">Where Adidas can win:</strong></p>
+    <ul style="margin:8px 0 16px 20px; list-style:disc;">
+      <li>College athlete ecosystems — Nike is top-down (hero athletes), NB is grassroots but small scale. Adidas can own the <strong>middle layer</strong>: structured NIL programs at scale.</li>
+      <li>Multicultural youth fandom — No competitor has built a bilingual, multicultural-first media strategy for US sports.</li>
+      <li>Sport-to-lifestyle adjacency — Samba/Gazelle momentum proves Adidas can bridge performance credibility with lifestyle relevance better than Nike's Jordan-centric model.</li>
+      <li>Streaming-native commerce — MLS-Apple partnership gives Adidas a first-mover slot in subscription-native brand integration.</li>
+      <li>Hockey-adjacent lifestyle in Canada — NHL Fanatics deal blocks jerseys, but training/lifestyle/culture around hockey is wide open.</li>
+    </ul>
+    <p><strong style="color:var(--red);">Where to avoid direct competition:</strong></p>
+    <ul style="margin:8px 0 0 20px; list-style:disc;">
+      <li>NFL on-field (locked by Nike/Fanatics)</li>
+      <li>Hero athlete storytelling at scale (Nike's core competency)</li>
+      <li>Premium running purist community (New Balance's territory)</li>
+    </ul>
+  `;
+}
+
+// ---- Campaign Simulation ----
+function saveCampaignSim() {
+  STATE.campaignSim = {
+    name: document.getElementById('sim-name')?.value || '',
+    objective: document.getElementById('sim-objective')?.value || '',
+    community: document.getElementById('sim-community')?.value || '',
+    audience: document.getElementById('sim-audience')?.value || '',
+    channels: document.getElementById('sim-channels')?.value || '',
+    contentRoles: document.getElementById('sim-content-roles')?.value || '',
+    outcome: document.getElementById('sim-outcome')?.value || ''
+  };
+  saveState();
+}
+
+function loadCampaignSim() {
+  const s = STATE.campaignSim;
+  if (!s) return;
+  const fields = {name:'sim-name', objective:'sim-objective', community:'sim-community', audience:'sim-audience', channels:'sim-channels', contentRoles:'sim-content-roles', outcome:'sim-outcome'};
+  Object.entries(fields).forEach(([k, id]) => { const el = document.getElementById(id); if (el && s[k]) el.value = s[k]; });
+}
+
+// ---- Narrative Builder ----
+function saveNarrative() {
+  STATE.narrative = {
+    tension: document.getElementById('narr-tension')?.value || '',
+    insight: document.getElementById('narr-insight')?.value || '',
+    unlock: document.getElementById('narr-unlock')?.value || '',
+    media: document.getElementById('narr-media')?.value || '',
+    impact: document.getElementById('narr-impact')?.value || ''
+  };
+  saveState();
+}
+
+function loadNarrative() {
+  const n = STATE.narrative;
+  if (!n) return;
+  const fields = {tension:'narr-tension', insight:'narr-insight', unlock:'narr-unlock', media:'narr-media', impact:'narr-impact'};
+  Object.entries(fields).forEach(([k, id]) => { const el = document.getElementById(id); if (el && n[k]) el.value = n[k]; });
+}
+
+// ---- Strategy Threads ----
+function addStrategyThread() {
+  if (!STATE.threads) STATE.threads = [];
+  STATE.threads.push({
+    id: 'th_' + Date.now(),
+    condition: '', journey: '', strategy: '', media: '', outcome: ''
+  });
+  saveState();
+  renderThreads();
+}
+
+function renderThreads() {
+  const container = document.getElementById('threads-container');
+  if (!container) return;
+  const threads = STATE.threads || [];
+  if (threads.length === 0) {
+    container.innerHTML = '<div class="text-sm text-dim" style="padding:20px; text-align:center;">No threads yet. Click + New Thread to connect insights into strategic spines.</div>';
+    return;
+  }
+  const steps = [
+    { key: 'condition', label: 'Condition / Insight', color: 'var(--green)' },
+    { key: 'journey', label: 'Journey Moment', color: 'var(--blue)' },
+    { key: 'strategy', label: 'Strategy Lever', color: 'var(--amber)' },
+    { key: 'media', label: 'Media Channel / Tactic', color: '#c080ff' },
+    { key: 'outcome', label: 'Business Outcome', color: 'var(--red)' }
+  ];
+  container.innerHTML = threads.map((t, ti) => {
+    const stepsHtml = steps.map((s, si) => `
+      <div class="thread-step">
+        ${si > 0 ? '<span class="thread-arrow">→</span>' : '<span class="thread-arrow" style="opacity:0;">→</span>'}
+        <div class="thread-input">
+          <label style="color:${s.color};">${s.label}</label>
+          <input type="text" value="${escHtml(t[s.key] || '')}" placeholder="${s.label}..." onblur="updateThread(${ti},'${s.key}',this.value)">
+        </div>
+      </div>
+    `).join('');
+    return `<div class="thread-card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <span class="card-label" style="margin:0;">Thread ${ti + 1}</span>
+        <button class="btn btn-sm" style="font-size:10px; color:var(--red); border-color:var(--red);" onclick="deleteThread(${ti})">Delete</button>
+      </div>
+      ${stepsHtml}
+    </div>`;
+  }).join('');
+}
+
+function updateThread(idx, key, val) {
+  if (STATE.threads && STATE.threads[idx]) {
+    STATE.threads[idx][key] = val;
+    saveState();
+  }
+}
+
+function deleteThread(idx) {
+  if (STATE.threads) { STATE.threads.splice(idx, 1); saveState(); renderThreads(); }
+}
+
+// ---- Thinking Prompts ----
+const THINKING_PROMPTS = [
+  { cat: 'Culture', q: 'Where does culture form before media notices it? What spaces, rituals, or communities are creating meaning that brands haven\'t yet commodified?' },
+  { cat: 'Culture', q: 'What media do athletes control themselves? Where are they building audiences without brand intermediation?' },
+  { cat: 'Community', q: 'Where does community create commerce without paid advertising? What organic purchase triggers exist in team, school, and fan ecosystems?' },
+  { cat: 'Community', q: 'What communities would feel Adidas\'s absence — not just its presence? Where is the brand truly embedded vs. merely visible?' },
+  { cat: 'Commerce', q: 'What parts of the media ecosystem are over-invested versus under-imagined? Where is spend following convention rather than consumer behavior?' },
+  { cat: 'Commerce', q: 'Where is Adidas most likely to earn relevance rather than buy attention? What media roles require credibility that money alone cannot purchase?' },
+  { cat: 'Strategy', q: 'If Adidas could only be in three media spaces in North America, which three would build the most durable competitive advantage?' },
+  { cat: 'Strategy', q: 'What would a media plan look like if it started from community behavior rather than media inventory? What channels would dominate?' },
+  { cat: 'Media', q: 'Which media behaviors are structurally different in North America vs. global markets? How should that reshape channel allocation?' },
+  { cat: 'Media', q: 'Where is streaming fragmentation creating white space for brands willing to assemble audiences across platforms rather than buy them on one?' },
+  { cat: 'White Space', q: 'What would it mean for Adidas to own the NIL media layer — not just sponsor athletes, but power the infrastructure they use to build their brands?' },
+  { cat: 'White Space', q: 'Where can Adidas be the connector between sport culture and style culture in ways that Nike\'s athlete-hero model cannot?' },
+];
+
+function renderPrompts() {
+  const grid = document.getElementById('prompts-grid');
+  if (!grid) return;
+  grid.innerHTML = THINKING_PROMPTS.map(p =>
+    `<div class="prompt-card">
+      <div class="prompt-cat">${p.cat}</div>
+      <div class="prompt-q">${p.q}</div>
+    </div>`
+  ).join('');
+}
+
 // ==================== INIT ====================
 document.addEventListener('DOMContentLoaded', () => {
   renderConditions();
   renderPinned();
   renderStrategy();
   renderWhiteboard();
+  renderChannelHeatmap();
+  loadCampaignSim();
+  loadNarrative();
   setTimeout(() => { updateMathModel(); updateScenarios(); }, 200);
 });
 
@@ -3193,13 +3876,13 @@ const REMIX_PRESETS = [
     traits: ['Gen Z', 'NIL Aware', 'D1 Athlete', 'Creator Consumer', 'Style + Performance', 'Streaming Native'],
     bio: 'Gen Z. NIL-aware and actively exploring personal brand opportunities. Socially connected across Instagram, TikTok, and team group chats. Performance-driven on the field, style-driven off it. Follows creators and athletes more than brands. Bilingual (English/Spanish). Streams everything, watches nothing linear.',
     journey: [
-      ['Mon','Morning training. Afternoon classes. Evening film review.','TikTok between classes. YouTube highlights. Spotify during training.','Team group chat. Posts training clip to IG story.','Training gear visibility. Post-training recovery content.'],
-      ['Tue','Light training. Study groups. NIL meeting with advisor.','Instagram Reels. StockX drop checks. Reddit soccer threads.','NIL discussion with teammates. Group chat about match.','NIL partnership touchpoint. Campus retail activation.'],
-      ['Wed','Full practice. Weights. Campus life — dining, library.','MLS highlights on Apple TV. Creator commentary on TikTok.','Casual pickup with friends. Soccer culture chat.','Lifestyle-to-pitch crossover. Pickup culture content.'],
-      ['Thu','Pre-match prep. Travel day if away. Kit check and ritual.','Match preview on ESPN+. Pre-game playlist. Team hype videos.','Team bonding. Pre-match rituals. Coach sessions.','Match-day kit experience. Travel gear integration.'],
-      ['Fri','MATCH DAY. Pre-match routine. Post-match recovery.','Dark pre-match. Post: highlights, stats, group FaceTimes.','Peak social — match photos, fans, team celebration.','On-field performance showcase. Post-match social content.'],
-      ['Sat','Recovery. Brunch with friends. Shopping/thrifting. Going out.','Premier League on Peacock. Football on ESPN. TikTok deep scroll.','Non-sport friend groups. Social scene. Cultural life.','Lifestyle product moments. Retro silhouettes (Samba/Gazelle).'],
-      ['Sun','Light recovery. Meal prep. Content creation for personal brand.','NFL streaming. Creating TikTok/IG content. Watching creators.','Family FaceTime. NIL content calendar. Engaging followers.','Creator tools/support. Content creation partnership.']
+      ['Mon','Morning training. Afternoon classes. Evening film review.','Focused, disciplined. Pre-week energy.','TikTok between classes. YouTube highlights. Spotify during training.','Team group chat. Posts training clip to IG story.','Short-form vertical. Training clips.','Enabler — gear that supports the grind.','Low — performance focus.','Training gear visibility. Post-training recovery content.'],
+      ['Tue','Light training. Study groups. NIL meeting with advisor.','Entrepreneurial, curious.','Instagram Reels. StockX drop checks. Reddit soccer threads.','NIL discussion with teammates. Group chat about match.','Product discovery. UGC reviews.','Partner — NIL enablement.','Medium — browsing drops.','NIL partnership touchpoint. Campus retail activation.'],
+      ['Wed','Full practice. Weights. Campus life — dining, library.','Balanced, social. Campus mode.','MLS highlights on Apple TV. Creator commentary on TikTok.','Casual pickup with friends. Soccer culture chat.','Long-form highlights. Creator commentary.','Cultural connector.','Low-medium — lifestyle browsing.','Lifestyle-to-pitch crossover. Pickup culture content.'],
+      ['Thu','Pre-match prep. Travel day if away. Kit check and ritual.','Building intensity. Ritual-driven.','Match preview on ESPN+. Pre-game playlist. Team hype videos.','Team bonding. Pre-match rituals. Coach sessions.','Playlist curation. Hype videos.','Ritual anchor — kit as armor.','Low — no shopping mindset.','Match-day kit experience. Travel gear integration.'],
+      ['Fri','MATCH DAY. Pre-match routine. Post-match recovery.','Peak energy → release → pride.','Dark pre-match. Post: highlights, stats, group FaceTimes.','Peak social — match photos, fans, team celebration.','Post-match highlights. Celebration content.','Stage — peak visibility.','Post-match high from spectators.','On-field performance showcase. Post-match social content.'],
+      ['Sat','Recovery. Brunch with friends. Shopping/thrifting. Going out.','Relaxed, reward-seeking. Self-expression.','Premier League on Peacock. Football on ESPN. TikTok deep scroll.','Non-sport friend groups. Social scene. Cultural life.','Deep scroll. Haul videos. Style content.','Style partner — retro/lifestyle.','High — shopping mode active.','Lifestyle product moments. Retro silhouettes (Samba/Gazelle).'],
+      ['Sun','Light recovery. Meal prep. Content creation for personal brand.','Reflective, creative.','NFL streaming. Creating TikTok/IG content. Watching creators.','Family FaceTime. NIL content calendar. Engaging followers.','Content creation. Batch editing.','Creator enabler.','Medium — Sunday browsing.','Creator tools/support. Content creation partnership.']
     ]
   },
   {
@@ -3208,13 +3891,13 @@ const REMIX_PRESETS = [
     traits: ['Gen Z', 'Hoop Culture', 'Sneakerhead', 'Highlight Driven', 'AAU Circuit', 'TikTok Native'],
     bio: '17-year-old varsity point guard with AAU aspirations. Lives for sneaker drops and highlight reels. Runs a basketball TikTok with 12K followers. Influenced by Overtime, Ballislife, and NBA Twitter. Style is everything — on and off court.',
     journey: [
-      ['Mon','School. After-school practice. Weight room.','Overtime clips. NBA Twitter takes. Sneaker release calendars.','AAU group chat. School hallway culture.','Basketball training gear. Signature shoe visibility.'],
-      ['Tue','Practice. Film session with coach. Homework.','YouTube basketball breakdowns. TikTok challenges.','Teammates posting gym clips. Pickup game planning.','Performance gear tech stories. School team sponsorship.'],
-      ['Wed','Open gym. Pickup games after school.','Ballislife highlights. Instagram explore page.','Pickup culture — mixed friend groups, trash talk.','Pickup/streetball culture content. Court-to-street style.'],
-      ['Thu','Game day prep. Early release. Pre-game meal.','Pre-game playlist on Spotify. Hype videos shared in group chat.','Team bonding. Locker room energy. Student section hype.','Game-day experience. Student section activation.'],
-      ['Fri','GAME NIGHT. Pre-game warmups. Post-game celebration.','Dark pre-game. Post-game highlight clips everywhere.','Peak social — student section, post-game hangout, viral moments.','On-court showcase. Post-game sneaker content.'],
-      ['Sat','Recovery. Sneaker shopping. Mall with friends. AAU practice.','StockX/GOAT browsing. Sneaker unboxing videos. NBA games.','Friend group hangouts. Sneaker culture conversations.','Retail sneaker experience. Drop culture integration.'],
-      ['Sun','Church/family. Light shooting. Content creation.','NFL RedZone background. Creating highlight edits. Scrolling.','Family time. Planning next week. Group chat memes.','Lifestyle crossover. Creator tools for highlights.']
+      ['Mon','School. After-school practice. Weight room.','Grinding, competitive.','Overtime clips. NBA Twitter takes. Sneaker release calendars.','AAU group chat. School hallway culture.','Short highlights. Sneaker drops.','Enabler — performance shoes.','Low — focused on training.','Basketball training gear. Signature shoe visibility.'],
+      ['Tue','Practice. Film session with coach. Homework.','Studious, analytical.','YouTube basketball breakdowns. TikTok challenges.','Teammates posting gym clips. Pickup game planning.','Film breakdowns. Tutorial content.','Performance authority.','Low — weekday grind.','Performance gear tech stories. School team sponsorship.'],
+      ['Wed','Open gym. Pickup games after school.','Free, expressive. Streetball energy.','Ballislife highlights. Instagram explore page.','Pickup culture — mixed friend groups, trash talk.','Streetball highlights. Sneaker on-feet.','Culture connector — court to street.','Medium — style browsing.','Pickup/streetball culture content. Court-to-street style.'],
+      ['Thu','Game day prep. Early release. Pre-game meal.','Hyped, ritual-driven.','Pre-game playlist on Spotify. Hype videos in group chat.','Team bonding. Locker room energy. Student section.','Hype videos. Tunnel walk content.','Ritual anchor — game shoes.','Low — pre-game focus.','Game-day experience. Student section activation.'],
+      ['Fri','GAME NIGHT. Pre-game warmups. Post-game celebration.','Peak adrenaline → celebration.','Dark pre-game. Post-game highlights everywhere.','Peak — student section, post-game, viral moments.','Post-game highlights. Dunk compilations.','Stage — shoe showcase.','Post-game — "what was he wearing?"','On-court showcase. Post-game sneaker content.'],
+      ['Sat','Recovery. Sneaker shopping. Mall with friends. AAU practice.','Relaxed, reward-seeking.','StockX/GOAT browsing. Sneaker unboxings. NBA games.','Friend group hangouts. Sneaker culture conversations.','Unboxing. On-feet reviews. Hauls.','Style partner — sneaker culture.','High — mall shopping, drop checks.','Retail sneaker experience. Drop culture integration.'],
+      ['Sun','Church/family. Light shooting. Content creation.','Reflective, creative.','NFL RedZone background. Creating highlight edits.','Family time. Planning next week.','Highlight edits. Content creation.','Creator enabler.','Medium — online browsing.','Lifestyle crossover. Creator tools for highlights.']
     ]
   },
   {
@@ -3223,13 +3906,13 @@ const REMIX_PRESETS = [
     traits: ['Gen Z', 'Running Culture', 'Strava Obsessed', 'Health Focused', 'NIL Active', 'Podcast Listener'],
     bio: '20-year-old D1 middle-distance runner. Training is her identity. Active on Strava and running TikTok. Follows pro runners, running creators, and nutrition science. NIL deal with a supplement brand. Streams podcasts on every run.',
     journey: [
-      ['Mon','6AM track session. Classes. Afternoon recovery run.','Running TikTok. Strava feed. Podcast during recovery run.','Running club group chat. Strava kudos and comments.','Training footwear tech. Recovery product placement.'],
-      ['Tue','Strength training. Sports psych meeting. Study.','YouTube race breakdowns. Instagram running community.','Training partner runs. Team meals.','Performance apparel for training. Campus athlete visibility.'],
-      ['Wed','Tempo run. Classes. Physical therapy.','Running podcasts (Ali on the Run, Citius Mag). Strava.','PT conversations. Coach check-in. Teammate planning.','Running tech content. Injury prevention storytelling.'],
-      ['Thu','Easy recovery. NIL content creation. Race prep.','Creating running content for IG/TikTok. Pro race replays.','NIL brand meetings. Content collaboration with teammates.','NIL partnership activation. Athlete creator tools.'],
-      ['Fri','Pre-race routine. Travel to meet. Shakeout run.','Dark pre-race. Team playlist. Mental visualization.','Team travel bonding. Coach strategy talk.','Race-day kit experience. Travel gear showcase.'],
-      ['Sat','RACE DAY. Warm-up ritual. Competition. Cool-down.','Post-race: results tracking, highlight sharing, competitor analysis.','Peak social — race photos, team celebration, competitor respect.','On-track performance showcase. Race-day content.'],
-      ['Sun','Long recovery run. Meal prep. Strava analysis.','Strava deep dive. Running YouTube. Planning next week.','Family call. Running community engagement online.','Recovery product integration. Weekly gear rotation.']
+      ['Mon','6AM track session. Classes. Afternoon recovery run.','Intense, process-driven.','Running TikTok. Strava feed. Podcast during recovery.','Running club group chat. Strava kudos.','Strava posts. Training clips. Podcast.','Enabler — performance footwear tech.','Low — training mode.','Training footwear tech. Recovery product placement.'],
+      ['Tue','Strength training. Sports psych meeting. Study.','Analytical, growth-focused.','YouTube race breakdowns. Instagram running community.','Training partner runs. Team meals.','Race analysis. Tutorial content.','Performance authority.','Low — research not purchase.','Performance apparel for training. Campus athlete visibility.'],
+      ['Wed','Tempo run. Classes. Physical therapy.','Disciplined, health-conscious.','Running podcasts. Strava.','PT conversations. Coach check-in.','Podcast deep dives. Long-form.','Trusted advisor — injury prevention.','Low — focused on recovery.','Running tech content. Injury prevention storytelling.'],
+      ['Thu','Easy recovery. NIL content creation. Race prep.','Creative, entrepreneurial.','Creating running content for IG/TikTok.','NIL brand meetings. Teammate collabs.','Creator content. Behind-the-scenes.','Partner — NIL enablement.','Medium — brand deal browsing.','NIL partnership activation. Athlete creator tools.'],
+      ['Fri','Pre-race routine. Travel to meet. Shakeout run.','Nervous energy, focused.','Dark pre-race. Team playlist.','Team travel bonding. Coach strategy.','Private — no public content.','Ritual anchor — race kit.','Low — race focus only.','Race-day kit experience. Travel gear showcase.'],
+      ['Sat','RACE DAY. Warm-up ritual. Competition. Cool-down.','Peak → elation or devastation.','Post-race: results, highlights, analysis.','Peak — race photos, team celebration.','Race highlights. Results graphics.','Stage — on-track showcase.','Post-race — gear interest spike.','On-track performance showcase. Race-day content.'],
+      ['Sun','Long recovery run. Meal prep. Strava analysis.','Reflective, analytical.','Strava deep dive. Running YouTube.','Family call. Running community online.','Data analysis. Weekly recaps.','Recovery partner.','Medium — planning gear needs.','Recovery product integration. Weekly gear rotation.']
     ]
   },
   {
@@ -3238,13 +3921,13 @@ const REMIX_PRESETS = [
     traits: ['Gen Z', 'Hockey Culture', 'Draft Hopeful', 'Tim Hortons Regular', 'Billet Life', 'Hockey Twitter'],
     bio: '18-year-old OHL forward billeting in London, Ontario. NHL draft eligible. Lives the billet family life — rink, school, repeat. Deep in Hockey Twitter, watches every NHL game. Style is understated but gear-obsessed. Canadian hockey culture runs deep.',
     journey: [
-      ['Mon','Morning skate. School/tutoring. Afternoon nap. Film.','Hockey Twitter. NHL highlights on YouTube. TSN clips.','Billet family dinner. Team group chat. FaceTime home.','Training gear. Rink-to-street style moments.'],
-      ['Tue','Practice. Weights. Video review with coaches.','Podcast (Spittin Chiclets). Instagram hockey community.','Teammate hangouts. Billet family time.','Performance gear visibility. Hockey lifestyle content.'],
-      ['Wed','Game day prep. Pre-game meal. Pre-game nap.','Dark before games. Pre-game playlist.','Pre-game rituals with teammates. Locker room energy.','Game-day experience. Arena branding.'],
-      ['Thu','GAME NIGHT. Warm-up. Game. Post-game meal.','Post-game highlights shared. NHL games on TV.','Peak energy — fans, billets, post-game team hangout.','On-ice showcase. Post-game content moments.'],
-      ['Fri','Recovery. Light skate. School catch-up.','NHL Friday night games. TikTok scroll. Gaming.','Friday hangout with teammates. Movie night at billets.','Recovery product placement. Lifestyle gear.'],
-      ['Sat','Morning practice. Afternoon free. Evening game possible.','Full NHL Saturday slate. Hockey YouTube deep dives.','Weekend teammate bonding. Mall trips. Tim Hortons runs.','Weekend lifestyle. Retail hockey culture.'],
-      ['Sun','Travel day or rest. Family FaceTime. Meal prep.','Sunday NFL/NHL. Creating content. Planning week.','Family connection. Billet family activities.','Travel gear. Cross-sport culture moments.']
+      ['Mon','Morning skate. School/tutoring. Afternoon nap. Film.','Focused, homesick at times.','Hockey Twitter. NHL highlights on YouTube. TSN clips.','Billet family dinner. Team group chat.','Short highlights. Hockey memes.','Enabler — training gear.','Low — rink life.','Training gear. Rink-to-street style moments.'],
+      ['Tue','Practice. Weights. Video review with coaches.','Competitive, team-bonded.','Podcast (Spittin Chiclets). Instagram hockey community.','Teammate hangouts. Billet family time.','Podcast. Locker room content.','Performance authority.','Low — focused.','Performance gear visibility. Hockey lifestyle content.'],
+      ['Wed','Game day prep. Pre-game meal. Pre-game nap.','Building intensity. Superstitious.','Dark before games. Pre-game playlist.','Pre-game rituals. Locker room energy.','Private — minimal public.','Ritual anchor.','Low — game focus.','Game-day experience. Arena branding.'],
+      ['Thu','GAME NIGHT. Warm-up. Game. Post-game meal.','Peak intensity → release.','Post-game highlights shared. NHL on TV.','Peak — fans, billets, team hangout.','Post-game highlights. Celly clips.','Stage — on-ice showcase.','Post-game interest from fans.','On-ice showcase. Post-game content moments.'],
+      ['Fri','Recovery. Light skate. School catch-up.','Relaxed, decompressing.','NHL Friday games. TikTok scroll. Gaming.','Friday hangout. Movie night at billets.','Gaming streams. Casual scroll.','Lifestyle partner.','Low-medium — casual browsing.','Recovery product placement. Lifestyle gear.'],
+      ['Sat','Morning practice. Afternoon free. Evening game possible.','Free, social.','Full NHL Saturday slate. Hockey YouTube.','Weekend bonding. Mall trips. Tim Hortons.','Long-form hockey content.','Style partner — off-ice.','Medium — mall shopping.','Weekend lifestyle. Retail hockey culture.'],
+      ['Sun','Travel day or rest. Family FaceTime. Meal prep.','Reflective, family-connected.','Sunday NFL/NHL. Creating content.','Family connection. Billet activities.','Content creation. Planning.','Travel gear enabler.','Low — rest day.','Travel gear. Cross-sport culture moments.']
     ]
   },
   {
@@ -3253,13 +3936,13 @@ const REMIX_PRESETS = [
     traits: ['Gen Z', 'Creator Economy', '500K Followers', 'Brand Deal Savvy', 'Gym Culture', 'Multi-Platform'],
     bio: '22-year-old fitness content creator with 500K+ across TikTok and Instagram. Former D3 volleyball player turned full-time creator. Partners with 4-5 brands. Training content, day-in-my-life vlogs, and supplement reviews. Lives in Austin, TX.',
     journey: [
-      ['Mon','Morning gym session (filmed). Editing content. Brand emails.','Posting AM workout. Engaging comments. Watching competitor creators.','Gym community. DM conversations with followers. Creator friends.','Gym apparel showcase. Training content partnership.'],
-      ['Tue','Filming day — batch content. Afternoon meetings with brands.','Trending audio research. Analytics review. Posting Reels.','Creator mastermind group. Brand meeting networking.','Brand collaboration content. Product seeding.'],
-      ['Wed','Gym. Podcast recording. Admin/invoicing.','Podcast publishing. YouTube uploads. Newsletter.','Podcast guest networking. Gym buddy training.','Multi-platform content integration. Podcast sponsorship.'],
-      ['Thu','Active recovery. Content planning for weekend. Shopping.','Content calendar planning. Engaging on Twitter/Threads.','Austin creator meetup. Coffee with brand contacts.','Lifestyle content. Shopping/haul content opportunities.'],
-      ['Fri','Morning gym (filmed). Afternoon — personal time. Going out.','Posting schedule. Friday vibes content. Going-out prep content.','Friend group. Social scene. Influencer events.','Night-out style. Lifestyle beyond gym.'],
-      ['Sat','Long gym session. Farmers market. Lifestyle content.','Weekend content push. Engagement peaks. Story dumps.','Weekend social life. Gym community events.','Weekend lifestyle showcase. Event activations.'],
-      ['Sun','Rest day content. Meal prep (filmed). Week planning.','Batch editing. Scheduling week\'s content. Analytics deep dive.','Online community engagement. Family time.','Recovery content. Meal prep integration. Weekly reset.']
+      ['Mon','Morning gym session (filmed). Editing content. Brand emails.','Productive, on-brand.','Posting AM workout. Engaging comments. Competitor watching.','Gym community. DM conversations. Creator friends.','Workout videos. Before/after. Tips.','Enabler — gym apparel showcase.','Medium — always evaluating products.','Gym apparel showcase. Training content partnership.'],
+      ['Tue','Filming day — batch content. Afternoon meetings with brands.','Creative, strategic.','Trending audio research. Analytics review. Posting Reels.','Creator mastermind group. Brand networking.','Batch Reels. Trending audio.','Partner — collaboration content.','High — brand deal = purchase.','Brand collaboration content. Product seeding.'],
+      ['Wed','Gym. Podcast recording. Admin/invoicing.','Professional, multi-platform.','Podcast publishing. YouTube uploads. Newsletter.','Podcast guest networking. Gym buddy training.','Long-form podcast. YouTube.','Platform — podcast sponsorship.','Medium — reviewing products.','Multi-platform content. Podcast sponsorship.'],
+      ['Thu','Active recovery. Content planning for weekend. Shopping.','Planning, browsing.','Content calendar planning. Engaging on Threads.','Austin creator meetup. Brand contacts.','Haul content. Shopping vlogs.','Style partner — lifestyle.','High — shopping for content.','Lifestyle content. Shopping/haul opportunities.'],
+      ['Fri','Morning gym (filmed). Afternoon personal. Going out.','Social, expressive.','Posting schedule. Friday vibes. Going-out prep.','Friend group. Social scene. Influencer events.','Going-out content. GRWM.','Style partner — night out.','High — going-out outfit.','Night-out style. Lifestyle beyond gym.'],
+      ['Sat','Long gym session. Farmers market. Lifestyle content.','Peak creative energy.','Weekend content push. Engagement peaks.','Weekend social. Gym community events.','Story dumps. Lifestyle montage.','Lifestyle partner.','Medium — farmers market browsing.','Weekend lifestyle showcase. Event activations.'],
+      ['Sun','Rest day content. Meal prep (filmed). Week planning.','Reflective, planning.','Batch editing. Scheduling content. Analytics.','Online community. Family time.','Meal prep. Recovery. Planning.','Recovery partner.','Low — planning next purchases.','Recovery content. Meal prep integration.']
     ]
   },
   {
@@ -3268,13 +3951,13 @@ const REMIX_PRESETS = [
     traits: ['Millennial', 'Bilingual', 'Family First', 'WhatsApp Native', 'Value Shopper', 'Community Leader'],
     bio: '34-year-old mother of two youth soccer players. Assistant coaches her daughter\'s U-10 team. Shops for the whole family — cleats, shin guards, match-day outfits. Deeply embedded in the parent network via WhatsApp. Bilingual English/Spanish. Watches Liga MX and NWSL.',
     journey: [
-      ['Mon','Work. After-school pickup. Kids\' practice drop-off.','WhatsApp team parent chat. Facebook marketplace browsing.','Parent sideline conversations. Team snack schedule.','Youth teamwear bundles. Parent-coach gear.'],
-      ['Tue','Work from home. Online shopping during lunch. Evening practice.','Instagram explore — kids\' sports gear. TikTok parenting.','Texting other parents. Planning team events.','Family multi-pack deals. Cleat finder tool.'],
-      ['Wed','Office day. Kids homework. Equipment check for weekend.','Liga MX highlights on Univision app. YouTube gear reviews.','Church group. Neighborhood families.','Bilingual product content. Size guide tools.'],
-      ['Thu','Practice day. Pre-game team meeting via Zoom.','Amazon/Dick\'s price comparing. Reading product reviews.','Team parent WhatsApp — logistics, carpooling.','Price-competitive family packs. Loyalty program.'],
-      ['Fri','Work. Game prep — washing kits, packing bags.','Weather check apps. Team schedule apps (TeamSnap).','Family dinner. Pre-game excitement.','Match-day kit experience. Weather-ready gear.'],
-      ['Sat','GAME DAY x2. Both kids play. Full sideline day.','Live posting kids\' games. WhatsApp photo sharing.','Peak parent community. Sideline culture. Post-game pizza.','Sideline brand visibility. Pop-up retail at tournaments.'],
-      ['Sun','Family day. Park. Church. Meal prep. Online ordering.','Univision Sunday soccer. Browsing deals. Planning week.','Extended family time. FaceTime with abuelos.','Weekend deals. Next-season pre-orders.']
+      ['Mon','Work. After-school pickup. Kids\' practice drop-off.','Busy, multitasking. Mom-mode.','WhatsApp team parent chat. Facebook marketplace.','Parent sideline conversations. Team snacks.','WhatsApp groups. Facebook marketplace.','Trusted advisor — family gear.','Medium — always shopping for kids.','Youth teamwear bundles. Parent-coach gear.'],
+      ['Tue','Work from home. Online shopping during lunch. Evening practice.','Shopping-efficient, deal-seeking.','Instagram explore — kids\' gear. TikTok parenting.','Texting other parents. Planning events.','Product discovery. Parent reviews.','Value provider — family packs.','High — lunch break shopping.','Family multi-pack deals. Cleat finder tool.'],
+      ['Wed','Office day. Kids homework. Equipment check for weekend.','Organized, culturally connected.','Liga MX on Univision app. YouTube gear reviews.','Church group. Neighborhood families.','Bilingual content. Gear reviews.','Cultural connector — bilingual.','Medium — equipment check.','Bilingual product content. Size guide tools.'],
+      ['Thu','Practice day. Pre-game team meeting via Zoom.','Logistics-focused, price-comparing.','Amazon/Dick\'s price comparing. Reviews.','Team parent WhatsApp — logistics.','Price comparison. Review reading.','Value authority — best price.','High — pre-weekend purchasing.','Price-competitive family packs. Loyalty program.'],
+      ['Fri','Work. Game prep — washing kits, packing bags.','Anticipatory, organized.','Weather check apps. TeamSnap.','Family dinner. Pre-game excitement.','Minimal — practical apps only.','Utility provider — weather gear.','Low — prepping not shopping.','Match-day kit experience. Weather-ready gear.'],
+      ['Sat','GAME DAY x2. Both kids play. Full sideline day.','Proud, community-bonded.','Live posting kids\' games. WhatsApp photos.','Peak parent community. Sideline culture.','Live photos. WhatsApp sharing.','Community presence — sideline.','Medium — tournament pop-ups.','Sideline brand visibility. Pop-up retail at tournaments.'],
+      ['Sun','Family day. Park. Church. Meal prep. Online ordering.','Relaxed, family-first.','Univision Sunday soccer. Browsing deals.','Extended family. FaceTime with abuelos.','Deal browsing. Family content.','Family partner — deals.','High — Sunday deal shopping.','Weekend deals. Next-season pre-orders.']
     ]
   },
   {
@@ -3283,13 +3966,13 @@ const REMIX_PRESETS = [
     traits: ['Gen Z', 'Sneaker Culture', 'Reseller', 'Hypebeast', 'Instagram Heavy', 'Drop Calendar Obsessed'],
     bio: '24-year-old sneaker collector and part-time reseller in Atlanta. Owns 200+ pairs. Runs a sneaker Instagram with 45K followers. Lines up for drops, monitors StockX/GOAT prices daily. Style is identity. Adidas heritage (Superstars, Forum) is core to his rotation.',
     journey: [
-      ['Mon','Day job (retail). Evening: photo shoots of latest pickups.','StockX/GOAT price monitoring. Sneaker Twitter. Release calendars.','Sneaker group chats. Local collector meetups planning.','Heritage silhouette drops. Collector edition packaging.'],
-      ['Tue','Work. Lunchtime drop alerts. Evening content creation.','Instagram Reels of collection. TikTok unboxings. YouTube reviews.','DMs with other collectors. Buyer/seller negotiations.','Limited colorway exclusives. Early access programs.'],
-      ['Wed','Gym. Sneaker cleaning/maintenance. Listing pairs for resale.','Sole Collector, Hypebeast, Complex articles. Reddit r/sneakers.','Online community engagement. Discord servers.','Authentication partnerships. Care product bundles.'],
-      ['Thu','Work. Drop countdown. Setting up bots/apps for release.','SNKRS app, Confirmed app, retailer site monitoring.','Group chat strategizing for Saturday drop.','Confirmed app exclusives. Loyalty tier rewards.'],
-      ['Fri','Payday shopping. In-store browsing. Going out.','Pre-drop hype videos. Fit-check posts. Going-out content.','Friday night scene. Sneaker-centric social events.','In-store exclusive experiences. Night-out silhouettes.'],
-      ['Sat','DROP DAY. In-store campout or online drop. Unboxing content.','Live drop coverage. Posting W/L. Price tracking.','Drop day community. Line culture. Trade meetups.','Drop experience design. In-store events. Trade-in programs.'],
-      ['Sun','Resale listing. Collection reorganization. Content batch.','Market analysis. Listing on multiple platforms. Analytics.','Sunday sneaker community posts. Collection shares.','Resale-friendly packaging. Digital authentication.']
+      ['Mon','Day job (retail). Evening: photo shoots of latest pickups.','Anticipatory, monitoring.','StockX/GOAT price monitoring. Sneaker Twitter. Calendars.','Sneaker group chats. Collector meetups planning.','Price tracking. Release calendars.','Heritage curator.','Medium — price monitoring.','Heritage silhouette drops. Collector edition packaging.'],
+      ['Tue','Work. Lunchtime drop alerts. Evening content creation.','Creative, hustle mode.','Instagram Reels of collection. TikTok unboxings.','DMs with collectors. Buyer/seller negotiations.','Unboxing. On-feet. Reviews.','Content partner — seeding.','High — drop alerts active.','Limited colorway exclusives. Early access programs.'],
+      ['Wed','Gym. Sneaker cleaning/maintenance. Listing pairs.','Methodical, collector mindset.','Sole Collector, Hypebeast, Complex. Reddit.','Online community. Discord servers.','Articles. Reddit discussions.','Care brand — maintenance.','Medium — listing/pricing.','Authentication partnerships. Care product bundles.'],
+      ['Thu','Work. Drop countdown. Setting up apps for release.','Hyped, strategic.','SNKRS app, Confirmed app, retailer monitoring.','Group chat strategizing for drop.','App notifications. Countdown.','Exclusivity provider.','High — pre-drop purchase intent.','Confirmed app exclusives. Loyalty tier rewards.'],
+      ['Fri','Payday shopping. In-store browsing. Going out.','Reward-seeking, expressive.','Pre-drop hype videos. Fit-checks. Going-out content.','Friday night scene. Sneaker events.','Fit-check. Going-out prep.','Style partner — night life.','High — payday shopping.','In-store exclusive experiences. Night-out silhouettes.'],
+      ['Sat','DROP DAY. In-store campout or online drop. Unboxing.','Peak excitement or FOMO.','Live drop coverage. Posting W/L. Price tracking.','Drop day community. Line culture. Trade meetups.','Live drops. Unboxing. W/L posts.','Stage — drop experience.','Peak — drop purchase moment.','Drop experience design. In-store events. Trade-in.'],
+      ['Sun','Resale listing. Collection reorganization. Content batch.','Analytical, business-minded.','Market analysis. Listing on platforms. Analytics.','Sunday sneaker community posts.','Collection content. Market analysis.','Resale infrastructure.','Medium — resale pricing.','Resale-friendly packaging. Digital authentication.']
     ]
   },
   {
@@ -3298,13 +3981,13 @@ const REMIX_PRESETS = [
     traits: ['Millennial', 'Strava User', 'Marathon Runner', 'Peloton Owner', 'Gear Researcher', 'Podcast Listener'],
     bio: '41-year-old IT manager training for his 3rd marathon. Rides Peloton on weekdays, runs on weekends. Deep into gear research — reads every review before buying. Strava is his social network. Listens to running podcasts on every commute. Buys premium but needs justification.',
     journey: [
-      ['Mon','5:30AM Peloton ride. Work. Kids\' activities evening.','Morning: running podcast on commute. Strava feed check.','Peloton leaderboard community. Work running club Slack.','Connected fitness integration. Peloton-compatible gear.'],
-      ['Tue','Lunch run (5K). Work meetings. Evening family time.','Strava upload + kudos. Gear review YouTube at lunch.','Running club Slack banter. Strava comments.','Performance running shoes. Reflective gear for dawn runs.'],
-      ['Wed','Rest day. Gear research evening. Online shopping.','RunRepeat, Believe in the Run reviews. Reddit running.','None active — solo research mode.','Product comparison tools. Expert review partnerships.'],
-      ['Thu','5:30AM Peloton. Tempo run at lunch. Family evening.','Training plan app (Garmin Connect). Podcast: Ali on the Run.','Virtual running community. Garmin challenges.','Garmin/Strava integration. Training plan content.'],
-      ['Fri','Easy day. Pack for weekend long run. Rest.','Checking weather, planning route. Runner\'s World articles.','Friday run club social media posts.','Weekend warrior content. Route planning tools.'],
-      ['Sat','LONG RUN (16 miles). Brunch after. Kids\' sports.','Post-run Strava + photo. Analyzing pace/HR data.','Saturday run group. Post-run coffee crew.','Long-run gear (hydration, nutrition). Group run sponsorship.'],
-      ['Sun','Recovery ride. Family hike. Meal prep. Gear shopping.','Sunday: browsing running deals. Planning next week training.','Family time. Checking Strava weekly stats.','Recovery products. Loyalty rewards for consistent buyers.']
+      ['Mon','5:30AM Peloton ride. Work. Kids\' activities.','Disciplined, data-driven.','Morning podcast on commute. Strava feed check.','Peloton leaderboard. Work running club Slack.','Podcast. Strava posts.','Enabler — connected fitness.','Low — weekday routine.','Connected fitness integration. Peloton-compatible gear.'],
+      ['Tue','Lunch run (5K). Work meetings. Family time.','Achievement-oriented.','Strava upload + kudos. Gear review YouTube.','Running club Slack banter. Strava comments.','Strava data. Gear reviews.','Performance authority.','Medium — gear research.','Performance running shoes. Reflective gear.'],
+      ['Wed','Rest day. Gear research evening. Online shopping.','Research mode, analytical.','RunRepeat, Believe in the Run. Reddit running.','None active — solo research.','Long-form reviews. Comparison.','Trusted expert — reviews.','High — active gear shopping.','Product comparison tools. Expert review partnerships.'],
+      ['Thu','5:30AM Peloton. Tempo run at lunch. Family evening.','Competitive, tracking progress.','Garmin Connect. Podcast: Ali on the Run.','Virtual running community. Garmin challenges.','Training data. Podcast.','Training partner — tech.','Low — focused on training.','Garmin/Strava integration. Training plan content.'],
+      ['Fri','Easy day. Pack for weekend long run. Rest.','Anticipatory, planning.','Checking weather, planning route. Runner\'s World.','Friday run club social posts.','Weather/route planning. Articles.','Utility — planning tools.','Low — prepping not buying.','Weekend warrior content. Route planning tools.'],
+      ['Sat','LONG RUN (16 miles). Brunch after. Kids\' sports.','Achievement → reward → pride.','Post-run Strava + photo. Analyzing data.','Saturday run group. Post-run coffee crew.','Strava posts. Data visualization.','Stage — long-run showcase.','Medium — post-run browsing.','Long-run gear. Group run sponsorship.'],
+      ['Sun','Recovery ride. Family hike. Meal prep. Gear shopping.','Reflective, family-oriented.','Browsing running deals. Planning training.','Family time. Strava weekly stats.','Deal browsing. Week planning.','Recovery partner.','High — Sunday deal shopping.','Recovery products. Loyalty rewards.']
     ]
   },
   {
@@ -3313,13 +3996,13 @@ const REMIX_PRESETS = [
     traits: ['Gen Z', 'HBCU Pride', 'NIL Emerging', 'Band Culture', 'Community Rooted', 'MEAC Conference'],
     bio: '20-year-old D2 linebacker at FAMU. HBCU culture is everything — football, band, homecoming, Greek life. Growing NIL profile through local partnerships. Deep community roots in Tallahassee. Watches NFL religiously, trains to go pro. Band culture and game-day are inseparable.',
     journey: [
-      ['Mon','6AM weights. Classes. Film review. Evening study hall.','NFL highlights from Sunday. HBCU sports accounts on IG.','Team brotherhood. Study group. Greek org connections.','HBCU-specific team gear. Training apparel.'],
-      ['Tue','Position meetings. Practice. Cafeteria with team.','HBCU sports Twitter. Local NIL opportunity posts.','Fraternity chapter meeting. Campus social life.','NIL platform for HBCU athletes. Campus activations.'],
-      ['Wed','Full practice. Academic advisor meeting.','YouTube film study. NFL draft content. TikTok.','Band practice overlap — campus culture mixing.','Band + football crossover merch. Campus culture.'],
-      ['Thu','Walk-through. Travel prep if away game.','ESPN HBCU coverage. Team hype videos.','Travel bonding. Pre-game rituals. Barber shop.','Travel gear. Pre-game ritual products.'],
-      ['Fri','GAME DAY. Walk-through. Pre-game meal. GAME.','Dark pre-game. Post-game: highlights, celebrations.','Peak — student section, band, Greek step shows, tailgate.','Game-day experience. Halftime culture integration.'],
-      ['Sat','Recovery. Homecoming events or campus social life.','HBCU football scores roundup. SEC/NFL on TV.','Homecoming culture. Alumni networks. Greek events.','Homecoming capsule collections. Alumni gear.'],
-      ['Sun','Church with teammates. Recovery. Family calls. Meal prep.','NFL all day. Film review for next week.','Church community. Family FaceTime. Team dinner.','Sunday lifestyle. Recovery gear. Faith-based community.']
+      ['Mon','6AM weights. Classes. Film review. Study hall.','Grinding, team-first.','NFL highlights from Sunday. HBCU sports on IG.','Team brotherhood. Study group. Greek org.','Short highlights. HBCU pride content.','Enabler — training apparel.','Low — campus grind.','HBCU-specific team gear. Training apparel.'],
+      ['Tue','Position meetings. Practice. Cafeteria with team.','Community-bonded, ambitious.','HBCU sports Twitter. Local NIL opportunity posts.','Fraternity chapter. Campus social life.','HBCU sports news. NIL posts.','Partner — NIL for HBCU.','Low-medium — NIL browsing.','NIL platform for HBCU athletes. Campus activations.'],
+      ['Wed','Full practice. Academic advisor meeting.','Balanced, culturally immersed.','YouTube film study. NFL draft content. TikTok.','Band practice overlap — campus culture mixing.','Film study. Band crossover.','Cultural connector — HBCU.','Low — academics focus.','Band + football crossover merch. Campus culture.'],
+      ['Thu','Walk-through. Travel prep if away game.','Building intensity.','ESPN HBCU coverage. Team hype videos.','Travel bonding. Pre-game rituals. Barber shop.','Hype videos. Travel content.','Ritual anchor — travel kit.','Low — pre-game focus.','Travel gear. Pre-game ritual products.'],
+      ['Fri','GAME DAY. Walk-through. Pre-game meal. GAME.','Peak HBCU energy.','Dark pre-game. Post-game highlights.','Peak — student section, band, Greek, tailgate.','Post-game. Halftime. Band content.','Stage — game-day showcase.','Post-game — halftime merch.','Game-day experience. Halftime culture integration.'],
+      ['Sat','Recovery. Homecoming events or campus social.','Celebratory, proud.','HBCU scores roundup. SEC/NFL on TV.','Homecoming culture. Alumni. Greek events.','Homecoming content. Alumni pride.','Community partner — homecoming.','High — homecoming shopping.','Homecoming capsule collections. Alumni gear.'],
+      ['Sun','Church with teammates. Recovery. Family calls.','Spiritual, family-connected.','NFL all day. Film review for next week.','Church community. Family FaceTime.','NFL commentary. Faith content.','Lifestyle partner.','Low — rest and reflect.','Sunday lifestyle. Recovery gear. Faith-based community.']
     ]
   },
   {
@@ -3328,13 +4011,13 @@ const REMIX_PRESETS = [
     traits: ['Millennial', 'Wellness Culture', 'Studio Owner', 'Mindfulness', 'Sustainable Fashion', 'Community Builder'],
     bio: '28-year-old yoga instructor who owns a small studio in Brooklyn. Teaches 12 classes a week. Deeply invested in sustainable fashion and mindful living. Her community is her studio — regulars become friends. Shops intentionally, values quality and sustainability over hype.',
     journey: [
-      ['Mon','6AM class (teach). Admin work. 6PM class (teach).','Instagram stories of morning class. Wellness podcast.','Studio community. Regular students. Teacher friends.','Sustainable yoga apparel. Studio partnership program.'],
-      ['Tue','Morning personal practice. Studio bookkeeping. Workshop planning.','Yoga Journal online. Wellness TikTok. Spotify playlists.','Coffee with fellow instructor. Online yoga community.','Instructor ambassador program. Wholesale studio gear.'],
-      ['Wed','Teach 3 classes. Afternoon: content creation.','Posting class clips. Engaging wellness community online.','Class regulars becoming friends. Workshop sign-ups.','Workshop event sponsorship. Premium practice gear.'],
-      ['Thu','Morning run (cross-training). Studio maintenance. Evening class.','Running + yoga crossover content. Strava + yoga apps.','Run club friends. Cross-training community.','Cross-training collections. Run-to-yoga versatility.'],
-      ['Fri','Teach morning. Afternoon off. Gallery/cultural event evening.','Minimal screen time. Intentional disconnection.','Brooklyn cultural scene. Friend gatherings.','Lifestyle beyond sport. Cultural event presence.'],
-      ['Sat','Workshop or retreat day. Farmers market. Self-care.','Posting workshop content. Browsing sustainable brands.','Retreat community. Deep connections with students.','Retreat/workshop gear. Sustainable materials storytelling.'],
-      ['Sun','Rest. Personal practice. Journaling. Meal prep.','Minimal social media. Planning week\'s class themes.','Quiet day. Partner time. Neighborhood walks.','Recovery + mindfulness products. Slow fashion alignment.']
+      ['Mon','6AM class (teach). Admin. 6PM class (teach).','Grounded, giving. Teaching energy.','Instagram stories of morning class. Wellness podcast.','Studio community. Regular students.','Class stories. Wellness tips.','Community enabler — studio gear.','Low — teaching not shopping.','Sustainable yoga apparel. Studio partnership.'],
+      ['Tue','Personal practice. Bookkeeping. Workshop planning.','Introspective, business-minded.','Yoga Journal online. Wellness TikTok. Spotify.','Coffee with fellow instructor. Online community.','Playlist curation. Planning content.','Ambassador — instructor program.','Medium — wholesale ordering.','Instructor ambassador program. Wholesale studio gear.'],
+      ['Wed','Teach 3 classes. Afternoon: content creation.','Creative, community-building.','Posting class clips. Engaging wellness community.','Class regulars becoming friends. Workshop sign-ups.','Class clips. Community content.','Content partner — wellness.','Low — focused on teaching.','Workshop sponsorship. Premium practice gear.'],
+      ['Thu','Morning run. Studio maintenance. Evening class.','Cross-training energy.','Running + yoga crossover content. Strava.','Run club friends. Cross-training community.','Cross-training content. Versatility.','Versatility provider.','Medium — cross-training gear.','Cross-training collections. Run-to-yoga versatility.'],
+      ['Fri','Teach morning. Afternoon off. Cultural event evening.','Free, culturally engaged.','Minimal screen time. Intentional disconnection.','Brooklyn cultural scene. Friend gatherings.','Minimal — intentional disconnection.','Lifestyle partner — beyond sport.','Low — mindful consumption.','Lifestyle beyond sport. Cultural event presence.'],
+      ['Sat','Workshop or retreat day. Farmers market. Self-care.','Deeply connected, purposeful.','Posting workshop content. Browsing sustainable brands.','Retreat community. Deep student connections.','Workshop content. Sustainability.','Values partner — sustainable.','Medium — sustainable brands.','Retreat gear. Sustainable materials storytelling.'],
+      ['Sun','Rest. Personal practice. Journaling. Meal prep.','Reflective, minimal.','Minimal social media. Planning class themes.','Quiet day. Partner time. Neighborhood walks.','Minimal — journal-like.','Recovery partner — slow fashion.','Low — mindful rest.','Recovery + mindfulness products. Slow fashion.']
     ]
   }
 ];
@@ -3406,11 +4089,8 @@ function applyRemixPreset(i) {
     p.journey.forEach((day, idx) => {
       if (rows[idx]) {
         const cells = rows[idx].querySelectorAll('td[contenteditable]');
-        if (cells.length >= 4) {
-          cells[0].textContent = day[1];
-          cells[1].textContent = day[2];
-          cells[2].textContent = day[3];
-          cells[3].textContent = day[4];
+        for (let ci = 0; ci < cells.length && ci < day.length - 1; ci++) {
+          cells[ci].textContent = day[ci + 1];
         }
       }
     });
