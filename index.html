@@ -11,7 +11,7 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
   --black: #000; --dark: #0a0a0a; --white: #d4d4d4; --green: #00d26a; --red: #ff4444; --blue: #4a9eff;
-  --amber: #ff9900; --yellow: #e6b800;
+  --amber: #00C8FF; --yellow: #e6b800;
   --card: #111111; --card2: #1a1a1a; --card3: #222222;
   --text-dim: #777; --text-mid: #aaa; --text-light: #e0e0e0;
   --border: #252525; --border-hover: #444;
@@ -31,7 +31,7 @@ h1, h2, h3, h4, h5, h6, .heading { font-family: 'Oswald', 'Arial Narrow', sans-s
   display: flex; align-items: center; justify-content: space-between;
   height: 32px; padding: 0 var(--gutter);
   font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase;
-  color: #ffb733; font-weight: 600;
+  color: #33d4ff; font-weight: 600;
 }
 #status-bar .status-left { display: flex; gap: 0; align-items: center; height: 100%; }
 #status-bar .status-right { display: flex; gap: 0; align-items: center; height: 100%; }
@@ -39,7 +39,7 @@ h1, h2, h3, h4, h5, h6, .heading { font-family: 'Oswald', 'Arial Narrow', sans-s
   display: flex; align-items: center; height: 32px; white-space: nowrap; color: #ccc;
   padding: 0 12px; cursor: pointer;
 }
-#status-bar .si-hover { background: #ff9900 !important; color: #000 !important; }
+#status-bar .si-hover { background: #00C8FF !important; color: #000 !important; }
 #status-bar .si-hover .status-val,
 #status-bar .si-hover .status-neg { color: #000 !important; }
 #status-bar .status-val { color: #33ff88; margin-left: 4px; font-weight: 700; }
@@ -50,15 +50,15 @@ h1, h2, h3, h4, h5, h6, .heading { font-family: 'Oswald', 'Arial Narrow', sans-s
 /* ── FLOATING STICKY NOTES ── */
 .floating-note {
   position: fixed; z-index: 900; min-width: 180px; max-width: 300px;
-  background: #1a1a00; border: 1px solid rgba(255,200,0,0.3); border-radius: 3px;
+  background: #001a22; border: 1px solid rgba(0,200,255,0.3); border-radius: 3px;
   box-shadow: 0 4px 20px rgba(0,0,0,0.5); font-family: 'JetBrains Mono', monospace;
   animation: noteIn 0.2s var(--ease);
 }
 @keyframes noteIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
 .floating-note-header {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 6px 8px; cursor: grab; background: rgba(255,200,0,0.1);
-  border-bottom: 1px solid rgba(255,200,0,0.15); user-select: none;
+  padding: 6px 8px; cursor: grab; background: rgba(0,200,255,0.1);
+  border-bottom: 1px solid rgba(0,200,255,0.15); user-select: none;
 }
 .floating-note-header:active { cursor: grabbing; }
 .floating-note-header span { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--amber); font-weight: 600; }
@@ -103,12 +103,12 @@ h1, h2, h3, h4, h5, h6, .heading { font-family: 'Oswald', 'Arial Narrow', sans-s
   border: 1px solid var(--border); background: transparent; color: var(--text-mid);
   transition: all 0.15s;
 }
-.remix-preset:hover { border-color: var(--amber); color: var(--amber); background: rgba(255,153,0,0.05); }
+.remix-preset:hover { border-color: var(--amber); color: var(--amber); background: rgba(0,200,255,0.05); }
 
 /* ── NAV ── */
 .top-nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-  background: #1a1a2e; border-bottom: 1px solid #2a2a4a;
+  background: #0a1520; border-bottom: 1px solid #1a2a35;
   display: flex; align-items: center; height: var(--nav-h); padding: 0 var(--gutter); gap: 0;
 }
 .nav-logo {
@@ -125,10 +125,10 @@ h1, h2, h3, h4, h5, h6, .heading { font-family: 'Oswald', 'Arial Narrow', sans-s
   color: #888; background: none; border: none;
   padding: 10px 18px; cursor: pointer;
   transition: all 0.15s var(--ease); border-radius: 0; white-space: nowrap;
-  position: relative; border-right: 1px solid #2a2a4a;
+  position: relative; border-right: 1px solid #1a2a35;
 }
-.nav-tab:hover { color: var(--amber); background: rgba(255,153,0,0.04); }
-.nav-tab.active { color: var(--amber); background: rgba(255,153,0,0.08); }
+.nav-tab:hover { color: var(--amber); background: rgba(0,200,255,0.04); }
+.nav-tab.active { color: var(--amber); background: rgba(0,200,255,0.08); }
 .nav-tab.active::after {
   content: ''; position: absolute; bottom: 0; left: 0; right: 0;
   height: 2px; background: var(--amber); border-radius: 0;
@@ -189,7 +189,7 @@ h1, h2, h3, h4, h5, h6, .heading { font-family: 'Oswald', 'Arial Narrow', sans-s
   color: var(--text-mid); border-radius: 2px; cursor: pointer;
   transition: all 0.15s var(--ease);
 }
-.btn:hover { border-color: var(--amber); color: var(--amber); background: rgba(255,153,0,0.05); }
+.btn:hover { border-color: var(--amber); color: var(--amber); background: rgba(0,200,255,0.05); }
 .btn-green { border-color: rgba(0,210,106,0.3); color: var(--green); }
 .btn-green:hover { background: rgba(0,210,106,0.08); border-color: var(--green); }
 .btn-red { border-color: rgba(255,68,68,0.3); color: var(--red); }
@@ -197,7 +197,7 @@ h1, h2, h3, h4, h5, h6, .heading { font-family: 'Oswald', 'Arial Narrow', sans-s
 .btn-blue { border-color: rgba(74,158,255,0.3); color: var(--blue); }
 .btn-blue:hover { background: rgba(74,158,255,0.08); border-color: var(--blue); }
 .btn-fill { background: var(--amber); color: #000; border-color: var(--amber); font-weight: 700; }
-.btn-fill:hover { background: #ffaa22; }
+.btn-fill:hover { background: #33d4ff; }
 .btn-sm { padding: 6px 12px; font-size: 11px; }
 .btn-ghost { border: none; padding: 4px 8px; }
 
@@ -210,7 +210,7 @@ h1, h2, h3, h4, h5, h6, .heading { font-family: 'Oswald', 'Arial Narrow', sans-s
 .tag-green { background: rgba(0,210,106,0.12); color: var(--green); }
 .tag-red { background: rgba(255,68,68,0.12); color: var(--red); }
 .tag-blue { background: rgba(74,158,255,0.12); color: var(--blue); }
-.tag-yellow { background: rgba(255,153,0,0.12); color: var(--amber); }
+.tag-yellow { background: rgba(0,200,255,0.12); color: var(--amber); }
 .tag-purple { background: rgba(160,80,255,0.12); color: #a050ff; }
 .tag-white { background: rgba(255,255,255,0.06); color: var(--text-mid); }
 
@@ -227,7 +227,7 @@ h1, h2, h3, h4, h5, h6, .heading { font-family: 'Oswald', 'Arial Narrow', sans-s
 /* ── PINNED PANEL ── */
 .pinned-grid { display: flex; flex-wrap: wrap; gap: 8px; }
 .pinned-card {
-  background: rgba(255,153,0,0.06); border: 1px solid rgba(255,153,0,0.25); border-radius: 2px;
+  background: rgba(0,200,255,0.06); border: 1px solid rgba(0,200,255,0.25); border-radius: 2px;
   padding: 10px 14px; max-width: 360px; position: relative;
   display: flex; align-items: flex-start; gap: 10px;
 }
@@ -256,7 +256,7 @@ h1, h2, h3, h4, h5, h6, .heading { font-family: 'Oswald', 'Arial Narrow', sans-s
   letter-spacing: 0.05em; text-transform: uppercase;
 }
 .pin-btn:hover { border-color: var(--amber); color: var(--amber); }
-.pin-btn.pinned { border-color: var(--amber); color: var(--amber); background: rgba(255,153,0,0.08); }
+.pin-btn.pinned { border-color: var(--amber); color: var(--amber); background: rgba(0,200,255,0.08); }
 .connection-dot { width: 5px; height: 5px; border-radius: 50%; display: inline-block; margin-left: 3px; }
 
 /* ── AI CARDS ── */
@@ -307,8 +307,8 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
 }
 .data-table td { padding: 8px 10px; border-bottom: 1px solid #1a1a1a; color: var(--text-light); font-size: 13px; }
 .data-table td[contenteditable] { cursor: text; }
-.data-table td[contenteditable]:focus { outline: none; color: var(--amber); background: rgba(255,153,0,0.04); }
-.data-table tr:hover td { background: rgba(255,153,0,0.03); }
+.data-table td[contenteditable]:focus { outline: none; color: var(--amber); background: rgba(0,200,255,0.04); }
+.data-table tr:hover td { background: rgba(0,200,255,0.03); }
 
 /* ── DROPZONE ── */
 .dropzone {
@@ -317,7 +317,7 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
   transition: all 0.2s var(--ease); cursor: pointer; background: var(--card);
 }
 .dropzone:hover, .dropzone.dragover {
-  border-color: var(--amber); background: rgba(255,153,0,0.03);
+  border-color: var(--amber); background: rgba(0,200,255,0.03);
 }
 .dropzone-icon { font-size: 24px; margin-bottom: 10px; opacity: 0.3; }
 .dropzone-text { font-size: 11px; color: var(--text-dim); font-weight: 500; }
@@ -336,6 +336,72 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
 }
 .modal-title { font-family: 'Oswald', sans-serif; font-size: 20px; text-transform: uppercase; margin-bottom: 20px; color: var(--amber); }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* ── GLOBAL SEARCH ── */
+.search-overlay {
+  position: fixed; inset: 0; z-index: 3000;
+  background: rgba(0,0,0,0.85);
+  display: none; align-items: flex-start; justify-content: center;
+  padding-top: 15vh;
+}
+.search-overlay.show { display: flex; animation: fadeIn 0.15s var(--ease); }
+.search-box {
+  width: 580px; max-width: 95vw;
+  background: var(--card); border: 1px solid var(--amber); border-radius: 3px; overflow: hidden;
+}
+.search-input {
+  width: 100%; padding: 14px 16px;
+  background: transparent; border: none; border-bottom: 1px solid var(--border);
+  color: var(--text-light); font-family: 'JetBrains Mono', monospace;
+  font-size: 15px; outline: none;
+}
+.search-input::placeholder { color: var(--text-dim); }
+.search-results { max-height: 400px; overflow-y: auto; }
+.search-result {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 16px; cursor: pointer; border-bottom: 1px solid var(--border);
+  transition: background 0.1s;
+}
+.search-result:hover { background: rgba(0,200,255,0.08); }
+.search-result-source {
+  font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em;
+  padding: 2px 6px; border-radius: 2px; white-space: nowrap; font-weight: 600;
+  font-family: 'JetBrains Mono', monospace;
+}
+.search-result-text { font-size: 13px; color: var(--text-light); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.search-result-text mark { background: rgba(0,200,255,0.25); color: var(--amber); border-radius: 1px; }
+.search-empty { padding: 20px 16px; text-align: center; color: var(--text-dim); font-size: 13px; }
+
+/* ── LIGHT MODE ── */
+:root.light-mode {
+  --dark: #f2f2f2; --white: #1a1a1a;
+  --card: #ffffff; --card2: #f5f5f5; --card3: #ebebeb;
+  --text-dim: #888; --text-mid: #555; --text-light: #222;
+  --border: #ddd; --border-hover: #bbb;
+}
+.light-mode .top-nav { background: #dff0f8 !important; border-bottom-color: #bdd !important; }
+.light-mode .nav-tab { color: #666 !important; border-right-color: #cde !important; }
+.light-mode .nav-tab:hover { color: var(--amber) !important; background: rgba(0,200,255,0.06) !important; }
+.light-mode .nav-tab.active { color: var(--amber) !important; background: rgba(0,200,255,0.1) !important; }
+.light-mode .nav-logo { color: var(--amber) !important; }
+.light-mode .nav-logo img { filter: invert(0) !important; }
+.light-mode .canvas-area { background: #f5f5f5 !important; }
+.light-mode .ticker-wrap { background: #e8e8e8 !important; }
+.light-mode .ticker-wrap::before { background: linear-gradient(to right, #e8e8e8, transparent) !important; }
+.light-mode .ticker-wrap::after { background: linear-gradient(to left, #e8e8e8, transparent) !important; }
+.light-mode .ticker-label { color: #666 !important; }
+.light-mode .ticker-item:hover { background: var(--amber) !important; }
+.light-mode .ticker-item:hover .ticker-num { color: #000 !important; }
+.light-mode .ticker-item:hover .ticker-label { color: #000 !important; }
+.light-mode input[type="text"], .light-mode input[type="number"], .light-mode textarea, .light-mode select {
+  background: #f8f8f8 !important; color: var(--amber) !important; border-color: #ccc !important;
+}
+.light-mode .floating-note { background: #f0f8ff !important; }
+.light-mode .search-overlay { background: rgba(255,255,255,0.85) !important; }
+.light-mode .fab-note { box-shadow: 0 2px 12px rgba(0,200,255,0.2) !important; }
+.light-mode ::-webkit-scrollbar-track { background: #e8e8e8; }
+.light-mode ::-webkit-scrollbar-thumb { background: #ccc; }
+.light-mode .eco-tooltip { background: #fff !important; color: #222 !important; border-color: #ddd !important; }
 
 /* ── WHITEBOARD canvas ── */
 .canvas-area {
@@ -381,7 +447,7 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
   text-transform: uppercase; letter-spacing: 0.06em;
 }
 .filter-btn:hover { border-color: var(--border-hover); color: var(--text-light); }
-.filter-btn.active { border-color: var(--amber); color: var(--amber); background: rgba(255,153,0,0.06); }
+.filter-btn.active { border-color: var(--amber); color: var(--amber); background: rgba(0,200,255,0.06); }
 
 /* ── PRIORITY TABLE ── */
 .priority-table { width: 100%; border-collapse: collapse; font-family: 'JetBrains Mono', monospace; }
@@ -392,7 +458,7 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
 }
 .priority-table td { padding: 12px; border-bottom: 1px solid var(--border); font-size: 13px; color: var(--text-light); line-height: 1.5; vertical-align: top; }
 .priority-table tr { transition: background 0.15s var(--ease); }
-.priority-table tr:hover td { background: rgba(255,153,0,0.03); }
+.priority-table tr:hover td { background: rgba(0,200,255,0.03); }
 .priority-num {
   font-family: 'Oswald', sans-serif; font-size: 18px; font-weight: 700;
   color: var(--amber); display: inline-block; width: 24px;
@@ -409,8 +475,8 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
   padding: 8px 10px; border-bottom: 1px solid var(--border);
   font-size: 13px; color: var(--text-mid); line-height: 1.5; vertical-align: top;
 }
-.journey-table td[contenteditable]:focus { outline: none; color: var(--amber); background: rgba(255,153,0,0.03); }
-.journey-table tr:hover td { background: rgba(255,153,0,0.02); }
+.journey-table td[contenteditable]:focus { outline: none; color: var(--amber); background: rgba(0,200,255,0.03); }
+.journey-table tr:hover td { background: rgba(0,200,255,0.02); }
 .journey-day {
   font-family: 'Oswald', sans-serif; font-size: 12px; font-weight: 600;
   text-transform: uppercase; color: var(--amber); letter-spacing: 0.08em; white-space: nowrap;
@@ -491,7 +557,7 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
 .accordion-body-inner { padding: 14px; }
 .accordion-count {
   font-family: 'JetBrains Mono', monospace; font-size: 9px; font-weight: 600;
-  color: var(--amber); background: rgba(255,153,0,0.08); padding: 2px 8px;
+  color: var(--amber); background: rgba(0,200,255,0.08); padding: 2px 8px;
   border-radius: 2px; letter-spacing: 0.05em;
 }
 
@@ -506,7 +572,7 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
 }
 .sub-tab:last-child { border-right: none; }
 .sub-tab:hover { color: var(--amber); }
-.sub-tab.active { background: rgba(255,153,0,0.08); color: var(--amber); }
+.sub-tab.active { background: rgba(0,200,255,0.08); color: var(--amber); }
 .sub-panel { display: none; }
 .sub-panel.active { display: block; animation: sectionIn 0.2s var(--ease); }
 
@@ -605,16 +671,16 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
   background: var(--amber); color: #000; border: none;
   font-size: 24px; font-weight: 700; line-height: 1;
   cursor: pointer; transition: all 0.15s var(--ease);
-  box-shadow: 0 2px 12px rgba(255,153,0,0.3);
+  box-shadow: 0 2px 12px rgba(0,200,255,0.3);
   font-family: 'JetBrains Mono', monospace;
 }
-.fab-note:hover { transform: scale(1.1); background: #ffaa22; }
+.fab-note:hover { transform: scale(1.1); background: #33d4ff; }
 .fab-container { position: fixed; bottom: 12px; left: 12px; z-index: 1000; }
 .fab-main {
   width: 40px; height: 40px; border-radius: 2px; background: var(--amber);
   color: #000; border: none; font-size: 20px; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 2px 12px rgba(255,153,0,0.3);
+  box-shadow: 0 2px 12px rgba(0,200,255,0.3);
   transition: transform 0.2s var(--ease);
 }
 .fab-main:hover { transform: scale(1.05); }
@@ -647,7 +713,7 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
 .ticker-wrap:hover .ticker-track { animation-play-state: paused; }
 @keyframes tickerScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 .ticker-item { display: flex; align-items: center; gap: 8px; padding: 10px 24px; white-space: nowrap; flex-shrink: 0; cursor: default; border-radius: 3px; transition: background 0.15s; position: relative; }
-.ticker-item:hover { background: #ff9900; }
+.ticker-item:hover { background: #00C8FF; }
 .ticker-item:hover .ticker-num { color: #000 !important; }
 .ticker-item:hover .ticker-label { color: #000 !important; }
 .ticker-num { font-family: 'Oswald', sans-serif; font-size: 26px; font-weight: 700; line-height: 1; }
@@ -685,7 +751,7 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
   font-size: 12px; transition: all 0.15s var(--ease);
 }
 .view-toggle-btn:hover { border-color: var(--border-hover); color: var(--text-light); }
-.view-toggle-btn.active { border-color: var(--amber); color: var(--amber); background: rgba(255,153,0,0.06); }
+.view-toggle-btn.active { border-color: var(--amber); color: var(--amber); background: rgba(0,200,255,0.06); }
 .grid-list { grid-template-columns: 1fr !important; }
 .grid-list .insight-card { flex-direction: row; align-items: flex-start; gap: 16px; }
 .grid-list .insight-card .stat-pull {
@@ -710,9 +776,9 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
 .eco-add-form { display: flex; align-items: center; gap: 4px; }
 .eco-context-menu { position: absolute; background: #111; border: 1px solid var(--amber); border-radius: 2px; padding: 4px 0; z-index: 100; min-width: 140px; }
 .eco-context-item { padding: 6px 12px; font-size: 10px; color: var(--text-light); cursor: pointer; transition: background 0.1s; font-family: 'JetBrains Mono', monospace; }
-.eco-context-item:hover { background: rgba(255,153,0,0.08); color: var(--amber); }
+.eco-context-item:hover { background: rgba(0,200,255,0.08); color: var(--amber); }
 .eco-context-item.danger { color: var(--red); }
-.eco-connect-active { border-color: var(--amber) !important; color: var(--amber) !important; background: rgba(255,153,0,0.1) !important; }
+.eco-connect-active { border-color: var(--amber) !important; color: var(--amber) !important; background: rgba(0,200,255,0.1) !important; }
 
 /* ── RESPONSIVE ── */
 @media (max-width: 768px) {
@@ -746,6 +812,9 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
       <button class="btn btn-sm" onclick="resetFontSize()" id="font-size-display" style="font-size:10px; padding:4px 8px; line-height:1; min-width:36px; text-align:center;" title="Reset to default">16px</button>
       <button class="btn btn-sm" onclick="changeFontSize(2)" style="font-size:13px; padding:4px 8px; line-height:1; font-weight:700;" title="Increase font size">A+</button>
     </div>
+    <button class="btn btn-sm" id="theme-toggle" onclick="toggleTheme()" style="font-size:12px; padding:4px 8px; line-height:1;" title="Toggle light/dark mode">&#9789;</button>
+    <button class="btn btn-sm" onclick="openGlobalSearch()" style="font-size:11px; padding:4px 8px; line-height:1;" title="Search (F)">&#128269;</button>
+    <span id="auto-save-indicator" style="font-size:9px; color:var(--text-dim); letter-spacing:0.06em; text-transform:uppercase; white-space:nowrap;"></span>
     <button class="btn btn-sm" id="save-btn" onclick="manualSave()" style="font-size:9px; padding:4px 12px;">SAVE</button>
   </div>
 </nav>
@@ -1239,7 +1308,7 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
       <button class="btn btn-sm" style="color:#00d26a; border-color:#00d26a;" onclick="addWhiteboardNote('#00d26a','#000')">+ Green</button>
       <button class="btn btn-sm" style="color:#ff4444; border-color:#ff4444;" onclick="addWhiteboardNote('#ff4444','#FFF')">+ Red</button>
       <button class="btn btn-sm" style="color:#4a9eff; border-color:#4a9eff;" onclick="addWhiteboardNote('#4a9eff','#000')">+ Blue</button>
-      <button class="btn btn-sm" style="color:#ff9900; border-color:#ff9900;" onclick="addWhiteboardNote('#ff9900','#000')">+ Amber</button>
+      <button class="btn btn-sm" style="color:#00C8FF; border-color:#00C8FF;" onclick="addWhiteboardNote('#00C8FF','#000')">+ Amber</button>
       <button class="btn btn-sm" style="color:#a050ff; border-color:#a050ff;" onclick="addWhiteboardNote('#a050ff','#FFF')">+ Purple</button>
     </div>
     <button class="btn btn-sm" onclick="clearWhiteboard()">Clear All</button>
@@ -1253,6 +1322,14 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
 <button class="fab-note" onclick="addFloatingNote()" title="Add sticky note">+</button>
 
 <!-- MODAL -->
+<!-- GLOBAL SEARCH -->
+<div class="search-overlay" id="search-overlay" onclick="if(event.target===this)closeGlobalSearch()">
+  <div class="search-box">
+    <input class="search-input" id="global-search-input" placeholder="Search conditions, strategy, journey..." oninput="performGlobalSearch(this.value)" onkeydown="if(event.key==='Escape'){closeGlobalSearch();event.preventDefault();}">
+    <div class="search-results" id="global-search-results"></div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="modal-overlay">
   <div class="modal" id="modal-content"></div>
 </div>
@@ -1272,7 +1349,8 @@ const STATE = {
   ecoCustomNodes: [],
   ecoCustomConnections: [],
   fontSize: 16,
-  floatingNotes: []
+  floatingNotes: [],
+  theme: 'dark'
 };
 
 function loadState() {
@@ -1281,20 +1359,31 @@ function loadState() {
     if (s) { const parsed = JSON.parse(s); Object.assign(STATE, parsed); }
   } catch(e) {}
 }
+let lastSavedTime = Date.now();
 function saveState() {
-  try { localStorage.setItem('adidas_ygt_state', JSON.stringify(STATE)); } catch(e) {}
+  try { localStorage.setItem('adidas_ygt_state', JSON.stringify(STATE)); lastSavedTime = Date.now(); updateSaveIndicator(); } catch(e) {}
+}
+function updateSaveIndicator() {
+  const el = document.getElementById('auto-save-indicator');
+  if (!el) return;
+  const diff = Date.now() - lastSavedTime;
+  if (diff < 5000) { el.textContent = 'Saved'; el.style.color = 'var(--green)'; }
+  else if (diff < 60000) { el.textContent = Math.floor(diff / 1000) + 's ago'; el.style.color = 'var(--text-dim)'; }
+  else { el.textContent = Math.floor(diff / 60000) + 'm ago'; el.style.color = 'var(--text-dim)'; }
 }
 loadState();
-applyFontSize();
 
 const DEFAULT_FONT_SIZE = 16;
+if (!STATE.fontSize) STATE.fontSize = DEFAULT_FONT_SIZE;
+if (!STATE.theme) STATE.theme = 'dark';
+
 function applyFontSize() {
   document.documentElement.style.setProperty('--base-font', STATE.fontSize + 'px');
   const disp = document.getElementById('font-size-display');
   if (disp) disp.textContent = STATE.fontSize + 'px';
 }
 function changeFontSize(delta) {
-  STATE.fontSize = Math.max(10, Math.min(28, (STATE.fontSize || DEFAULT_FONT_SIZE) + delta));
+  STATE.fontSize = Math.max(10, Math.min(28, STATE.fontSize + delta));
   applyFontSize();
   saveState();
 }
@@ -1302,6 +1391,76 @@ function resetFontSize() {
   STATE.fontSize = DEFAULT_FONT_SIZE;
   applyFontSize();
   saveState();
+}
+applyFontSize();
+
+// ==================== THEME ====================
+function toggleTheme() {
+  STATE.theme = (STATE.theme === 'dark') ? 'light' : 'dark';
+  applyTheme();
+  saveState();
+}
+function applyTheme() {
+  const isLight = STATE.theme === 'light';
+  document.documentElement.classList.toggle('light-mode', isLight);
+  const btn = document.getElementById('theme-toggle');
+  if (btn) btn.innerHTML = isLight ? '&#9728;' : '&#9789;';
+  // Update logo filter
+  const logo = document.querySelector('.nav-logo img');
+  if (logo) logo.style.filter = isLight ? 'invert(0)' : 'invert(1)';
+}
+applyTheme();
+setInterval(updateSaveIndicator, 10000);
+updateSaveIndicator();
+
+// ==================== GLOBAL SEARCH ====================
+function openGlobalSearch() {
+  document.getElementById('search-overlay').classList.add('show');
+  const input = document.getElementById('global-search-input');
+  input.value = '';
+  document.getElementById('global-search-results').innerHTML = '';
+  setTimeout(() => input.focus(), 50);
+}
+function closeGlobalSearch() {
+  document.getElementById('search-overlay').classList.remove('show');
+}
+function performGlobalSearch(query) {
+  const results = [];
+  const q = query.toLowerCase().trim();
+  if (!q) { document.getElementById('global-search-results').innerHTML = ''; return; }
+
+  getConditionsData().forEach(c => {
+    if ((c.text + ' ' + c.theme + ' ' + c.implication).toLowerCase().includes(q)) {
+      results.push({ source: 'Conditions', color: 'var(--green)', text: c.text, tab: 'conditions' });
+    }
+  });
+
+  (STATE.strategyItems || []).forEach(s => {
+    if ((s.title + ' ' + s.description + ' ' + (s.tags || []).join(' ')).toLowerCase().includes(q)) {
+      results.push({ source: 'Strategy', color: 'var(--blue)', text: s.title + ': ' + s.description, tab: 'strategy' });
+    }
+  });
+
+  document.querySelectorAll('.journey-table td[contenteditable]').forEach(td => {
+    if (td.textContent.toLowerCase().includes(q)) {
+      const day = td.closest('tr')?.querySelector('.journey-day')?.textContent || '';
+      results.push({ source: 'Journey', color: 'var(--amber)', text: day + ': ' + td.textContent.substring(0, 80), tab: 'journey' });
+    }
+  });
+
+  const container = document.getElementById('global-search-results');
+  if (results.length === 0) { container.innerHTML = '<div class="search-empty">No results found</div>'; return; }
+  const escaped = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  container.innerHTML = results.slice(0, 20).map(r => {
+    const highlighted = escHtml(r.text).replace(new RegExp('(' + escaped + ')', 'gi'), '<mark>$1</mark>');
+    return '<div class="search-result" onclick="navigateSearchResult(\'' + r.tab + '\')">' +
+      '<span class="search-result-source" style="color:' + r.color + ';border:1px solid ' + r.color + ';">' + r.source + '</span>' +
+      '<span class="search-result-text">' + highlighted + '</span></div>';
+  }).join('');
+}
+function navigateSearchResult(tab) {
+  closeGlobalSearch();
+  switchTab(tab);
 }
 
 // ==================== NAV ====================
@@ -1317,6 +1476,21 @@ function switchTab(tab) {
   if (tab === 'conditions') { renderConditions(); }
   if (tab === 'strategy') { renderStrategy(); }
   if (tab === 'whiteboard') { renderWhiteboard(); }
+  showFloatingNotesForTab(tab);
+}
+
+function getCurrentTab() {
+  const active = document.querySelector('.nav-tab.active');
+  return active ? active.getAttribute('data-tab') : 'conditions';
+}
+
+function showFloatingNotesForTab(tab) {
+  document.querySelectorAll('.floating-note').forEach(el => {
+    const note = (STATE.floatingNotes || []).find(n => n.id === el.id);
+    if (note) {
+      el.style.display = (note.tab === tab) ? '' : 'none';
+    }
+  });
 }
 
 // ==================== MATH SUB-TABS ====================
@@ -1355,11 +1529,10 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 't' && !e.ctrlKey && !e.metaKey) { openStrategyModal('tension'); e.preventDefault(); }
   if (e.key === 'o' || e.key === 'O') { openStrategyModal('opportunity'); e.preventDefault(); }
   if (e.key === 'f' || e.key === 'F') {
-    const s = document.getElementById('strategy-search');
-    if (s) { switchTab('strategy'); setTimeout(() => s.focus(), 100); }
+    openGlobalSearch();
     e.preventDefault();
   }
-  if (e.key === 'Escape') { closeModal(); document.getElementById('kbPanel').classList.remove('show'); }
+  if (e.key === 'Escape') { closeGlobalSearch(); closeModal(); document.getElementById('kbPanel').classList.remove('show'); }
 });
 
 // ==================== AI CARDS ====================
@@ -1436,8 +1609,8 @@ function updateCharts(labels, revData, spendData, cagrData, curRev, targetRev, y
     animation: { duration: 400, easing: 'easeOutQuart' },
     plugins: { legend: { labels: { color: '#888', font: { family: 'JetBrains Mono', size: 9 }, padding: 16 } } },
     scales: {
-      x: { ticks: { color: '#666', font: { family: 'JetBrains Mono', size: 9 } }, grid: { color: 'rgba(255,153,0,0.06)' } },
-      y: { ticks: { color: '#666', font: { family: 'JetBrains Mono', size: 9 } }, grid: { color: 'rgba(255,153,0,0.06)' } }
+      x: { ticks: { color: '#666', font: { family: 'JetBrains Mono', size: 9 } }, grid: { color: 'rgba(0,200,255,0.06)' } },
+      y: { ticks: { color: '#666', font: { family: 'JetBrains Mono', size: 9 } }, grid: { color: 'rgba(0,200,255,0.06)' } }
     }
   };
   if (chartRevenue) chartRevenue.destroy();
@@ -1446,7 +1619,7 @@ function updateCharts(labels, revData, spendData, cagrData, curRev, targetRev, y
       labels,
       datasets: [
         { label: 'Required Revenue', data: revData, borderColor: '#00d26a', backgroundColor: 'rgba(0,210,106,0.06)', fill: true, tension: 0.4, borderWidth: 2, pointRadius: 3, pointBackgroundColor: '#00d26a' },
-        { label: 'Target', data: labels.map(() => targetRev), borderColor: 'rgba(255,153,0,0.5)', borderDash: [5, 5], pointRadius: 0, borderWidth: 1 },
+        { label: 'Target', data: labels.map(() => targetRev), borderColor: 'rgba(0,200,255,0.5)', borderDash: [5, 5], pointRadius: 0, borderWidth: 1 },
         { label: 'Base Growth Only', data: labels.map((_, i) => parseFloat((curRev * Math.pow(1.03, i)).toFixed(2))), borderColor: 'rgba(255,255,255,0.1)', borderDash: [3, 3], pointRadius: 0, borderWidth: 1 }
       ]
     }, options: chartOpts
@@ -1575,17 +1748,17 @@ function getThemeColor(theme) {
 }
 
 function getThemeBorder(theme) {
-  const map = { 'Sports System': 'rgba(0,210,106,0.4)', 'Media Landscape': 'rgba(74,158,255,0.4)', 'Commerce': 'rgba(255,153,0,0.4)', 'Competitive': 'rgba(255,68,68,0.4)', 'Strategic': 'rgba(160,80,255,0.4)' };
+  const map = { 'Sports System': 'rgba(0,210,106,0.4)', 'Media Landscape': 'rgba(74,158,255,0.4)', 'Commerce': 'rgba(0,200,255,0.4)', 'Competitive': 'rgba(255,68,68,0.4)', 'Strategic': 'rgba(160,80,255,0.4)' };
   return map[theme] || 'var(--border)';
 }
 
 function getThemeHighlight(theme) {
-  const map = { 'Sports System': 'rgba(0,210,106,0.15)', 'Media Landscape': 'rgba(74,158,255,0.15)', 'Commerce': 'rgba(255,153,0,0.15)', 'Competitive': 'rgba(255,68,68,0.15)', 'Strategic': 'rgba(160,80,255,0.15)' };
+  const map = { 'Sports System': 'rgba(0,210,106,0.15)', 'Media Landscape': 'rgba(74,158,255,0.15)', 'Commerce': 'rgba(0,200,255,0.15)', 'Competitive': 'rgba(255,68,68,0.15)', 'Strategic': 'rgba(160,80,255,0.15)' };
   return map[theme] || 'rgba(255,255,255,0.06)';
 }
 
 function getThemeAmbient(theme) {
-  const map = { 'Sports System': 'rgba(0,210,106,0.04)', 'Media Landscape': 'rgba(74,158,255,0.05)', 'Commerce': 'rgba(255,153,0,0.04)', 'Competitive': 'rgba(255,68,68,0.04)', 'Strategic': 'rgba(160,80,255,0.04)' };
+  const map = { 'Sports System': 'rgba(0,210,106,0.04)', 'Media Landscape': 'rgba(74,158,255,0.05)', 'Commerce': 'rgba(0,200,255,0.04)', 'Competitive': 'rgba(255,68,68,0.04)', 'Strategic': 'rgba(160,80,255,0.04)' };
   return map[theme] || 'transparent';
 }
 
@@ -1980,6 +2153,116 @@ const ECO_PRESETS = [
       { label: 'Lululemon', x: cx-50, y: cy+110, r: 16, color: '#FF3131', textColor: '#FFF' },
     ];},
     connections: [[0,1],[0,2],[0,3],[0,4],[0,5],[0,6],[0,7],[0,8],[0,9],[0,10],[0,11],[0,12],[0,13],[0,14],[0,15],[1,2],[3,5],[3,6],[3,7],[4,10],[4,11],[5,6],[5,7],[5,13],[6,13],[9,4],[11,15],[11,1],[14,0]]
+  },
+  { // Maria - Latina Soccer Mom
+    labels: ['MARIA','Kids\' Team','Other Parents','WhatsApp Group','Liga MX','Facebook','Instagram','YouTube','Univision','Dick\'s','Amazon','Adidas','AYSO','Sideline Crew','Family','Target'],
+    nodes: function(cx,cy) { return [
+      { label: 'MARIA', x: cx, y: cy, r: 32, color: '#39FF14', textColor: '#000' },
+      { label: 'Kids\' Team', x: cx-180, y: cy-80, r: 24, color: '#0047AB', textColor: '#FFF' },
+      { label: 'Other Parents', x: cx-220, y: cy+50, r: 22, color: '#c080ff', textColor: '#FFF' },
+      { label: 'WhatsApp Group', x: cx+170, y: cy-100, r: 22, color: '#39FF14', textColor: '#000' },
+      { label: 'Liga MX', x: cx+200, y: cy+30, r: 20, color: '#FF3131', textColor: '#FFF' },
+      { label: 'Facebook', x: cx+80, y: cy-155, r: 18, color: '#0047AB', textColor: '#FFF' },
+      { label: 'Instagram', x: cx-60, y: cy-165, r: 18, color: '#FF3131', textColor: '#FFF' },
+      { label: 'YouTube', x: cx+230, y: cy-50, r: 16, color: '#FF3131', textColor: '#FFF' },
+      { label: 'Univision', x: cx-160, y: cy+140, r: 18, color: '#e6b800', textColor: '#000' },
+      { label: 'Dick\'s', x: cx+130, y: cy+150, r: 16, color: '#e6b800', textColor: '#000' },
+      { label: 'Amazon', x: cx-80, y: cy+155, r: 16, color: '#e6b800', textColor: '#000' },
+      { label: 'Adidas', x: cx+30, y: cy+125, r: 26, color: '#39FF14', textColor: '#000' },
+      { label: 'AYSO', x: cx-120, y: cy-145, r: 20, color: '#0047AB', textColor: '#FFF' },
+      { label: 'Sideline Crew', x: cx+170, y: cy+110, r: 18, color: '#c080ff', textColor: '#FFF' },
+      { label: 'Family', x: cx-210, y: cy-10, r: 22, color: '#c080ff', textColor: '#FFF' },
+      { label: 'Target', x: cx-50, y: cy+110, r: 16, color: '#e6b800', textColor: '#000' },
+    ];},
+    connections: [[0,1],[0,2],[0,3],[0,4],[0,5],[0,6],[0,8],[0,9],[0,10],[0,11],[0,12],[0,13],[0,14],[0,15],[1,2],[1,12],[2,3],[2,13],[3,5],[4,8],[5,6],[9,11],[10,11],[11,15],[14,0],[14,8]]
+  },
+  { // Marcus - Sneakerhead
+    labels: ['MARCUS','Collector Circle','Reseller Network','Sneaker Twitter','Complex','Instagram','TikTok','YouTube','StockX','GOAT','Foot Locker','Adidas','ATL Scene','Followers','Family','Confirmed App'],
+    nodes: function(cx,cy) { return [
+      { label: 'MARCUS', x: cx, y: cy, r: 32, color: '#39FF14', textColor: '#000' },
+      { label: 'Collector Circle', x: cx-180, y: cy-80, r: 24, color: '#c080ff', textColor: '#FFF' },
+      { label: 'Reseller Network', x: cx-220, y: cy+50, r: 20, color: '#e6b800', textColor: '#000' },
+      { label: 'Sneaker Twitter', x: cx+170, y: cy-100, r: 20, color: '#FF3131', textColor: '#FFF' },
+      { label: 'Complex', x: cx+200, y: cy+30, r: 18, color: '#FF3131', textColor: '#FFF' },
+      { label: 'Instagram', x: cx+80, y: cy-155, r: 22, color: '#FF3131', textColor: '#FFF' },
+      { label: 'TikTok', x: cx-60, y: cy-165, r: 18, color: '#FF3131', textColor: '#FFF' },
+      { label: 'YouTube', x: cx+230, y: cy-50, r: 16, color: '#FF3131', textColor: '#FFF' },
+      { label: 'StockX', x: cx+130, y: cy+150, r: 22, color: '#e6b800', textColor: '#000' },
+      { label: 'GOAT', x: cx-80, y: cy+155, r: 20, color: '#e6b800', textColor: '#000' },
+      { label: 'Foot Locker', x: cx-160, y: cy+140, r: 16, color: '#e6b800', textColor: '#000' },
+      { label: 'Adidas', x: cx+30, y: cy+125, r: 26, color: '#39FF14', textColor: '#000' },
+      { label: 'ATL Scene', x: cx-120, y: cy-145, r: 18, color: '#c080ff', textColor: '#FFF' },
+      { label: 'Followers', x: cx+170, y: cy+110, r: 20, color: '#c080ff', textColor: '#FFF' },
+      { label: 'Family', x: cx-210, y: cy-10, r: 16, color: '#c080ff', textColor: '#FFF' },
+      { label: 'Confirmed App', x: cx-50, y: cy+110, r: 18, color: '#39FF14', textColor: '#000' },
+    ];},
+    connections: [[0,1],[0,2],[0,3],[0,4],[0,5],[0,6],[0,7],[0,8],[0,9],[0,10],[0,11],[0,12],[0,13],[0,15],[1,8],[1,9],[2,8],[2,9],[3,4],[3,5],[5,6],[5,7],[5,13],[8,11],[9,11],[10,11],[11,15],[12,1]]
+  },
+  { // Brian - Weekend Warrior Dad
+    labels: ['BRIAN','Run Club','Peloton Friends','Strava Community','Garmin','Podcasts','Reddit','YouTube','REI','Running Store','Amazon','Adidas','Denver Trails','Coworkers','Family','Dick\'s'],
+    nodes: function(cx,cy) { return [
+      { label: 'BRIAN', x: cx, y: cy, r: 32, color: '#39FF14', textColor: '#000' },
+      { label: 'Run Club', x: cx-180, y: cy-80, r: 24, color: '#0047AB', textColor: '#FFF' },
+      { label: 'Peloton Friends', x: cx-220, y: cy+50, r: 20, color: '#FF3131', textColor: '#FFF' },
+      { label: 'Strava Community', x: cx+170, y: cy-100, r: 22, color: '#FF3131', textColor: '#FFF' },
+      { label: 'Garmin', x: cx+200, y: cy+30, r: 18, color: '#39FF14', textColor: '#000' },
+      { label: 'Podcasts', x: cx+80, y: cy-155, r: 18, color: '#666', textColor: '#FFF' },
+      { label: 'Reddit', x: cx-60, y: cy-165, r: 16, color: '#FF3131', textColor: '#FFF' },
+      { label: 'YouTube', x: cx+230, y: cy-50, r: 16, color: '#FF3131', textColor: '#FFF' },
+      { label: 'REI', x: cx+130, y: cy+150, r: 16, color: '#e6b800', textColor: '#000' },
+      { label: 'Running Store', x: cx-80, y: cy+155, r: 18, color: '#e6b800', textColor: '#000' },
+      { label: 'Amazon', x: cx-160, y: cy+140, r: 16, color: '#e6b800', textColor: '#000' },
+      { label: 'Adidas', x: cx+30, y: cy+125, r: 26, color: '#39FF14', textColor: '#000' },
+      { label: 'Denver Trails', x: cx-120, y: cy-145, r: 18, color: '#0047AB', textColor: '#FFF' },
+      { label: 'Coworkers', x: cx+170, y: cy+110, r: 16, color: '#c080ff', textColor: '#FFF' },
+      { label: 'Family', x: cx-210, y: cy-10, r: 22, color: '#c080ff', textColor: '#FFF' },
+      { label: 'Dick\'s', x: cx-50, y: cy+110, r: 16, color: '#e6b800', textColor: '#000' },
+    ];},
+    connections: [[0,1],[0,2],[0,3],[0,4],[0,5],[0,6],[0,7],[0,8],[0,9],[0,11],[0,12],[0,14],[0,15],[1,3],[1,12],[1,13],[2,0],[3,4],[5,6],[6,7],[8,11],[9,11],[10,11],[11,15],[11,16],[14,0]]
+  },
+  { // DeShawn - HBCU Athlete
+    labels: ['DESHAWN','FAMU Team','Coach','Fraternity','NFL Players','Instagram','TikTok','YouTube','ESPN','Barber Shop','Local Sponsors','Adidas','FAMU Campus','Student Section','Family','Church'],
+    nodes: function(cx,cy) { return [
+      { label: 'DESHAWN', x: cx, y: cy, r: 32, color: '#39FF14', textColor: '#000' },
+      { label: 'FAMU Team', x: cx-180, y: cy-80, r: 26, color: '#0047AB', textColor: '#FFF' },
+      { label: 'Coach', x: cx-220, y: cy+50, r: 18, color: '#0047AB', textColor: '#FFF' },
+      { label: 'Fraternity', x: cx+170, y: cy-100, r: 22, color: '#c080ff', textColor: '#FFF' },
+      { label: 'NFL Players', x: cx+200, y: cy+30, r: 20, color: '#FF3131', textColor: '#FFF' },
+      { label: 'Instagram', x: cx+80, y: cy-155, r: 20, color: '#FF3131', textColor: '#FFF' },
+      { label: 'TikTok', x: cx-60, y: cy-165, r: 18, color: '#FF3131', textColor: '#FFF' },
+      { label: 'YouTube', x: cx+230, y: cy-50, r: 16, color: '#FF3131', textColor: '#FFF' },
+      { label: 'ESPN', x: cx-160, y: cy+140, r: 18, color: '#FF3131', textColor: '#FFF' },
+      { label: 'Barber Shop', x: cx+130, y: cy+150, r: 16, color: '#c080ff', textColor: '#FFF' },
+      { label: 'Local Sponsors', x: cx-80, y: cy+155, r: 16, color: '#e6b800', textColor: '#000' },
+      { label: 'Adidas', x: cx+30, y: cy+125, r: 26, color: '#39FF14', textColor: '#000' },
+      { label: 'FAMU Campus', x: cx-120, y: cy-145, r: 22, color: '#0047AB', textColor: '#FFF' },
+      { label: 'Student Section', x: cx+170, y: cy+110, r: 18, color: '#c080ff', textColor: '#FFF' },
+      { label: 'Family', x: cx-210, y: cy-10, r: 20, color: '#c080ff', textColor: '#FFF' },
+      { label: 'Church', x: cx-50, y: cy+110, r: 16, color: '#c080ff', textColor: '#FFF' },
+    ];},
+    connections: [[0,1],[0,2],[0,3],[0,4],[0,5],[0,6],[0,7],[0,8],[0,9],[0,10],[0,11],[0,12],[0,13],[0,14],[0,15],[1,2],[1,12],[3,12],[3,13],[4,5],[4,7],[4,8],[5,6],[5,13],[9,3],[10,0],[11,1],[14,15]]
+  },
+  { // Priya - Yoga & Wellness
+    labels: ['PRIYA','Studio Regulars','Fellow Teachers','Wellness Community','Yoga Journal','Instagram','TikTok','Spotify','Podcast','Lululemon','Alo Yoga','Adidas','Brooklyn Scene','Students','Partner','Farmers Market'],
+    nodes: function(cx,cy) { return [
+      { label: 'PRIYA', x: cx, y: cy, r: 32, color: '#39FF14', textColor: '#000' },
+      { label: 'Studio Regulars', x: cx-180, y: cy-80, r: 24, color: '#c080ff', textColor: '#FFF' },
+      { label: 'Fellow Teachers', x: cx-220, y: cy+50, r: 20, color: '#0047AB', textColor: '#FFF' },
+      { label: 'Wellness Community', x: cx+170, y: cy-100, r: 22, color: '#c080ff', textColor: '#FFF' },
+      { label: 'Yoga Journal', x: cx+200, y: cy+30, r: 16, color: '#666', textColor: '#FFF' },
+      { label: 'Instagram', x: cx+80, y: cy-155, r: 20, color: '#FF3131', textColor: '#FFF' },
+      { label: 'TikTok', x: cx-60, y: cy-165, r: 16, color: '#FF3131', textColor: '#FFF' },
+      { label: 'Spotify', x: cx+230, y: cy-50, r: 16, color: '#39FF14', textColor: '#000' },
+      { label: 'Podcast', x: cx-160, y: cy+140, r: 16, color: '#666', textColor: '#FFF' },
+      { label: 'Lululemon', x: cx+130, y: cy+150, r: 20, color: '#FF3131', textColor: '#FFF' },
+      { label: 'Alo Yoga', x: cx-80, y: cy+155, r: 16, color: '#FF3131', textColor: '#FFF' },
+      { label: 'Adidas', x: cx+30, y: cy+125, r: 26, color: '#39FF14', textColor: '#000' },
+      { label: 'Brooklyn Scene', x: cx-120, y: cy-145, r: 18, color: '#c080ff', textColor: '#FFF' },
+      { label: 'Students', x: cx+170, y: cy+110, r: 22, color: '#c080ff', textColor: '#FFF' },
+      { label: 'Partner', x: cx-210, y: cy-10, r: 16, color: '#c080ff', textColor: '#FFF' },
+      { label: 'Farmers Market', x: cx-50, y: cy+110, r: 14, color: '#e6b800', textColor: '#000' },
+    ];},
+    connections: [[0,1],[0,2],[0,3],[0,4],[0,5],[0,6],[0,7],[0,8],[0,9],[0,10],[0,11],[0,12],[0,13],[0,14],[0,15],[1,2],[1,13],[2,3],[3,5],[5,6],[5,13],[7,0],[8,0],[9,10],[11,9],[11,10],[12,3],[14,0]]
   }
 ];
 
@@ -2232,7 +2515,7 @@ function drawEcoMap() {
       ctx.beginPath();
       ctx.moveTo(ecoNodes[ai].x, ecoNodes[ai].y);
       ctx.lineTo(ecoNodes[bi].x, ecoNodes[bi].y);
-      ctx.strokeStyle = 'rgba(255,153,0,0.12)';
+      ctx.strokeStyle = 'rgba(0,200,255,0.12)';
       ctx.lineWidth = 1;
       ctx.setLineDash([4, 6]);
       ctx.lineDashOffset = dashOffset;
@@ -2243,7 +2526,7 @@ function drawEcoMap() {
       if (conn.text) {
         const midX = (ecoNodes[ai].x + ecoNodes[bi].x) / 2;
         const midY = (ecoNodes[ai].y + ecoNodes[bi].y) / 2;
-        ctx.fillStyle = 'rgba(255,153,0,0.4)';
+        ctx.fillStyle = 'rgba(0,200,255,0.4)';
         ctx.font = '500 10px Inter';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
@@ -2477,7 +2760,7 @@ function renderStrategy() {
   if (stratSearchTerm) items = items.filter(i => (i.title + ' ' + i.description + ' ' + (i.tags || []).join(' ')).toLowerCase().includes(stratSearchTerm));
   const grid = document.getElementById('strategy-grid');
   const typeColors = { insight: 'tag-green', tension: 'tag-yellow', opportunity: 'tag-red', hypothesis: 'tag-blue', idea: 'tag-purple' };
-  const typeBorders = { insight: 'rgba(0,210,106,0.4)', tension: 'rgba(255,153,0,0.4)', opportunity: 'rgba(255,68,68,0.4)', hypothesis: 'rgba(74,158,255,0.4)', idea: 'rgba(160,80,255,0.4)' };
+  const typeBorders = { insight: 'rgba(0,210,106,0.4)', tension: 'rgba(0,200,255,0.4)', opportunity: 'rgba(255,68,68,0.4)', hypothesis: 'rgba(74,158,255,0.4)', idea: 'rgba(160,80,255,0.4)' };
   grid.innerHTML = items.map(item => {
     const isPinned = STATE.pinnedInsights.some(p => p.id === item.id);
     const notes = STATE.cardNotes[item.id] || [];
@@ -2790,7 +3073,7 @@ function manualSave() {
 
 // ==================== FLOATING STICKY NOTES ====================
 const NOTE_COLORS = [
-  { name: 'amber', bg: '#1a1a00', border: 'rgba(255,200,0,0.3)', headerBg: 'rgba(255,200,0,0.1)' },
+  { name: 'cyan', bg: '#001a22', border: 'rgba(0,200,255,0.3)', headerBg: 'rgba(0,200,255,0.1)' },
   { name: 'green', bg: '#001a0a', border: 'rgba(0,210,106,0.3)', headerBg: 'rgba(0,210,106,0.1)' },
   { name: 'blue', bg: '#001020', border: 'rgba(74,158,255,0.3)', headerBg: 'rgba(74,158,255,0.1)' },
   { name: 'red', bg: '#1a0505', border: 'rgba(255,68,68,0.3)', headerBg: 'rgba(255,68,68,0.1)' },
@@ -2801,7 +3084,8 @@ function addFloatingNote() {
   const id = 'fn_' + Date.now();
   const x = 200 + Math.random() * 300;
   const y = 150 + Math.random() * 200;
-  const note = { id, text: '', x, y, color: 0 };
+  const tab = getCurrentTab();
+  const note = { id, text: '', x, y, color: 0, tab: tab };
   STATE.floatingNotes.push(note);
   renderFloatingNote(note);
   saveState();
@@ -2838,6 +3122,7 @@ function renderFloatingNote(note) {
 function renderAllFloatingNotes() {
   document.querySelectorAll('.floating-note').forEach(el => el.remove());
   (STATE.floatingNotes || []).forEach(n => renderFloatingNote(n));
+  showFloatingNotesForTab(getCurrentTab());
 }
 
 function updateNoteText(id, text) {
@@ -2975,6 +3260,81 @@ const REMIX_PRESETS = [
       ['Fri','Morning gym (filmed). Afternoon — personal time. Going out.','Posting schedule. Friday vibes content. Going-out prep content.','Friend group. Social scene. Influencer events.','Night-out style. Lifestyle beyond gym.'],
       ['Sat','Long gym session. Farmers market. Lifestyle content.','Weekend content push. Engagement peaks. Story dumps.','Weekend social life. Gym community events.','Weekend lifestyle showcase. Event activations.'],
       ['Sun','Rest day content. Meal prep (filmed). Week planning.','Batch editing. Scheduling week\'s content. Analytics deep dive.','Online community engagement. Family time.','Recovery content. Meal prep integration. Weekly reset.']
+    ]
+  },
+  {
+    name: 'Latina Soccer Mom', emoji: '⚽', age: 34, sport: 'Youth Soccer', level: 'Soccer Parent & Coach',
+    school: 'AYSO Region 12, Houston TX', persona: 'Maria',
+    traits: ['Millennial', 'Bilingual', 'Family First', 'WhatsApp Native', 'Value Shopper', 'Community Leader'],
+    bio: '34-year-old mother of two youth soccer players. Assistant coaches her daughter\'s U-10 team. Shops for the whole family — cleats, shin guards, match-day outfits. Deeply embedded in the parent network via WhatsApp. Bilingual English/Spanish. Watches Liga MX and NWSL.',
+    journey: [
+      ['Mon','Work. After-school pickup. Kids\' practice drop-off.','WhatsApp team parent chat. Facebook marketplace browsing.','Parent sideline conversations. Team snack schedule.','Youth teamwear bundles. Parent-coach gear.'],
+      ['Tue','Work from home. Online shopping during lunch. Evening practice.','Instagram explore — kids\' sports gear. TikTok parenting.','Texting other parents. Planning team events.','Family multi-pack deals. Cleat finder tool.'],
+      ['Wed','Office day. Kids homework. Equipment check for weekend.','Liga MX highlights on Univision app. YouTube gear reviews.','Church group. Neighborhood families.','Bilingual product content. Size guide tools.'],
+      ['Thu','Practice day. Pre-game team meeting via Zoom.','Amazon/Dick\'s price comparing. Reading product reviews.','Team parent WhatsApp — logistics, carpooling.','Price-competitive family packs. Loyalty program.'],
+      ['Fri','Work. Game prep — washing kits, packing bags.','Weather check apps. Team schedule apps (TeamSnap).','Family dinner. Pre-game excitement.','Match-day kit experience. Weather-ready gear.'],
+      ['Sat','GAME DAY x2. Both kids play. Full sideline day.','Live posting kids\' games. WhatsApp photo sharing.','Peak parent community. Sideline culture. Post-game pizza.','Sideline brand visibility. Pop-up retail at tournaments.'],
+      ['Sun','Family day. Park. Church. Meal prep. Online ordering.','Univision Sunday soccer. Browsing deals. Planning week.','Extended family time. FaceTime with abuelos.','Weekend deals. Next-season pre-orders.']
+    ]
+  },
+  {
+    name: 'Sneakerhead', emoji: '👟', age: 24, sport: 'Streetwear / Sneaker Culture', level: 'Collector & Reseller',
+    school: 'Self-employed, Atlanta GA', persona: 'Marcus',
+    traits: ['Gen Z', 'Sneaker Culture', 'Reseller', 'Hypebeast', 'Instagram Heavy', 'Drop Calendar Obsessed'],
+    bio: '24-year-old sneaker collector and part-time reseller in Atlanta. Owns 200+ pairs. Runs a sneaker Instagram with 45K followers. Lines up for drops, monitors StockX/GOAT prices daily. Style is identity. Adidas heritage (Superstars, Forum) is core to his rotation.',
+    journey: [
+      ['Mon','Day job (retail). Evening: photo shoots of latest pickups.','StockX/GOAT price monitoring. Sneaker Twitter. Release calendars.','Sneaker group chats. Local collector meetups planning.','Heritage silhouette drops. Collector edition packaging.'],
+      ['Tue','Work. Lunchtime drop alerts. Evening content creation.','Instagram Reels of collection. TikTok unboxings. YouTube reviews.','DMs with other collectors. Buyer/seller negotiations.','Limited colorway exclusives. Early access programs.'],
+      ['Wed','Gym. Sneaker cleaning/maintenance. Listing pairs for resale.','Sole Collector, Hypebeast, Complex articles. Reddit r/sneakers.','Online community engagement. Discord servers.','Authentication partnerships. Care product bundles.'],
+      ['Thu','Work. Drop countdown. Setting up bots/apps for release.','SNKRS app, Confirmed app, retailer site monitoring.','Group chat strategizing for Saturday drop.','Confirmed app exclusives. Loyalty tier rewards.'],
+      ['Fri','Payday shopping. In-store browsing. Going out.','Pre-drop hype videos. Fit-check posts. Going-out content.','Friday night scene. Sneaker-centric social events.','In-store exclusive experiences. Night-out silhouettes.'],
+      ['Sat','DROP DAY. In-store campout or online drop. Unboxing content.','Live drop coverage. Posting W/L. Price tracking.','Drop day community. Line culture. Trade meetups.','Drop experience design. In-store events. Trade-in programs.'],
+      ['Sun','Resale listing. Collection reorganization. Content batch.','Market analysis. Listing on multiple platforms. Analytics.','Sunday sneaker community posts. Collection shares.','Resale-friendly packaging. Digital authentication.']
+    ]
+  },
+  {
+    name: 'Weekend Warrior Dad', emoji: '🏃‍♂️', age: 41, sport: 'Running / Cycling', level: 'Recreational Athlete',
+    school: 'Suburban Denver, CO', persona: 'Brian',
+    traits: ['Millennial', 'Strava User', 'Marathon Runner', 'Peloton Owner', 'Gear Researcher', 'Podcast Listener'],
+    bio: '41-year-old IT manager training for his 3rd marathon. Rides Peloton on weekdays, runs on weekends. Deep into gear research — reads every review before buying. Strava is his social network. Listens to running podcasts on every commute. Buys premium but needs justification.',
+    journey: [
+      ['Mon','5:30AM Peloton ride. Work. Kids\' activities evening.','Morning: running podcast on commute. Strava feed check.','Peloton leaderboard community. Work running club Slack.','Connected fitness integration. Peloton-compatible gear.'],
+      ['Tue','Lunch run (5K). Work meetings. Evening family time.','Strava upload + kudos. Gear review YouTube at lunch.','Running club Slack banter. Strava comments.','Performance running shoes. Reflective gear for dawn runs.'],
+      ['Wed','Rest day. Gear research evening. Online shopping.','RunRepeat, Believe in the Run reviews. Reddit running.','None active — solo research mode.','Product comparison tools. Expert review partnerships.'],
+      ['Thu','5:30AM Peloton. Tempo run at lunch. Family evening.','Training plan app (Garmin Connect). Podcast: Ali on the Run.','Virtual running community. Garmin challenges.','Garmin/Strava integration. Training plan content.'],
+      ['Fri','Easy day. Pack for weekend long run. Rest.','Checking weather, planning route. Runner\'s World articles.','Friday run club social media posts.','Weekend warrior content. Route planning tools.'],
+      ['Sat','LONG RUN (16 miles). Brunch after. Kids\' sports.','Post-run Strava + photo. Analyzing pace/HR data.','Saturday run group. Post-run coffee crew.','Long-run gear (hydration, nutrition). Group run sponsorship.'],
+      ['Sun','Recovery ride. Family hike. Meal prep. Gear shopping.','Sunday: browsing running deals. Planning next week training.','Family time. Checking Strava weekly stats.','Recovery products. Loyalty rewards for consistent buyers.']
+    ]
+  },
+  {
+    name: 'HBCU Athlete', emoji: '🏈', age: 20, sport: 'Football', level: 'D2 Student Athlete',
+    school: 'Florida A&M University', persona: 'DeShawn',
+    traits: ['Gen Z', 'HBCU Pride', 'NIL Emerging', 'Band Culture', 'Community Rooted', 'MEAC Conference'],
+    bio: '20-year-old D2 linebacker at FAMU. HBCU culture is everything — football, band, homecoming, Greek life. Growing NIL profile through local partnerships. Deep community roots in Tallahassee. Watches NFL religiously, trains to go pro. Band culture and game-day are inseparable.',
+    journey: [
+      ['Mon','6AM weights. Classes. Film review. Evening study hall.','NFL highlights from Sunday. HBCU sports accounts on IG.','Team brotherhood. Study group. Greek org connections.','HBCU-specific team gear. Training apparel.'],
+      ['Tue','Position meetings. Practice. Cafeteria with team.','HBCU sports Twitter. Local NIL opportunity posts.','Fraternity chapter meeting. Campus social life.','NIL platform for HBCU athletes. Campus activations.'],
+      ['Wed','Full practice. Academic advisor meeting.','YouTube film study. NFL draft content. TikTok.','Band practice overlap — campus culture mixing.','Band + football crossover merch. Campus culture.'],
+      ['Thu','Walk-through. Travel prep if away game.','ESPN HBCU coverage. Team hype videos.','Travel bonding. Pre-game rituals. Barber shop.','Travel gear. Pre-game ritual products.'],
+      ['Fri','GAME DAY. Walk-through. Pre-game meal. GAME.','Dark pre-game. Post-game: highlights, celebrations.','Peak — student section, band, Greek step shows, tailgate.','Game-day experience. Halftime culture integration.'],
+      ['Sat','Recovery. Homecoming events or campus social life.','HBCU football scores roundup. SEC/NFL on TV.','Homecoming culture. Alumni networks. Greek events.','Homecoming capsule collections. Alumni gear.'],
+      ['Sun','Church with teammates. Recovery. Family calls. Meal prep.','NFL all day. Film review for next week.','Church community. Family FaceTime. Team dinner.','Sunday lifestyle. Recovery gear. Faith-based community.']
+    ]
+  },
+  {
+    name: 'Yoga & Wellness', emoji: '🧘', age: 28, sport: 'Yoga / Wellness', level: 'Instructor & Practitioner',
+    school: 'Studio owner, Brooklyn NY', persona: 'Priya',
+    traits: ['Millennial', 'Wellness Culture', 'Studio Owner', 'Mindfulness', 'Sustainable Fashion', 'Community Builder'],
+    bio: '28-year-old yoga instructor who owns a small studio in Brooklyn. Teaches 12 classes a week. Deeply invested in sustainable fashion and mindful living. Her community is her studio — regulars become friends. Shops intentionally, values quality and sustainability over hype.',
+    journey: [
+      ['Mon','6AM class (teach). Admin work. 6PM class (teach).','Instagram stories of morning class. Wellness podcast.','Studio community. Regular students. Teacher friends.','Sustainable yoga apparel. Studio partnership program.'],
+      ['Tue','Morning personal practice. Studio bookkeeping. Workshop planning.','Yoga Journal online. Wellness TikTok. Spotify playlists.','Coffee with fellow instructor. Online yoga community.','Instructor ambassador program. Wholesale studio gear.'],
+      ['Wed','Teach 3 classes. Afternoon: content creation.','Posting class clips. Engaging wellness community online.','Class regulars becoming friends. Workshop sign-ups.','Workshop event sponsorship. Premium practice gear.'],
+      ['Thu','Morning run (cross-training). Studio maintenance. Evening class.','Running + yoga crossover content. Strava + yoga apps.','Run club friends. Cross-training community.','Cross-training collections. Run-to-yoga versatility.'],
+      ['Fri','Teach morning. Afternoon off. Gallery/cultural event evening.','Minimal screen time. Intentional disconnection.','Brooklyn cultural scene. Friend gatherings.','Lifestyle beyond sport. Cultural event presence.'],
+      ['Sat','Workshop or retreat day. Farmers market. Self-care.','Posting workshop content. Browsing sustainable brands.','Retreat community. Deep connections with students.','Retreat/workshop gear. Sustainable materials storytelling.'],
+      ['Sun','Rest. Personal practice. Journaling. Meal prep.','Minimal social media. Planning week\'s class themes.','Quiet day. Partner time. Neighborhood walks.','Recovery + mindfulness products. Slow fashion alignment.']
     ]
   }
 ];
