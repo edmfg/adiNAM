@@ -1,0 +1,2955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YOU GOT THIS | Adidas North America Strategy Dashboard</title>
+<link rel="icon" type="image/jpeg" href="689347.jpg">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --black: #000; --dark: #0a0a0a; --white: #d4d4d4; --green: #00d26a; --red: #ff4444; --blue: #4a9eff;
+  --amber: #ff9900; --yellow: #e6b800;
+  --card: #111111; --card2: #1a1a1a; --card3: #222222;
+  --text-dim: #777; --text-mid: #aaa; --text-light: #e0e0e0;
+  --border: #252525; --border-hover: #444;
+  --ease: cubic-bezier(.4,0,.2,1);
+  --nav-h: 48px;
+  --gutter: 20px;
+  --max-w: 1600px;
+}
+html { scroll-behavior: smooth; }
+body { font-family: 'JetBrains Mono', 'SF Mono', 'Consolas', monospace; background: var(--dark); color: var(--white); min-height: 100vh; -webkit-font-smoothing: antialiased; font-size: var(--base-font, 16px); }
+h1, h2, h3, h4, h5, h6, .heading { font-family: 'Oswald', 'Arial Narrow', sans-serif; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; }
+
+/* ── STATUS BAR ── */
+.status-bar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1001;
+  background: #000; border-bottom: 1px solid #1a1a1a;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 28px; padding: 0 var(--gutter);
+  font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase;
+  color: #ffb733; font-weight: 600;
+}
+.status-bar .status-left { display: flex; gap: 20px; align-items: center; }
+.status-bar .status-right { display: flex; gap: 16px; align-items: center; }
+.status-bar .status-item { white-space: nowrap; color: #ccc; padding: 2px 6px; border-radius: 2px; cursor: default; transition: background 0.15s, color 0.15s; }
+.status-bar .status-item:hover { background: rgba(255,153,0,0.15); color: #fff; }
+.status-bar .status-val { color: #33ff88; margin-left: 4px; font-weight: 700; }
+.status-bar .status-neg { color: #ff6666; font-weight: 700; }
+.bb-cursor { display: inline-block; width: 7px; height: 12px; background: var(--amber); animation: blink 1s step-end infinite; vertical-align: middle; margin-left: 6px; }
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+/* ── FLOATING STICKY NOTES ── */
+.floating-note {
+  position: fixed; z-index: 900; min-width: 180px; max-width: 300px;
+  background: #1a1a00; border: 1px solid rgba(255,200,0,0.3); border-radius: 3px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5); font-family: 'JetBrains Mono', monospace;
+  animation: noteIn 0.2s var(--ease);
+}
+@keyframes noteIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+.floating-note-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 6px 8px; cursor: grab; background: rgba(255,200,0,0.1);
+  border-bottom: 1px solid rgba(255,200,0,0.15); user-select: none;
+}
+.floating-note-header:active { cursor: grabbing; }
+.floating-note-header span { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--amber); font-weight: 600; }
+.floating-note-close {
+  background: none; border: none; color: #666; font-size: 14px; cursor: pointer;
+  padding: 0 2px; line-height: 1; transition: color 0.15s;
+}
+.floating-note-close:hover { color: var(--red); }
+.floating-note-colors { display: flex; gap: 3px; }
+.floating-note-color {
+  width: 12px; height: 12px; border-radius: 2px; border: 1px solid rgba(255,255,255,0.15);
+  cursor: pointer; transition: transform 0.1s;
+}
+.floating-note-color:hover { transform: scale(1.3); }
+.floating-note textarea {
+  width: 100%; min-height: 80px; padding: 8px; background: transparent;
+  border: none; color: var(--text-light); font-size: 13px; line-height: 1.5;
+  resize: both; font-family: 'JetBrains Mono', monospace;
+}
+.floating-note textarea:focus { outline: none; }
+
+/* ── REMIX MODAL ── */
+.remix-overlay {
+  position: fixed; inset: 0; z-index: 950; background: rgba(0,0,0,0.7);
+  display: flex; align-items: center; justify-content: center;
+  animation: fadeIn 0.15s var(--ease);
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.remix-modal {
+  background: #111; border: 1px solid var(--amber); border-radius: 3px;
+  width: 520px; max-width: 95vw; max-height: 85vh; overflow-y: auto;
+  padding: 24px; animation: noteIn 0.2s var(--ease);
+}
+.remix-modal h3 { font-size: 20px; color: var(--amber); margin-bottom: 16px; }
+.remix-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+.remix-row-full { margin-bottom: 12px; }
+.remix-actions { display: flex; gap: 8px; margin-top: 20px; justify-content: flex-end; }
+.remix-presets { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+.remix-preset {
+  font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase;
+  letter-spacing: 0.06em; padding: 5px 12px; border-radius: 2px; cursor: pointer;
+  border: 1px solid var(--border); background: transparent; color: var(--text-mid);
+  transition: all 0.15s;
+}
+.remix-preset:hover { border-color: var(--amber); color: var(--amber); background: rgba(255,153,0,0.05); }
+
+/* ── NAV ── */
+.top-nav {
+  position: fixed; top: 28px; left: 0; right: 0; z-index: 1000;
+  background: #1a1a2e; border-bottom: 1px solid #2a2a4a;
+  display: flex; align-items: center; height: var(--nav-h); padding: 0 var(--gutter); gap: 0;
+}
+.nav-logo {
+  font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 15px;
+  text-transform: uppercase; color: var(--amber); margin-right: 24px;
+  white-space: nowrap; cursor: pointer; letter-spacing: 0.1em;
+  transition: opacity 0.2s var(--ease);
+}
+.nav-logo:hover { opacity: 0.8; }
+.nav-tabs { display: flex; gap: 0; }
+.nav-tab {
+  font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 500;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  color: #888; background: none; border: none;
+  padding: 10px 18px; cursor: pointer;
+  transition: all 0.15s var(--ease); border-radius: 0; white-space: nowrap;
+  position: relative; border-right: 1px solid #2a2a4a;
+}
+.nav-tab:hover { color: var(--amber); background: rgba(255,153,0,0.04); }
+.nav-tab.active { color: var(--amber); background: rgba(255,153,0,0.08); }
+.nav-tab.active::after {
+  content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+  height: 2px; background: var(--amber); border-radius: 0;
+}
+
+/* ── MAIN ── */
+.main { padding-top: calc(28px + var(--nav-h) + 20px); padding-bottom: 40px; }
+.section {
+  display: none; padding: 0 var(--gutter); max-width: var(--max-w); margin: 0 auto;
+  animation: sectionIn 0.2s var(--ease);
+}
+.section.active { display: block; }
+@keyframes sectionIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ── SECTION HEADERS ── */
+.section-header { margin-bottom: 20px; border-left: 3px solid var(--amber); padding-left: 12px; }
+.section-header h2 {
+  font-size: 28px; font-weight: 700; line-height: 1; color: var(--amber);
+  margin-bottom: 4px; letter-spacing: 0.06em;
+}
+.section-header p { font-size: 14px; color: var(--text-dim); line-height: 1.5; max-width: 600px; }
+
+/* ── GRID ── */
+.grid { display: grid; gap: 8px; }
+.grid-2 { grid-template-columns: repeat(3, 1fr); }
+.grid-3 { grid-template-columns: repeat(3, 1fr); }
+.grid-4 { grid-template-columns: repeat(4, 1fr); }
+@media (max-width: 900px) { .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; } }
+@media (max-width: 1400px) and (min-width: 901px) { .grid-3, .grid-4 { grid-template-columns: repeat(2, 1fr); } }
+
+/* ── CARDS ── */
+.card {
+  background: var(--card); border: 1px solid var(--border); border-radius: 2px;
+  padding: 16px; transition: border-color 0.2s var(--ease);
+  border-top: 2px solid var(--amber);
+}
+.card:hover { border-color: var(--border-hover); }
+.card-label {
+  font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.12em; color: var(--amber); margin-bottom: 12px;
+}
+.card-title {
+  font-family: 'Oswald', sans-serif; font-size: 16px; text-transform: uppercase;
+  letter-spacing: 0.06em; color: var(--white); margin-bottom: 12px;
+}
+
+/* ── DIVIDER ── */
+.divider { height: 1px; background: var(--border); margin: 24px 0; }
+
+/* ── BUTTONS ── */
+.btn {
+  font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  padding: 8px 16px; border: 1px solid var(--border); background: transparent;
+  color: var(--text-mid); border-radius: 2px; cursor: pointer;
+  transition: all 0.15s var(--ease);
+}
+.btn:hover { border-color: var(--amber); color: var(--amber); background: rgba(255,153,0,0.05); }
+.btn-green { border-color: rgba(0,210,106,0.3); color: var(--green); }
+.btn-green:hover { background: rgba(0,210,106,0.08); border-color: var(--green); }
+.btn-red { border-color: rgba(255,68,68,0.3); color: var(--red); }
+.btn-red:hover { background: rgba(255,68,68,0.08); border-color: var(--red); }
+.btn-blue { border-color: rgba(74,158,255,0.3); color: var(--blue); }
+.btn-blue:hover { background: rgba(74,158,255,0.08); border-color: var(--blue); }
+.btn-fill { background: var(--amber); color: #000; border-color: var(--amber); font-weight: 700; }
+.btn-fill:hover { background: #ffaa22; }
+.btn-sm { padding: 6px 12px; font-size: 11px; }
+.btn-ghost { border: none; padding: 4px 8px; }
+
+/* ── TAGS ── */
+.tag {
+  display: inline-flex; align-items: center; font-size: 11px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  padding: 3px 10px; border-radius: 2px; font-family: 'JetBrains Mono', monospace;
+}
+.tag-green { background: rgba(0,210,106,0.12); color: var(--green); }
+.tag-red { background: rgba(255,68,68,0.12); color: var(--red); }
+.tag-blue { background: rgba(74,158,255,0.12); color: var(--blue); }
+.tag-yellow { background: rgba(255,153,0,0.12); color: var(--amber); }
+.tag-purple { background: rgba(160,80,255,0.12); color: #a050ff; }
+.tag-white { background: rgba(255,255,255,0.06); color: var(--text-mid); }
+
+/* ── CCC LABELS (Culture / Community / Commerce) ── */
+.ccc-tag {
+  display: inline-flex; align-items: center; font-size: 9px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.12em;
+  padding: 2px 7px; border-radius: 2px; font-family: 'JetBrains Mono', monospace;
+}
+.ccc-culture { background: rgba(255,200,0,0.15); color: #ffcc00; border: 1px solid rgba(255,200,0,0.3); }
+.ccc-community { background: rgba(0,180,255,0.12); color: #33bbff; border: 1px solid rgba(0,180,255,0.25); }
+.ccc-commerce { background: rgba(0,210,106,0.12); color: #00d26a; border: 1px solid rgba(0,210,106,0.25); }
+
+/* ── INSIGHT CARDS ── */
+.insight-card {
+  background: var(--card); border: 1px solid var(--border); border-radius: 2px;
+  padding: 12px; transition: all 0.15s var(--ease); position: relative;
+  display: flex; flex-direction: column;
+}
+.insight-card:hover { border-color: var(--border-hover); }
+.insight-card .insight-text { font-size: 14px; line-height: 1.6; color: var(--text-mid); margin: 4px 0 8px; flex: 1; }
+.insight-card .insight-source { font-size: 11px; color: var(--text-dim); letter-spacing: 0.03em; }
+.insight-card .insight-actions { display: flex; gap: 4px; margin-top: 8px; align-items: center; padding-top: 8px; border-top: 1px solid var(--border); }
+.pin-btn {
+  background: none; border: 1px solid var(--border); color: var(--text-dim);
+  font-size: 11px; font-weight: 500; padding: 5px 10px; border-radius: 2px;
+  cursor: pointer; transition: all 0.15s var(--ease); font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.05em; text-transform: uppercase;
+}
+.pin-btn:hover { border-color: var(--amber); color: var(--amber); }
+.pin-btn.pinned { border-color: var(--amber); color: var(--amber); background: rgba(255,153,0,0.08); }
+.connection-dot { width: 5px; height: 5px; border-radius: 50%; display: inline-block; margin-left: 3px; }
+
+/* ── AI CARDS ── */
+.ai-card {
+  border-radius: 2px; padding: 14px;
+  animation: aiSlide 0.3s var(--ease); position: relative;
+}
+.ai-card.pattern { background: rgba(0,210,106,0.06); border: 1px solid rgba(0,210,106,0.2); }
+.ai-card.opportunity { background: rgba(255,68,68,0.06); border: 1px solid rgba(255,68,68,0.2); }
+.ai-card.narrative { background: rgba(74,158,255,0.06); border: 1px solid rgba(74,158,255,0.2); }
+.ai-card-type { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.14em; margin-bottom: 8px; }
+.ai-card-text { font-size: 14px; line-height: 1.6; color: var(--text-light); }
+.ai-card-actions { display: flex; gap: 6px; margin-top: 10px; }
+@keyframes aiSlide { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: translateX(0); } }
+
+/* ── INPUTS ── */
+input[type="text"], input[type="number"], textarea, select {
+  font-family: 'JetBrains Mono', monospace; background: #0a0a0a; border: 1px solid var(--border);
+  color: var(--amber); padding: 10px 14px; border-radius: 2px; font-size: 14px; width: 100%;
+  transition: border-color 0.15s var(--ease);
+}
+input:focus, textarea:focus, select:focus { outline: none; border-color: var(--amber); box-shadow: none; }
+textarea { resize: vertical; min-height: 80px; }
+label {
+  font-size: 11px; color: var(--amber); text-transform: uppercase;
+  letter-spacing: 0.1em; display: block; margin-bottom: 6px;
+  font-family: 'JetBrains Mono', monospace; font-weight: 600;
+}
+
+/* ── SLIDER ── */
+input[type="range"] {
+  -webkit-appearance: none; width: 100%; height: 2px;
+  background: var(--border); border-radius: 0; outline: none; margin: 6px 0;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 12px; height: 12px;
+  background: var(--amber); border-radius: 0; cursor: pointer;
+  box-shadow: none; transition: transform 0.15s var(--ease);
+}
+input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
+
+/* ── TABLE ── */
+.data-table { width: 100%; border-collapse: collapse; font-size: 13px; font-family: 'JetBrains Mono', monospace; }
+.data-table th {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.12em; color: var(--amber);
+  text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--amber);
+  text-transform: uppercase;
+}
+.data-table td { padding: 8px 10px; border-bottom: 1px solid #1a1a1a; color: var(--text-light); font-size: 13px; }
+.data-table td[contenteditable] { cursor: text; }
+.data-table td[contenteditable]:focus { outline: none; color: var(--amber); background: rgba(255,153,0,0.04); }
+.data-table tr:hover td { background: rgba(255,153,0,0.03); }
+
+/* ── DROPZONE ── */
+.dropzone {
+  border: 1px dashed var(--border); border-radius: 2px;
+  padding: 32px 24px; text-align: center;
+  transition: all 0.2s var(--ease); cursor: pointer; background: var(--card);
+}
+.dropzone:hover, .dropzone.dragover {
+  border-color: var(--amber); background: rgba(255,153,0,0.03);
+}
+.dropzone-icon { font-size: 24px; margin-bottom: 10px; opacity: 0.3; }
+.dropzone-text { font-size: 11px; color: var(--text-dim); font-weight: 500; }
+.dropzone-formats { font-size: 9px; color: var(--text-dim); margin-top: 6px; opacity: 0.4; letter-spacing: 0.05em; }
+
+/* ── MODAL ── */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+  z-index: 2000; display: none; align-items: center; justify-content: center;
+  animation: fadeIn 0.15s var(--ease);
+}
+.modal-overlay.show { display: flex; }
+.modal {
+  background: var(--card); border: 1px solid var(--amber); border-radius: 2px;
+  padding: 24px; width: 90%; max-width: 480px; max-height: 90vh; overflow-y: auto;
+}
+.modal-title { font-family: 'Oswald', sans-serif; font-size: 20px; text-transform: uppercase; margin-bottom: 20px; color: var(--amber); }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* ── WHITEBOARD canvas ── */
+.canvas-area {
+  position: relative; width: 100%; min-height: 640px;
+  background: #0a0a0a; border: 1px solid var(--amber); border-radius: 2px; overflow: hidden;
+}
+.sticky-note {
+  position: absolute; width: 180px; min-height: 110px;
+  padding: 12px; border-radius: 2px; cursor: move; user-select: none;
+  font-size: 11px; line-height: 1.5;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+  transition: box-shadow 0.2s var(--ease);
+}
+.sticky-note:hover { box-shadow: 0 6px 24px rgba(0,0,0,0.6); }
+.sticky-note .note-content { outline: none; min-height: 50px; }
+.sticky-note .note-actions { display: flex; gap: 4px; margin-top: 8px; }
+.sticky-note .note-delete { background: none; border: none; color: rgba(0,0,0,0.3); cursor: pointer; font-size: 14px; transition: color 0.2s; }
+.sticky-note .note-delete:hover { color: rgba(0,0,0,0.6); }
+
+/* ── SEARCH ── */
+.search-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+.search-bar input { max-width: 360px; }
+
+/* ── PERSONA ── */
+.persona-card { display: flex; gap: 20px; align-items: flex-start; }
+.persona-avatar {
+  width: 56px; height: 56px; border-radius: 2px; flex-shrink: 0;
+  background: var(--amber);
+  display: flex; align-items: center; justify-content: center; font-size: 24px;
+}
+.persona-info h3 { font-size: 20px; margin-bottom: 4px; color: var(--amber); }
+.persona-traits { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+
+/* ── ECO MAP ── */
+.eco-map { width: 100%; height: 420px; background: #0a0a0a; border: 1px solid var(--border); border-radius: 2px; }
+
+/* ── FILTER BAR ── */
+.filter-bar { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 16px; }
+.filter-btn {
+  font-size: 12px; font-weight: 500; padding: 6px 14px; border-radius: 2px;
+  border: 1px solid var(--border); background: none; color: var(--text-dim);
+  cursor: pointer; font-family: 'JetBrains Mono', monospace; transition: all 0.15s var(--ease);
+  text-transform: uppercase; letter-spacing: 0.06em;
+}
+.filter-btn:hover { border-color: var(--border-hover); color: var(--text-light); }
+.filter-btn.active { border-color: var(--amber); color: var(--amber); background: rgba(255,153,0,0.06); }
+
+/* ── PRIORITY TABLE ── */
+.priority-table { width: 100%; border-collapse: collapse; font-family: 'JetBrains Mono', monospace; }
+.priority-table th {
+  text-transform: uppercase; font-size: 9px;
+  font-weight: 600; color: var(--amber); letter-spacing: 0.12em;
+  text-align: left; padding: 10px; border-bottom: 1px solid var(--amber);
+}
+.priority-table td { padding: 12px; border-bottom: 1px solid var(--border); font-size: 13px; color: var(--text-light); line-height: 1.5; vertical-align: top; }
+.priority-table tr { transition: background 0.15s var(--ease); }
+.priority-table tr:hover td { background: rgba(255,153,0,0.03); }
+.priority-num {
+  font-family: 'Oswald', sans-serif; font-size: 18px; font-weight: 700;
+  color: var(--amber); display: inline-block; width: 24px;
+}
+
+/* ── JOURNEY TABLE ── */
+.journey-table { width: 100%; border-collapse: collapse; font-family: 'JetBrains Mono', monospace; }
+.journey-table th {
+  text-transform: uppercase; font-size: 9px;
+  font-weight: 600; color: var(--amber); letter-spacing: 0.12em;
+  text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--amber);
+}
+.journey-table td {
+  padding: 8px 10px; border-bottom: 1px solid var(--border);
+  font-size: 13px; color: var(--text-mid); line-height: 1.5; vertical-align: top;
+}
+.journey-table td[contenteditable]:focus { outline: none; color: var(--amber); background: rgba(255,153,0,0.03); }
+.journey-table tr:hover td { background: rgba(255,153,0,0.02); }
+.journey-day {
+  font-family: 'Oswald', sans-serif; font-size: 12px; font-weight: 600;
+  text-transform: uppercase; color: var(--amber); letter-spacing: 0.08em; white-space: nowrap;
+}
+
+/* ── METRIC CARDS ── */
+.metric-value {
+  font-family: 'Oswald', sans-serif; font-size: 28px; font-weight: 700; line-height: 1; margin-bottom: 4px;
+}
+.metric-label { font-size: 9px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em; }
+.metric-value[contenteditable] { outline: none; cursor: text; }
+.metric-value[contenteditable]:focus { color: var(--amber); }
+
+/* ── CHART ── */
+.chart-container { position: relative; width: 100%; max-height: 260px; }
+.chart-container canvas { width: 100% !important; }
+.chart-actions { display: flex; gap: 6px; margin-top: 8px; justify-content: flex-end; }
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: #0a0a0a; }
+::-webkit-scrollbar-thumb { background: #333; border-radius: 0; }
+::-webkit-scrollbar-thumb:hover { background: var(--amber); }
+
+/* ── HERO ── */
+.hero { text-align: center; padding: 20px 0; }
+.hero h1 {
+  font-size: 36px; font-weight: 700; line-height: 1; margin-bottom: 8px;
+  color: var(--amber); -webkit-text-fill-color: var(--amber); background: none; background-clip: unset;
+}
+.hero p {
+  font-size: 10px; color: var(--text-dim); text-transform: uppercase;
+  letter-spacing: 0.2em; font-family: 'JetBrains Mono', monospace; font-weight: 500;
+}
+
+/* ── KEYBOARD HINT ── */
+.kb-hint {
+  position: fixed; bottom: 12px; right: 12px;
+  background: var(--card); border: 1px solid var(--border); border-radius: 2px;
+  padding: 4px 10px; font-size: 9px; color: var(--text-dim); z-index: 999;
+  cursor: pointer; transition: all 0.15s var(--ease); font-family: 'JetBrains Mono', monospace;
+}
+.kb-hint:hover { color: var(--amber); border-color: var(--amber); }
+.kb-panel {
+  position: fixed; bottom: 36px; right: 12px;
+  background: var(--card); border: 1px solid var(--amber); border-radius: 2px;
+  padding: 14px; z-index: 1001; display: none; width: 240px; font-size: 10px;
+  font-family: 'JetBrains Mono', monospace;
+}
+.kb-panel.show { display: block; }
+.kb-panel div { display: flex; justify-content: space-between; padding: 3px 0; color: var(--text-mid); }
+.kb-panel kbd {
+  background: #1a1a1a; border: 1px solid var(--border); border-radius: 2px;
+  padding: 1px 6px; font-size: 10px; font-family: 'JetBrains Mono', monospace; color: var(--amber);
+}
+
+/* ── ACCORDION ── */
+.accordion { margin-bottom: 4px; }
+.accordion-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 14px; background: var(--card); border: 1px solid var(--border);
+  border-radius: 2px; cursor: pointer; transition: all 0.15s var(--ease); user-select: none;
+}
+.accordion-header:hover { border-color: var(--amber); }
+.accordion-header.open { border-radius: 2px 2px 0 0; border-bottom-color: transparent; }
+.accordion-header h3 { font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+.accordion-arrow {
+  font-size: 10px; color: var(--amber); transition: transform 0.2s var(--ease);
+  font-family: 'JetBrains Mono', monospace;
+}
+.accordion-header.open .accordion-arrow { transform: rotate(180deg); }
+.accordion-body {
+  max-height: 0; overflow: hidden; transition: max-height 0.3s var(--ease);
+  background: var(--card); border: 1px solid var(--border); border-top: none;
+  border-radius: 0 0 2px 2px;
+}
+.accordion-body.open { max-height: 4000px; }
+.accordion-body-inner { padding: 14px; }
+.accordion-count {
+  font-family: 'JetBrains Mono', monospace; font-size: 9px; font-weight: 600;
+  color: var(--amber); background: rgba(255,153,0,0.08); padding: 2px 8px;
+  border-radius: 2px; letter-spacing: 0.05em;
+}
+
+/* ── TABS (Math sub-sections) ── */
+.sub-tabs { display: flex; gap: 0; margin-bottom: 16px; background: var(--card); border-radius: 2px; padding: 0; border: 1px solid var(--border); }
+.sub-tab {
+  font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 500;
+  text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-dim);
+  background: none; border: none; padding: 10px 18px; cursor: pointer;
+  border-radius: 0; transition: all 0.15s var(--ease); flex: 1; text-align: center;
+  border-right: 1px solid var(--border);
+}
+.sub-tab:last-child { border-right: none; }
+.sub-tab:hover { color: var(--amber); }
+.sub-tab.active { background: rgba(255,153,0,0.08); color: var(--amber); }
+.sub-panel { display: none; }
+.sub-panel.active { display: block; animation: sectionIn 0.2s var(--ease); }
+
+/* ── EXPAND BUTTON for Journey ── */
+.expand-row { display: none; }
+.journey-table tr.expandable { cursor: pointer; }
+.journey-table tr.expandable:hover .journey-day { color: var(--green); }
+
+/* ── UTILITIES ── */
+.flex { display: flex; } .flex-wrap { flex-wrap: wrap; } .items-center { align-items: center; } .justify-between { justify-content: space-between; }
+.gap-8 { gap: 8px; } .gap-12 { gap: 12px; } .gap-16 { gap: 16px; } .gap-20 { gap: 20px; } .gap-24 { gap: 24px; }
+.mb-8 { margin-bottom: 8px; } .mb-12 { margin-bottom: 12px; } .mb-16 { margin-bottom: 16px; } .mb-20 { margin-bottom: 20px; } .mb-24 { margin-bottom: 24px; } .mb-32 { margin-bottom: 32px; } .mb-40 { margin-bottom: 40px; } .mb-48 { margin-bottom: 48px; }
+.mt-12 { margin-top: 12px; } .mt-16 { margin-top: 16px; } .mt-20 { margin-top: 20px; } .mt-24 { margin-top: 24px; }
+.text-green { color: var(--green); } .text-red { color: var(--red); } .text-blue { color: var(--blue); } .text-dim { color: var(--text-dim); } .text-light { color: var(--text-light); }
+.text-sm { font-size: 13px; } .text-xs { font-size: 11px; }
+.w-full { width: 100%; }
+.overflow-x { overflow-x: auto; }
+.space-y > * + * { margin-top: 16px; }
+
+/* ── INSIGHT CARD EXPAND/COLLAPSE ── */
+.insight-card.collapsed .insight-text { display: none; }
+.insight-card.collapsed .insight-headline { margin-bottom: 0; }
+.insight-card.collapsed .insight-implication,
+.insight-card.collapsed .insight-source,
+.insight-card.collapsed .insight-actions { display: none; }
+.insight-card .expand-toggle {
+  position: absolute; top: 6px; right: 6px;
+  background: none; border: none; color: var(--text-dim); cursor: pointer;
+  font-size: 10px; padding: 2px 6px; border-radius: 2px;
+  transition: color 0.15s var(--ease);
+  font-family: 'JetBrains Mono', monospace; z-index: 2;
+}
+.insight-card .expand-toggle:hover { color: var(--amber); }
+
+/* ── INSIGHT IMPLICATION ── */
+.insight-implication {
+  font-size: 13px; line-height: 1.5; color: var(--text-dim); font-style: italic;
+  margin: 2px 0 8px; opacity: 0.85;
+}
+.insight-implication::before { content: '> '; color: var(--amber); font-style: normal; font-family: 'JetBrains Mono', monospace; }
+
+/* ── SOURCE LINK ── */
+.insight-source a { color: var(--text-dim); text-decoration: none; transition: color 0.15s; }
+.insight-source a:hover { color: var(--amber); text-decoration: underline; }
+.insight-source .ext-icon { font-size: 8px; margin-left: 3px; opacity: 0.5; }
+
+/* ── DRAG HANDLE ── */
+.drag-handle {
+  position: absolute; top: 4px; left: 4px;
+  cursor: grab; color: var(--text-dim); font-size: 12px; opacity: 0.25;
+  transition: opacity 0.15s var(--ease); user-select: none; z-index: 2; line-height: 1;
+}
+.drag-handle:hover { opacity: 0.6; }
+.drag-handle:active { cursor: grabbing; }
+.insight-card.dragging { opacity: 0.6; border-color: var(--amber) !important; }
+.insight-card.drag-over { border-top: 2px solid var(--amber) !important; }
+
+/* ── INLINE CARD NOTES ── */
+.card-note-btn {
+  position: absolute; top: 6px; right: 24px;
+  background: none; border: 1px solid var(--border); color: var(--text-dim);
+  font-size: 10px; width: 18px; height: 18px; border-radius: 2px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s var(--ease); z-index: 2; line-height: 1;
+}
+.card-note-btn:hover { border-color: var(--amber); color: var(--amber); }
+.card-note-input-wrap { margin-top: 8px; display: flex; gap: 4px; align-items: center; }
+.card-note-input-wrap input {
+  flex: 1; padding: 4px 8px; font-size: 10px; border-radius: 2px;
+  background: #0a0a0a; border: 1px solid var(--border); color: var(--amber);
+  font-family: 'JetBrains Mono', monospace;
+}
+.card-note-input-wrap input:focus { outline: none; border-color: var(--amber); }
+.card-note-input-wrap button {
+  background: var(--amber); color: #000; border: none; padding: 4px 8px;
+  border-radius: 2px; font-size: 9px; font-weight: 600; cursor: pointer;
+  font-family: 'JetBrains Mono', monospace; text-transform: uppercase;
+}
+.card-note-display {
+  margin-top: 6px; font-size: 10px; color: var(--text-dim); line-height: 1.4;
+  border-top: 1px solid var(--border); padding-top: 6px;
+}
+.card-note-display .card-note-item { display: flex; align-items: flex-start; gap: 6px; padding: 2px 0; }
+.card-note-display .card-note-item::before { content: '>'; font-size: 9px; flex-shrink: 0; color: var(--amber); }
+.card-note-delete {
+  background: none; border: none; color: var(--text-dim); cursor: pointer;
+  font-size: 12px; padding: 0; opacity: 0.3; transition: opacity 0.15s;
+  flex-shrink: 0;
+}
+.card-note-delete:hover { opacity: 1; color: var(--red); }
+
+/* ── FLOATING ACTION BUTTON ── */
+.fab-container { position: fixed; bottom: 12px; left: 12px; z-index: 1000; }
+.fab-main {
+  width: 40px; height: 40px; border-radius: 2px; background: var(--amber);
+  color: #000; border: none; font-size: 20px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 2px 12px rgba(255,153,0,0.3);
+  transition: transform 0.2s var(--ease);
+}
+.fab-main:hover { transform: scale(1.05); }
+.fab-main.open { transform: rotate(45deg); }
+.fab-menu { position: absolute; bottom: 48px; left: 0; display: none; flex-direction: column; gap: 4px; }
+.fab-menu.show { display: flex; animation: fabIn 0.15s var(--ease); }
+@keyframes fabIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+.fab-item {
+  background: var(--card); border: 1px solid var(--border); color: var(--text-light);
+  padding: 6px 12px; border-radius: 2px; font-size: 10px; font-weight: 500;
+  font-family: 'JetBrains Mono', monospace; cursor: pointer; white-space: nowrap;
+  transition: all 0.15s var(--ease); text-transform: uppercase; letter-spacing: 0.06em;
+}
+.fab-item:hover { border-color: var(--amber); color: var(--amber); }
+
+/* ── TICKER TAPE ── */
+.ticker-wrap {
+  position: relative; overflow: hidden; width: 100%;
+  margin: 0 calc(-1 * var(--gutter)) 20px;
+  width: calc(100% + var(--gutter) * 2);
+  border-top: 1px solid var(--amber); border-bottom: 1px solid var(--amber);
+  background: #000;
+}
+.ticker-wrap::before, .ticker-wrap::after {
+  content: ''; position: absolute; top: 0; bottom: 0; width: 60px; z-index: 2; pointer-events: none;
+}
+.ticker-wrap::before { left: 0; background: linear-gradient(to right, #000, transparent); }
+.ticker-wrap::after { right: 0; background: linear-gradient(to left, #000, transparent); }
+.ticker-track { display: flex; width: max-content; animation: tickerScroll 30s linear infinite; }
+.ticker-wrap:hover .ticker-track { animation-play-state: paused; }
+@keyframes tickerScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+.ticker-item { display: flex; align-items: center; gap: 8px; padding: 10px 24px; white-space: nowrap; flex-shrink: 0; }
+.ticker-num { font-family: 'Oswald', sans-serif; font-size: 26px; font-weight: 700; line-height: 1; }
+.ticker-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: #555; max-width: 140px; white-space: normal; line-height: 1.3; }
+.ticker-sep { width: 3px; height: 3px; border-radius: 50%; background: #333; flex-shrink: 0; }
+
+/* ── INLINE VISUALIZATIONS ── */
+.viz-container { margin: 8px 0 4px; }
+.viz-bar-track { height: 4px; background: rgba(255,255,255,0.06); border-radius: 0; overflow: hidden; }
+.viz-bar-fill { height: 100%; border-radius: 0; transition: width 0.8s var(--ease); }
+.viz-bar-label { font-size: 9px; color: var(--text-dim); margin-top: 4px; display: flex; justify-content: space-between; }
+.viz-split { display: flex; height: 6px; border-radius: 0; overflow: hidden; gap: 1px; }
+.viz-split-segment { height: 100%; transition: width 0.8s var(--ease); }
+.viz-split-labels { display: flex; justify-content: space-between; margin-top: 4px; font-size: 9px; }
+.viz-compare { display: flex; gap: 8px; align-items: flex-end; }
+.viz-compare-item { flex: 1; text-align: center; }
+.viz-compare-bar { height: 0; border-radius: 0; transition: height 0.8s var(--ease); margin: 0 auto; width: 100%; }
+.viz-compare-val { font-family: 'Oswald'; font-size: 14px; font-weight: 700; margin-top: 4px; }
+.viz-compare-lbl { font-size: 8px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em; }
+.viz-growth { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 2px; font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 12px; }
+.viz-growth.positive { background: rgba(0,210,106,0.1); color: var(--green); }
+.viz-growth.negative { background: rgba(255,68,68,0.1); color: var(--red); }
+.viz-growth-arrow { font-size: 10px; }
+
+/* ── CARD ENTRANCE ANIMATIONS ── */
+.insight-card { animation: cardIn 0.2s var(--ease) both; }
+@keyframes cardIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* ── VIEW TOGGLE ── */
+.view-toggle { display: flex; gap: 2px; margin-left: auto; }
+.view-toggle-btn {
+  background: none; border: 1px solid var(--border); color: var(--text-dim);
+  width: 28px; height: 28px; border-radius: 2px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; transition: all 0.15s var(--ease);
+}
+.view-toggle-btn:hover { border-color: var(--border-hover); color: var(--text-light); }
+.view-toggle-btn.active { border-color: var(--amber); color: var(--amber); background: rgba(255,153,0,0.06); }
+.grid-list { grid-template-columns: 1fr !important; }
+.grid-list .insight-card { flex-direction: row; align-items: flex-start; gap: 16px; }
+.grid-list .insight-card .stat-pull {
+  font-family: 'Oswald'; font-size: 22px; font-weight: 700; color: var(--amber);
+  min-width: 60px; flex-shrink: 0; line-height: 1.1;
+}
+
+/* ── ECO MAP TOOLTIP ── */
+.eco-tooltip {
+  position: absolute; pointer-events: none; background: #111;
+  border: 1px solid var(--amber); border-radius: 2px; padding: 4px 10px;
+  font-size: 10px; color: var(--amber); font-family: 'JetBrains Mono', monospace;
+  z-index: 10; display: none; white-space: nowrap;
+}
+
+/* ── ECO MAP TOOLBAR ── */
+.eco-toolbar { display: flex; align-items: center; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+.eco-color-swatch { width: 20px; height: 20px; border-radius: 2px; border: 2px solid transparent; cursor: pointer; transition: all 0.15s; }
+.eco-color-swatch:hover { transform: scale(1.1); }
+.eco-color-swatch.selected { border-color: var(--amber); }
+.eco-colors { display: flex; gap: 4px; align-items: center; }
+.eco-add-form { display: flex; align-items: center; gap: 4px; }
+.eco-context-menu { position: absolute; background: #111; border: 1px solid var(--amber); border-radius: 2px; padding: 4px 0; z-index: 100; min-width: 140px; }
+.eco-context-item { padding: 6px 12px; font-size: 10px; color: var(--text-light); cursor: pointer; transition: background 0.1s; font-family: 'JetBrains Mono', monospace; }
+.eco-context-item:hover { background: rgba(255,153,0,0.08); color: var(--amber); }
+.eco-context-item.danger { color: var(--red); }
+.eco-connect-active { border-color: var(--amber) !important; color: var(--amber) !important; background: rgba(255,153,0,0.1) !important; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  :root { --gutter: 12px; }
+  .section-header h2 { font-size: 18px; }
+  .top-nav { padding: 0 12px; overflow-x: auto; }
+  .nav-tab { padding: 6px 10px; font-size: 9px; }
+}
+</style>
+</head>
+<body>
+
+<!-- STATUS BAR -->
+<div class="status-bar">
+  <div class="status-left">
+    <span class="status-item">ADIDAS NAM</span>
+    <span class="status-item">REV <span class="status-val">EUR 5.128B</span></span>
+    <span class="status-item">MKT SHR <span class="status-val">8.9% &#9650;</span></span>
+    <span class="status-item">CAGR REQ <span class="status-neg">11.9%</span></span>
+    <span class="status-item">NB THREAT <span class="status-neg">$9.2B +19%</span></span>
+  </div>
+  <div class="status-right">
+    <span class="status-item" id="bb-clock"></span>
+    <span class="bb-cursor"></span>
+  </div>
+</div>
+
+<!-- TOP NAV -->
+<nav class="top-nav" id="topNav">
+  <div class="nav-logo" onclick="switchTab('conditions')" style="display:flex; align-items:center; gap:8px;">
+    <img src="689347.jpg" alt="Adidas" style="height:18px; width:auto; filter: invert(1);">
+    YOU GOT THIS
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" data-tab="conditions" onclick="switchTab('conditions')">Conditions</button>
+    <button class="nav-tab" data-tab="journey" onclick="switchTab('journey')">Consumer Journey</button>
+    <button class="nav-tab" data-tab="strategy" onclick="switchTab('strategy')">Strategy</button>
+    <button class="nav-tab" data-tab="math" onclick="switchTab('math')">Math</button>
+    <button class="nav-tab" data-tab="whiteboard" onclick="switchTab('whiteboard')">Whiteboard</button>
+  </div>
+  <div style="margin-left:auto; display:flex; align-items:center; gap:8px;">
+    <div style="display:flex; align-items:center; gap:2px;">
+      <button class="btn btn-sm" onclick="changeFontSize(-2)" style="font-size:11px; padding:4px 8px; line-height:1;" title="Decrease font size">A−</button>
+      <button class="btn btn-sm" onclick="resetFontSize()" id="font-size-display" style="font-size:10px; padding:4px 8px; line-height:1; min-width:36px; text-align:center;" title="Reset to default">16px</button>
+      <button class="btn btn-sm" onclick="changeFontSize(2)" style="font-size:13px; padding:4px 8px; line-height:1; font-weight:700;" title="Increase font size">A+</button>
+    </div>
+    <button class="btn btn-sm btn-fill" onclick="addFloatingNote()" style="font-size:13px; padding:4px 10px; line-height:1; font-weight:700;" title="Add floating note">+</button>
+    <button class="btn btn-sm" id="save-btn" onclick="manualSave()" style="font-size:9px; padding:4px 12px;">SAVE</button>
+  </div>
+</nav>
+
+<!-- KEYBOARD HINT -->
+<div class="kb-hint" id="kbHint" onclick="document.getElementById('kbPanel').classList.toggle('show')">? Shortcuts</div>
+<div class="kb-panel" id="kbPanel">
+  <div><span>New Insight</span><kbd>I</kbd></div>
+  <div><span>New Tension</span><kbd>T</kbd></div>
+  <div><span>New Opportunity</span><kbd>O</kbd></div>
+  <div><span>Focus Search</span><kbd>F</kbd></div>
+  <div><span>Math</span><kbd>G</kbd> then <kbd>M</kbd></div>
+  <div><span>Conditions</span><kbd>G</kbd> then <kbd>C</kbd></div>
+  <div><span>Journey</span><kbd>G</kbd> then <kbd>J</kbd></div>
+</div>
+
+<div class="main">
+
+<!-- ==================== CONDITIONS ==================== -->
+<div class="section active" id="section-conditions">
+  <div class="section-header">
+    <h2>Conditions</h2>
+    <p>What makes North American sports culture and media unique — and what it means for Adidas.</p>
+  </div>
+
+  <!-- Ticker Tape -->
+  <div class="ticker-wrap">
+    <div class="ticker-track" id="ticker-track">
+      <div class="ticker-item"><span class="ticker-num text-green">8.27M</span><span class="ticker-label">U.S. high school athletes</span></div>
+      <div class="ticker-sep"></div>
+      <div class="ticker-item"><span class="ticker-num text-green">1.03M</span><span class="ticker-label">Football participants</span></div>
+      <div class="ticker-sep"></div>
+      <div class="ticker-item"><span class="ticker-num text-blue">15M</span><span class="ticker-label">Canadians reached Stanley Cup G7</span></div>
+      <div class="ticker-sep"></div>
+      <div class="ticker-item"><span class="ticker-num" style="color:var(--white)">€5.1B</span><span class="ticker-label">Adidas NA revenue 2024</span></div>
+      <div class="ticker-sep"></div>
+      <div class="ticker-item"><span class="ticker-num text-red">+19%</span><span class="ticker-label">New Balance YoY growth</span></div>
+      <div class="ticker-sep"></div>
+      <div class="ticker-item"><span class="ticker-num text-green">8.9%</span><span class="ticker-label">Adidas global share (up from 8.2%)</span></div>
+      <div class="ticker-sep"></div>
+      <div class="ticker-item"><span class="ticker-num" style="color:#ff6b35">14.1%</span><span class="ticker-label">Nike global share (down from 15.2%)</span></div>
+      <div class="ticker-sep"></div>
+      <div class="ticker-item"><span class="ticker-num text-green">603K</span><span class="ticker-label">Hockey Canada registered players</span></div>
+      <div class="ticker-sep"></div>
+      <div class="ticker-item"><span class="ticker-num text-blue">60/40</span><span class="ticker-label">Wholesale / DTC split</span></div>
+      <div class="ticker-sep"></div>
+      <div class="ticker-item"><span class="ticker-num text-red">$9.2B</span><span class="ticker-label">New Balance 2025 sales</span></div>
+      <div class="ticker-sep"></div>
+      <div class="ticker-item"><span class="ticker-num" style="color:#e6b800">+11%</span><span class="ticker-label">U.S. team sports participation YoY</span></div>
+      <div class="ticker-sep"></div>
+      <div class="ticker-item"><span class="ticker-num text-blue">20%+</span><span class="ticker-label">MLB revenue from local media</span></div>
+      <div class="ticker-sep"></div>
+      <div class="ticker-item"><span class="ticker-num" style="color:var(--white)">68%</span><span class="ticker-label">Canadian youth in sport (ages 5-17)</span></div>
+      <div class="ticker-sep"></div>
+      <div class="ticker-item"><span class="ticker-num text-red">370K+</span><span class="ticker-label">Counterfeit items rejected by StockX</span></div>
+      <div class="ticker-sep"></div>
+      <!-- duplicate for seamless loop -->
+      <div class="ticker-item"><span class="ticker-num text-green">8.27M</span><span class="ticker-label">U.S. high school athletes</span></div>
+      <div class="ticker-sep"></div>
+      <div class="ticker-item"><span class="ticker-num text-green">1.03M</span><span class="ticker-label">Football participants</span></div>
+      <div class="ticker-sep"></div>
+      <div class="ticker-item"><span class="ticker-num text-blue">15M</span><span class="ticker-label">Canadians reached Stanley Cup G7</span></div>
+      <div class="ticker-sep"></div>
+      <div class="ticker-item"><span class="ticker-num" style="color:var(--white)">€5.1B</span><span class="ticker-label">Adidas NA revenue 2024</span></div>
+      <div class="ticker-sep"></div>
+      <div class="ticker-item"><span class="ticker-num text-red">+19%</span><span class="ticker-label">New Balance YoY growth</span></div>
+      <div class="ticker-sep"></div>
+      <div class="ticker-item"><span class="ticker-num text-green">8.9%</span><span class="ticker-label">Adidas global share (up from 8.2%)</span></div>
+      <div class="ticker-sep"></div>
+      <div class="ticker-item"><span class="ticker-num" style="color:#ff6b35">14.1%</span><span class="ticker-label">Nike global share (down from 15.2%)</span></div>
+      <div class="ticker-sep"></div>
+      <div class="ticker-item"><span class="ticker-num text-green">603K</span><span class="ticker-label">Hockey Canada registered players</span></div>
+      <div class="ticker-sep"></div>
+      <div class="ticker-item"><span class="ticker-num text-blue">60/40</span><span class="ticker-label">Wholesale / DTC split</span></div>
+      <div class="ticker-sep"></div>
+      <div class="ticker-item"><span class="ticker-num text-red">$9.2B</span><span class="ticker-label">New Balance 2025 sales</span></div>
+      <div class="ticker-sep"></div>
+      <div class="ticker-item"><span class="ticker-num" style="color:#e6b800">+11%</span><span class="ticker-label">U.S. team sports participation YoY</span></div>
+      <div class="ticker-sep"></div>
+      <div class="ticker-item"><span class="ticker-num text-blue">20%+</span><span class="ticker-label">MLB revenue from local media</span></div>
+      <div class="ticker-sep"></div>
+      <div class="ticker-item"><span class="ticker-num" style="color:var(--white)">68%</span><span class="ticker-label">Canadian youth in sport (ages 5-17)</span></div>
+      <div class="ticker-sep"></div>
+      <div class="ticker-item"><span class="ticker-num text-red">370K+</span><span class="ticker-label">Counterfeit items rejected by StockX</span></div>
+      <div class="ticker-sep"></div>
+    </div>
+  </div>
+
+  <!-- Research Upload (collapsed by default) -->
+  <div class="accordion mb-24">
+    <div class="accordion-header" onclick="toggleAccordion(this)">
+      <h3 class="heading"><span style="opacity:0.4; margin-right:4px;">&#8682;</span> Upload Research</h3>
+      <span class="accordion-arrow">&#9662;</span>
+    </div>
+    <div class="accordion-body">
+      <div class="accordion-body-inner">
+        <div class="dropzone" id="research-dropzone">
+          <div class="dropzone-icon">&#8682;</div>
+          <div class="dropzone-text">Drop research files here or click to upload</div>
+          <div class="dropzone-formats">PDF &middot; PPT &middot; DOC &middot; CSV &middot; XLSX</div>
+        </div>
+        <div id="upload-workflow" style="display:none;" class="mt-24">
+          <div class="flex items-center gap-12 mb-12">
+            <span class="tag tag-green">Uploaded</span>
+            <span id="upload-filename" class="text-sm text-light"></span>
+          </div>
+          <p class="text-sm text-dim mb-16">AI extraction would process this file. Review extracted insights below and confirm to integrate.</p>
+          <div class="flex gap-8">
+            <button class="btn btn-fill btn-sm">Confirm & Integrate</button>
+            <button class="btn btn-sm" onclick="document.getElementById('upload-workflow').style.display='none'">Cancel</button>
+          </div>
+        </div>
+        <input type="file" id="research-file-input" style="display:none;" accept=".pdf,.ppt,.pptx,.doc,.docx,.csv,.xlsx">
+      </div>
+    </div>
+  </div>
+
+  <!-- Filter Bar -->
+  <div class="filter-bar" id="conditions-filter" style="align-items:center;">
+    <button class="filter-btn active" data-filter="all" onclick="filterConditions('all',this)">All</button>
+    <button class="filter-btn" data-filter="sports-system" onclick="filterConditions('sports-system',this)">Sports System</button>
+    <button class="filter-btn" data-filter="media" onclick="filterConditions('media',this)">Media Landscape</button>
+    <button class="filter-btn" data-filter="commerce" onclick="filterConditions('commerce',this)">Commerce</button>
+    <button class="filter-btn" data-filter="competitive" onclick="filterConditions('competitive',this)">Competitive</button>
+    <button class="filter-btn" data-filter="strategic" onclick="filterConditions('strategic',this)">Strategic</button>
+    <div class="view-toggle">
+      <button class="view-toggle-btn active" id="view-grid-btn" onclick="setConditionsView('grid')" title="Grid view">&#9638;</button>
+      <button class="view-toggle-btn" id="view-list-btn" onclick="setConditionsView('list')" title="List view">&#9776;</button>
+    </div>
+  </div>
+
+  <!-- Insight Cards Container -->
+  <div class="grid grid-2 mb-48" id="conditions-grid"></div>
+
+  <!-- AI Strategist Signals -->
+  <div class="card-label">AI Strategist Signals</div>
+  <div class="grid grid-3 mb-48" id="ai-signals">
+    <div class="ai-card pattern">
+      <div class="ai-card-type text-green">Pattern Detected</div>
+      <div class="ai-card-text">Team environments appear across multiple insights — high school football, college athletics, and professional leagues all share community identity dynamics.</div>
+      <div class="ai-card-actions">
+        <button class="btn btn-sm btn-green" onclick="saveAICard(this)">Save</button>
+        <button class="btn btn-sm btn-ghost" onclick="dismissAICard(this)">Dismiss</button>
+      </div>
+    </div>
+    <div class="ai-card opportunity">
+      <div class="ai-card-type text-red">Opportunity</div>
+      <div class="ai-card-text">Adidas could dominate college athlete ecosystems through scalable NIL operations — compliance + workflow + content production as the competitive edge.</div>
+      <div class="ai-card-actions">
+        <button class="btn btn-sm btn-red" onclick="saveAICard(this)">Save</button>
+        <button class="btn btn-sm btn-ghost" onclick="dismissAICard(this)">Dismiss</button>
+      </div>
+    </div>
+    <div class="ai-card narrative">
+      <div class="ai-card-type text-blue">Narrative Signal</div>
+      <div class="ai-card-text">Growth challenge &rarr; community ecosystems &rarr; commerce capture. The path from $5.1B to $8B runs through local identity, not just national media.</div>
+      <div class="ai-card-actions">
+        <button class="btn btn-sm btn-blue" onclick="saveAICard(this)">Save</button>
+        <button class="btn btn-sm btn-ghost" onclick="dismissAICard(this)">Dismiss</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Strategic Priorities (accordion) -->
+  <div class="accordion">
+    <div class="accordion-header" onclick="toggleAccordion(this)">
+      <h3 class="heading">Strategic Priorities <span class="accordion-count">5 priorities</span></h3>
+      <span class="accordion-arrow">&#9662;</span>
+    </div>
+    <div class="accordion-body">
+      <div class="accordion-body-inner">
+        <div class="overflow-x">
+          <table class="priority-table">
+            <thead>
+              <tr><th style="width:40px;">#</th><th>What to Do</th><th>Why It Matters</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="priority-num">1</span></td>
+                <td><strong class="text-light">Build a "youth + high school football" growth engine</strong></td>
+                <td>High school football is the largest boys' sport (~1.03M participants). High school sports at record ~8.27M. Massive addressable teamwear + training + spiritwear market with intense local identity.</td>
+              </tr>
+              <tr>
+                <td><span class="priority-num">2</span></td>
+                <td><strong class="text-light">Use MLS as a multicultural growth flywheel</strong></td>
+                <td>Hispanic fandom is younger, digital-first, more sponsor-responsive. MLS over-indexes in Hispanic avidity. Convert league partnership into creator-led, community-led drops.</td>
+              </tr>
+              <tr>
+                <td><span class="priority-num">3</span></td>
+                <td><strong class="text-light">Make NIL a scalable endorsement channel</strong></td>
+                <td>NIL structurally changes college athlete monetization and jersey commerce. Build a compliant NIL "roster + content + commerce" system. Exploit group licensing pathways.</td>
+              </tr>
+              <tr>
+                <td><span class="priority-num">4</span></td>
+                <td><strong class="text-light">Shift media/commerce to streaming-first</strong></td>
+                <td>Exclusive streaming games and league streaming packages are multiplying. RSNs are fragmenting. Buy/produce short-form + interactive content where rights are moving.</td>
+              </tr>
+              <tr>
+                <td><span class="priority-num">5</span></td>
+                <td><strong class="text-light">Canada: hockey + women's + bilingual</strong></td>
+                <td>Hockey is the national winter sport. 603K+ registered players. 15M Canadians reached for Stanley Cup G7. Women's hockey at record participation. Quebec-ready labeling mandatory.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== CONSUMER JOURNEY ==================== -->
+<div class="section" id="section-journey">
+  <div class="section-header" style="display:flex; align-items:flex-start; justify-content:space-between;">
+    <div>
+      <h2>Consumer Journey</h2>
+      <p>Map the moments that matter through the lens of our bullseye consumer.</p>
+    </div>
+    <button class="btn btn-sm btn-fill" onclick="openRemixModal()" style="margin-top:4px; white-space:nowrap;">&#x1f3b2; REMIX JOURNEY</button>
+  </div>
+
+  <!-- Persona Card -->
+  <div class="card mb-40">
+    <div class="persona-card">
+      <div class="persona-avatar">&#9917;</div>
+      <div class="persona-info">
+        <h3 class="heading">Maya</h3>
+        <p class="text-sm text-dim mb-12">19-year-old D1 student athlete &middot; soccer &middot; University of Michigan</p>
+        <p class="text-sm text-light" style="line-height:1.7; max-width: 640px;">Gen Z. NIL-aware and actively exploring personal brand opportunities. Socially connected across Instagram, TikTok, and team group chats. Performance-driven on the field, style-driven off it. Follows creators and athletes more than brands. Bilingual (English/Spanish). Streams everything, watches nothing linear.</p>
+        <div class="persona-traits">
+          <span class="tag tag-green">Gen Z</span>
+          <span class="tag tag-red">NIL Aware</span>
+          <span class="tag tag-blue">D1 Athlete</span>
+          <span class="tag tag-yellow">Creator Consumer</span>
+          <span class="tag tag-purple">Style + Performance</span>
+          <span class="tag tag-white">Streaming Native</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Weekly Journey Map -->
+  <div class="card-label">Weekly Journey Map</div>
+  <div class="card mb-40">
+    <div class="overflow-x">
+      <table class="journey-table">
+        <thead>
+          <tr><th>Day</th><th>Context</th><th>Media</th><th>Community</th><th>Adidas Opportunity</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="journey-day">Mon</span></td>
+            <td contenteditable="true">Morning training. Afternoon classes. Evening film review.</td>
+            <td contenteditable="true">TikTok between classes. YouTube highlights. Spotify during training.</td>
+            <td contenteditable="true">Team group chat. Posts training clip to IG story.</td>
+            <td contenteditable="true">Training gear visibility. Post-training recovery content.</td>
+          </tr>
+          <tr>
+            <td><span class="journey-day">Tue</span></td>
+            <td contenteditable="true">Light training. Study groups. NIL meeting with advisor.</td>
+            <td contenteditable="true">Instagram Reels. StockX drop checks. Reddit soccer threads.</td>
+            <td contenteditable="true">NIL discussion with teammates. Group chat about match.</td>
+            <td contenteditable="true">NIL partnership touchpoint. Campus retail activation.</td>
+          </tr>
+          <tr>
+            <td><span class="journey-day">Wed</span></td>
+            <td contenteditable="true">Full practice. Weights. Campus life — dining, library.</td>
+            <td contenteditable="true">MLS highlights on Apple TV. Creator commentary on TikTok.</td>
+            <td contenteditable="true">Casual pickup with friends. Soccer culture chat.</td>
+            <td contenteditable="true">Lifestyle-to-pitch crossover. Pickup culture content.</td>
+          </tr>
+          <tr>
+            <td><span class="journey-day">Thu</span></td>
+            <td contenteditable="true">Pre-match prep. Travel day if away. Kit check and ritual.</td>
+            <td contenteditable="true">Match preview on ESPN+. Pre-game playlist. Team hype videos.</td>
+            <td contenteditable="true">Team bonding. Pre-match rituals. Coach sessions.</td>
+            <td contenteditable="true">Match-day kit experience. Travel gear integration.</td>
+          </tr>
+          <tr>
+            <td><span class="journey-day">Fri</span></td>
+            <td contenteditable="true">MATCH DAY. Pre-match routine. Post-match recovery.</td>
+            <td contenteditable="true">Dark pre-match. Post: highlights, stats, group FaceTimes.</td>
+            <td contenteditable="true">Peak social — match photos, fans, team celebration.</td>
+            <td contenteditable="true">On-field performance showcase. Post-match social content.</td>
+          </tr>
+          <tr>
+            <td><span class="journey-day">Sat</span></td>
+            <td contenteditable="true">Recovery. Brunch with friends. Shopping/thrifting. Going out.</td>
+            <td contenteditable="true">Premier League on Peacock. Football on ESPN. TikTok deep scroll.</td>
+            <td contenteditable="true">Non-sport friend groups. Social scene. Cultural life.</td>
+            <td contenteditable="true">Lifestyle product moments. Retro silhouettes (Samba/Gazelle).</td>
+          </tr>
+          <tr>
+            <td><span class="journey-day">Sun</span></td>
+            <td contenteditable="true">Light recovery. Meal prep. Content creation for personal brand.</td>
+            <td contenteditable="true">NFL streaming. Creating TikTok/IG content. Watching creators.</td>
+            <td contenteditable="true">Family FaceTime. NIL content calendar. Engaging followers.</td>
+            <td contenteditable="true">Creator tools/support. Content creation partnership.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Ecosystem Map -->
+  <div class="card-label">Influence Ecosystem</div>
+  <div class="eco-toolbar">
+    <button class="btn btn-sm btn-green" onclick="startAddEcoNode()">+ Add Node</button>
+    <button class="btn btn-sm" id="eco-connect-btn" onclick="toggleEcoConnect()">Connect</button>
+    <div class="eco-colors" id="eco-color-picker" style="display:none;">
+      <button class="eco-color-swatch" style="background:#39FF14" onclick="setEcoNodeColor('#39FF14','#000')"></button>
+      <button class="eco-color-swatch" style="background:#FF3131" onclick="setEcoNodeColor('#FF3131','#FFF')"></button>
+      <button class="eco-color-swatch" style="background:#0047AB" onclick="setEcoNodeColor('#0047AB','#FFF')"></button>
+      <button class="eco-color-swatch" style="background:#c080ff" onclick="setEcoNodeColor('#c080ff','#FFF')"></button>
+      <button class="eco-color-swatch" style="background:#e6b800" onclick="setEcoNodeColor('#e6b800','#000')"></button>
+    </div>
+    <div id="eco-add-form" style="display:none;" class="eco-add-form">
+      <input type="text" id="eco-new-label" placeholder="Node name..." style="width:140px;">
+      <button class="btn btn-sm btn-fill" onclick="confirmAddEcoNode()">Add</button>
+      <button class="btn btn-sm" onclick="cancelAddEcoNode()">Cancel</button>
+    </div>
+  </div>
+  <div class="card" style="position:relative;">
+    <canvas id="eco-canvas" class="eco-map"></canvas>
+    <div class="eco-tooltip" id="eco-tooltip"></div>
+    <div class="eco-context-menu" id="eco-context-menu" style="display:none;"></div>
+  </div>
+</div>
+
+<!-- ==================== STRATEGY ==================== -->
+<div class="section" id="section-strategy">
+  <div class="section-header">
+    <h2>Strategy Library</h2>
+    <p>Capture, organize, and connect strategic thinking.</p>
+  </div>
+
+  <div class="flex items-center justify-between mb-32">
+    <div class="search-bar" style="margin-bottom:0;">
+      <input type="text" id="strategy-search" placeholder="Search strategies..." oninput="filterStrategy()">
+    </div>
+    <button class="btn btn-green" onclick="openStrategyModal()">+ New Item</button>
+  </div>
+
+  <div class="filter-bar mb-32" id="strategy-filter">
+    <button class="filter-btn active" data-sfilter="all" onclick="filterStrategyType('all',this)">All</button>
+    <button class="filter-btn" data-sfilter="insight" onclick="filterStrategyType('insight',this)">Insight</button>
+    <button class="filter-btn" data-sfilter="tension" onclick="filterStrategyType('tension',this)">Tension</button>
+    <button class="filter-btn" data-sfilter="opportunity" onclick="filterStrategyType('opportunity',this)">Opportunity</button>
+    <button class="filter-btn" data-sfilter="hypothesis" onclick="filterStrategyType('hypothesis',this)">Hypothesis</button>
+    <button class="filter-btn" data-sfilter="idea" onclick="filterStrategyType('idea',this)">Strategic Idea</button>
+  </div>
+
+  <div class="grid grid-2" id="strategy-grid"></div>
+</div>
+
+<!-- ==================== MATH ==================== -->
+<div class="section" id="section-math">
+  <div class="section-header">
+    <h2>The Math</h2>
+    <p>Illustrative growth modeling to frame the scale of the challenge.</p>
+  </div>
+
+  <!-- Sub-tabs for Math -->
+  <div class="sub-tabs mb-32">
+    <button class="sub-tab active" onclick="switchMathTab('assumptions', this)">Assumptions</button>
+    <button class="sub-tab" onclick="switchMathTab('scenarios', this)">Scenarios</button>
+    <button class="sub-tab" onclick="switchMathTab('timeline', this)">Timeline</button>
+    <button class="sub-tab" onclick="switchMathTab('charts', this)">Charts</button>
+  </div>
+
+  <!-- Assumptions Panel -->
+  <div class="sub-panel active" id="math-assumptions">
+    <div class="grid grid-2 gap-24">
+      <div class="card">
+        <div class="card-label">Revenue Targets</div>
+        <div class="space-y">
+          <div><label>Current Revenue ($B)</label><input type="text" id="math-current-rev" value="5.1" onchange="updateMathModel()"></div>
+          <div><label>Target Revenue ($B)</label><input type="text" id="math-target-rev" value="8.0" onchange="updateMathModel()"></div>
+          <div><label>Target Year</label><input type="number" id="math-target-year" value="2028" onchange="updateMathModel()"></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-label">Model Parameters</div>
+        <div class="space-y">
+          <div><label>Assumed ROAS (x)</label><input type="text" id="math-roas" value="4.2" onchange="updateMathModel()"></div>
+          <div><label>Media Contribution (%)</label><input type="text" id="math-media-contrib" value="35" onchange="updateMathModel()"></div>
+          <div><label>Base Growth Rate (%)</label><input type="text" id="math-base-growth" value="3" onchange="updateMathModel()"></div>
+        </div>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="card">
+      <div class="card-label">Strategic Readout</div>
+      <div id="math-readout" style="font-size:14px; color:var(--text-light); line-height:1.8;"></div>
+    </div>
+  </div>
+
+  <!-- Scenario Simulator -->
+  <div class="sub-panel" id="math-scenarios">
+    <div class="grid grid-3 gap-24">
+      <div class="card">
+        <div class="card-label" style="color:var(--green);">Level Spend</div>
+        <label>Annual Spend ($B)</label>
+        <input type="range" id="slider-level" min="0.5" max="3" step="0.1" value="1.4" oninput="updateScenarios()">
+        <div class="flex items-center justify-between mt-12">
+          <span class="text-xs text-dim">$0.5B</span>
+          <span class="text-green" style="font-family:'Oswald'; font-size:24px; font-weight:700;" id="val-level">$1.4B</span>
+          <span class="text-xs text-dim">$3.0B</span>
+        </div>
+        <div class="mt-20 text-sm" id="out-level"></div>
+      </div>
+      <div class="card">
+        <div class="card-label" style="color:var(--red);">Graded Spend</div>
+        <label>Year 1 Spend ($B)</label>
+        <input type="range" id="slider-graded" min="0.5" max="3" step="0.1" value="1.6" oninput="updateScenarios()">
+        <div class="flex items-center justify-between mt-12">
+          <span class="text-xs text-dim">$0.5B</span>
+          <span class="text-red" style="font-family:'Oswald'; font-size:24px; font-weight:700;" id="val-graded">$1.6B</span>
+          <span class="text-xs text-dim">$3.0B</span>
+        </div>
+        <div class="mt-20 text-sm" id="out-graded"></div>
+      </div>
+      <div class="card">
+        <div class="card-label" style="color:#5a9eff;">Efficiency-Led</div>
+        <label>ROAS Improvement (%/yr)</label>
+        <input type="range" id="slider-efficiency" min="0" max="30" step="1" value="10" oninput="updateScenarios()">
+        <div class="flex items-center justify-between mt-12">
+          <span class="text-xs text-dim">0%</span>
+          <span class="text-blue" style="font-family:'Oswald'; font-size:24px; font-weight:700;" id="val-efficiency">10%/yr</span>
+          <span class="text-xs text-dim">30%</span>
+        </div>
+        <div class="mt-20 text-sm" id="out-efficiency"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Timeline Model -->
+  <div class="sub-panel" id="math-timeline">
+    <div class="card">
+      <div class="overflow-x">
+        <table class="data-table" id="timeline-table">
+          <thead>
+            <tr><th>Year</th><th>Spend ($B)</th><th>Revenue ($B)</th><th>Gap to Target ($B)</th><th>CAGR from Base</th></tr>
+          </thead>
+          <tbody id="timeline-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts -->
+  <div class="sub-panel" id="math-charts">
+    <div class="grid grid-2 gap-24 mb-24">
+      <div class="card">
+        <div class="card-label">Revenue Trajectory</div>
+        <div class="chart-container"><canvas id="chart-revenue"></canvas></div>
+        <div class="chart-actions"><button class="btn btn-sm" onclick="exportChart('chart-revenue')">Export PNG</button></div>
+      </div>
+      <div class="card">
+        <div class="card-label">Spend vs Growth</div>
+        <div class="chart-container"><canvas id="chart-spend"></canvas></div>
+        <div class="chart-actions"><button class="btn btn-sm" onclick="exportChart('chart-spend')">Export PNG</button></div>
+      </div>
+    </div>
+    <div class="grid grid-2 gap-24">
+      <div class="card">
+        <div class="card-label">CAGR Visualization</div>
+        <div class="chart-container"><canvas id="chart-cagr"></canvas></div>
+        <div class="chart-actions"><button class="btn btn-sm" onclick="exportChart('chart-cagr')">Export PNG</button></div>
+      </div>
+      <div class="card" style="display:flex; align-items:center; justify-content:center;">
+        <p class="text-dim text-sm" style="text-align:center; max-width:280px; line-height:1.7;">Select different assumptions or scenarios to see how the charts respond in real time.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== WHITEBOARD ==================== -->
+<div class="section" id="section-whiteboard">
+  <div class="section-header">
+    <h2>Whiteboard</h2>
+    <p>Drag-and-drop brainstorming canvas.</p>
+  </div>
+  <div class="flex items-center justify-between mb-24">
+    <div class="flex gap-8">
+      <button class="btn btn-sm" style="color:#00d26a; border-color:#00d26a;" onclick="addWhiteboardNote('#00d26a','#000')">+ Green</button>
+      <button class="btn btn-sm" style="color:#ff4444; border-color:#ff4444;" onclick="addWhiteboardNote('#ff4444','#FFF')">+ Red</button>
+      <button class="btn btn-sm" style="color:#4a9eff; border-color:#4a9eff;" onclick="addWhiteboardNote('#4a9eff','#000')">+ Blue</button>
+      <button class="btn btn-sm" style="color:#ff9900; border-color:#ff9900;" onclick="addWhiteboardNote('#ff9900','#000')">+ Amber</button>
+      <button class="btn btn-sm" style="color:#a050ff; border-color:#a050ff;" onclick="addWhiteboardNote('#a050ff','#FFF')">+ Purple</button>
+    </div>
+    <button class="btn btn-sm" onclick="clearWhiteboard()">Clear All</button>
+  </div>
+  <div class="canvas-area" id="whiteboard-canvas"></div>
+</div>
+
+</div><!-- /main -->
+
+<!-- FLOATING ACTION BUTTON -->
+<div class="fab-container">
+  <div class="fab-menu" id="fab-menu">
+    <button class="fab-item" onclick="fabAction('whiteboard')">Add to Whiteboard</button>
+    <button class="fab-item" onclick="fabAction('insight')">Add Insight</button>
+  </div>
+  <button class="fab-main" id="fab-btn" onclick="toggleFab()">+</button>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal" id="modal-content"></div>
+</div>
+
+<script>
+// ==================== STATE ====================
+const STATE = {
+  pinnedInsights: [],
+  strategyItems: [],
+  notes: [],
+  whiteboardNotes: [],
+  savedAICards: [],
+  conditionsInsights: [],
+  cardNotes: {},
+  conditionsOrder: [],
+  ecoNodePositions: {},
+  ecoCustomNodes: [],
+  ecoCustomConnections: [],
+  fontSize: 16,
+  floatingNotes: []
+};
+
+function loadState() {
+  try {
+    const s = localStorage.getItem('adidas_ygt_state');
+    if (s) { const parsed = JSON.parse(s); Object.assign(STATE, parsed); }
+  } catch(e) {}
+}
+function saveState() {
+  try { localStorage.setItem('adidas_ygt_state', JSON.stringify(STATE)); } catch(e) {}
+}
+loadState();
+applyFontSize();
+
+const DEFAULT_FONT_SIZE = 16;
+function applyFontSize() {
+  document.documentElement.style.setProperty('--base-font', STATE.fontSize + 'px');
+  const disp = document.getElementById('font-size-display');
+  if (disp) disp.textContent = STATE.fontSize + 'px';
+}
+function changeFontSize(delta) {
+  STATE.fontSize = Math.max(10, Math.min(28, (STATE.fontSize || DEFAULT_FONT_SIZE) + delta));
+  applyFontSize();
+  saveState();
+}
+function resetFontSize() {
+  STATE.fontSize = DEFAULT_FONT_SIZE;
+  applyFontSize();
+  saveState();
+}
+
+// ==================== NAV ====================
+function switchTab(tab) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  const sec = document.getElementById('section-' + tab);
+  if (sec) sec.classList.add('active');
+  const tabBtn = document.querySelector(`.nav-tab[data-tab="${tab}"]`);
+  if (tabBtn) tabBtn.classList.add('active');
+  if (tab === 'math') { setTimeout(() => { updateMathModel(); updateScenarios(); }, 100); }
+  if (tab === 'journey') { setTimeout(drawEcoMap, 100); }
+  if (tab === 'conditions') { renderConditions(); }
+  if (tab === 'strategy') { renderStrategy(); }
+  if (tab === 'whiteboard') { renderWhiteboard(); }
+}
+
+// ==================== MATH SUB-TABS ====================
+function switchMathTab(panel, btn) {
+  document.querySelectorAll('#section-math .sub-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('#section-math .sub-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('math-' + panel).classList.add('active');
+  btn.classList.add('active');
+  if (panel === 'charts') { setTimeout(() => { updateMathModel(); }, 50); }
+  if (panel === 'scenarios') { setTimeout(updateScenarios, 50); }
+  if (panel === 'timeline') { setTimeout(updateMathModel, 50); }
+}
+
+// ==================== ACCORDION ====================
+function toggleAccordion(header) {
+  const body = header.nextElementSibling;
+  header.classList.toggle('open');
+  body.classList.toggle('open');
+}
+
+// ==================== KEYBOARD SHORTCUTS ====================
+let gPressed = false;
+let gTimeout = null;
+document.addEventListener('keydown', (e) => {
+  const tag = e.target.tagName;
+  if (tag === 'INPUT' || tag === 'TEXTAREA' || e.target.contentEditable === 'true') return;
+  if (e.key === 'g' || e.key === 'G') { gPressed = true; clearTimeout(gTimeout); gTimeout = setTimeout(() => gPressed = false, 1000); return; }
+  if (gPressed) {
+    gPressed = false;
+    if (e.key === 'm' || e.key === 'M') { switchTab('math'); e.preventDefault(); }
+    if (e.key === 'c' || e.key === 'C') { switchTab('conditions'); e.preventDefault(); }
+    if (e.key === 'j' || e.key === 'J') { switchTab('journey'); e.preventDefault(); }
+    return;
+  }
+  if (e.key === 'i' || e.key === 'I') { openStrategyModal('insight'); e.preventDefault(); }
+  if (e.key === 't' && !e.ctrlKey && !e.metaKey) { openStrategyModal('tension'); e.preventDefault(); }
+  if (e.key === 'o' || e.key === 'O') { openStrategyModal('opportunity'); e.preventDefault(); }
+  if (e.key === 'f' || e.key === 'F') {
+    const s = document.getElementById('strategy-search');
+    if (s) { switchTab('strategy'); setTimeout(() => s.focus(), 100); }
+    e.preventDefault();
+  }
+  if (e.key === 'Escape') { closeModal(); document.getElementById('kbPanel').classList.remove('show'); }
+});
+
+// ==================== AI CARDS ====================
+function saveAICard(btn) {
+  const card = btn.closest('.ai-card');
+  const text = card.querySelector('.ai-card-text').textContent;
+  const type = card.querySelector('.ai-card-type').textContent;
+  STATE.savedAICards.push({ type, text, saved: Date.now() });
+  saveState();
+  btn.textContent = 'Saved';
+  btn.disabled = true;
+  btn.style.opacity = '0.5';
+}
+function dismissAICard(btn) {
+  const card = btn.closest('.ai-card');
+  card.style.opacity = '0';
+  card.style.transform = 'scale(0.95) translateX(20px)';
+  setTimeout(() => card.remove(), 300);
+}
+
+// ==================== PINNING ====================
+function unpinInsight(id) {
+  STATE.pinnedInsights = STATE.pinnedInsights.filter(p => p.id !== id);
+  saveState();
+}
+
+// ==================== MATH ====================
+let chartRevenue, chartSpend, chartCagr;
+
+function updateMathModel() {
+  const curRev = parseFloat(document.getElementById('math-current-rev').value) || 5.1;
+  const targetRev = parseFloat(document.getElementById('math-target-rev').value) || 8;
+  const targetYear = parseInt(document.getElementById('math-target-year').value) || 2028;
+  const roas = parseFloat(document.getElementById('math-roas').value) || 4.2;
+  const mediaContrib = (parseFloat(document.getElementById('math-media-contrib').value) || 35) / 100;
+  const baseGrowth = (parseFloat(document.getElementById('math-base-growth').value) || 3) / 100;
+  const baseYear = 2024;
+  const years = targetYear - baseYear;
+  const cagr = Math.pow(targetRev / curRev, 1 / years) - 1;
+  const tbody = document.getElementById('timeline-tbody');
+  const rows = [];
+  const revData = [curRev];
+  const spendData = [];
+  const cagrData = [];
+  const labels = [baseYear.toString()];
+  for (let i = 1; i <= years; i++) {
+    const yr = baseYear + i;
+    const rev = curRev * Math.pow(1 + cagr, i);
+    const prevRev = curRev * Math.pow(1 + cagr, i - 1);
+    const baseRev = prevRev * (1 + baseGrowth);
+    const mediaRev = rev - baseRev;
+    const spend = Math.max(0, mediaRev / roas);
+    const gap = targetRev - rev;
+    const yrCagr = (Math.pow(rev / curRev, 1 / i) - 1) * 100;
+    revData.push(parseFloat(rev.toFixed(2)));
+    spendData.push(parseFloat(spend.toFixed(2)));
+    cagrData.push(parseFloat(yrCagr.toFixed(1)));
+    labels.push(yr.toString());
+    rows.push(`<tr><td style="font-family:Oswald; font-weight:600;">${yr}</td><td contenteditable="true">$${spend.toFixed(2)}B</td><td contenteditable="true">$${rev.toFixed(2)}B</td><td>${gap > 0.01 ? '$' + gap.toFixed(2) + 'B' : '<span style="color:var(--green)">Target Met</span>'}</td><td>${yrCagr.toFixed(1)}%</td></tr>`);
+  }
+  tbody.innerHTML = rows.join('');
+  updateCharts(labels, revData, spendData, cagrData, curRev, targetRev, years, cagr);
+  const totalSpend = spendData.reduce((a, b) => a + b, 0);
+  document.getElementById('math-readout').innerHTML =
+    `<p><strong style="color:var(--green)">Required CAGR:</strong> ${(cagr * 100).toFixed(1)}% annually over ${years} years to grow from $${curRev}B to $${targetRev}B.</p>
+    <p class="mt-16"><strong style="color:var(--red)">Estimated total media spend:</strong> $${totalSpend.toFixed(1)}B over the period at ${roas}x ROAS and ${(mediaContrib * 100).toFixed(0)}% media contribution.</p>
+    <p class="mt-16"><strong style="color:#5a9eff">Key tension:</strong> Base organic growth of ${(baseGrowth * 100).toFixed(0)}% covers only a fraction of the gap. Media-driven growth must deliver $${(targetRev - curRev * Math.pow(1 + baseGrowth, years)).toFixed(1)}B in incremental revenue beyond organic.</p>
+    <p class="mt-16" style="color:var(--text-dim)">This illustrates why efficiency (ROAS improvement) and portfolio rebalancing are required to make the math work without unsustainable spend levels.</p>`;
+}
+
+function updateCharts(labels, revData, spendData, cagrData, curRev, targetRev, years, cagr) {
+  const chartOpts = {
+    responsive: true, maintainAspectRatio: false,
+    animation: { duration: 400, easing: 'easeOutQuart' },
+    plugins: { legend: { labels: { color: '#888', font: { family: 'JetBrains Mono', size: 9 }, padding: 16 } } },
+    scales: {
+      x: { ticks: { color: '#666', font: { family: 'JetBrains Mono', size: 9 } }, grid: { color: 'rgba(255,153,0,0.06)' } },
+      y: { ticks: { color: '#666', font: { family: 'JetBrains Mono', size: 9 } }, grid: { color: 'rgba(255,153,0,0.06)' } }
+    }
+  };
+  if (chartRevenue) chartRevenue.destroy();
+  chartRevenue = new Chart(document.getElementById('chart-revenue'), {
+    type: 'line', data: {
+      labels,
+      datasets: [
+        { label: 'Required Revenue', data: revData, borderColor: '#00d26a', backgroundColor: 'rgba(0,210,106,0.06)', fill: true, tension: 0.4, borderWidth: 2, pointRadius: 3, pointBackgroundColor: '#00d26a' },
+        { label: 'Target', data: labels.map(() => targetRev), borderColor: 'rgba(255,153,0,0.5)', borderDash: [5, 5], pointRadius: 0, borderWidth: 1 },
+        { label: 'Base Growth Only', data: labels.map((_, i) => parseFloat((curRev * Math.pow(1.03, i)).toFixed(2))), borderColor: 'rgba(255,255,255,0.1)', borderDash: [3, 3], pointRadius: 0, borderWidth: 1 }
+      ]
+    }, options: chartOpts
+  });
+  const spendLabels = labels.slice(1);
+  if (chartSpend) chartSpend.destroy();
+  chartSpend = new Chart(document.getElementById('chart-spend'), {
+    type: 'bar', data: {
+      labels: spendLabels,
+      datasets: [{ label: 'Media Spend ($B)', data: spendData, backgroundColor: 'rgba(255,49,49,0.4)', borderColor: 'rgba(255,49,49,0.6)', borderWidth: 1, borderRadius: 6 }]
+    }, options: chartOpts
+  });
+  if (chartCagr) chartCagr.destroy();
+  chartCagr = new Chart(document.getElementById('chart-cagr'), {
+    type: 'bar', data: {
+      labels: spendLabels,
+      datasets: [{ label: 'Running CAGR %', data: cagrData, backgroundColor: 'rgba(0,71,171,0.4)', borderColor: 'rgba(0,71,171,0.6)', borderWidth: 1, borderRadius: 6 }]
+    }, options: chartOpts
+  });
+}
+
+function exportChart(canvasId) {
+  const canvas = document.getElementById(canvasId);
+  const link = document.createElement('a');
+  link.download = canvasId + '.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
+
+function updateScenarios() {
+  const curRev = parseFloat(document.getElementById('math-current-rev').value) || 5.1;
+  const targetRev = parseFloat(document.getElementById('math-target-rev').value) || 8;
+  const targetYear = parseInt(document.getElementById('math-target-year').value) || 2028;
+  const roas = parseFloat(document.getElementById('math-roas').value) || 4.2;
+  const years = targetYear - 2024;
+
+  const levelSpend = parseFloat(document.getElementById('slider-level').value);
+  document.getElementById('val-level').textContent = '$' + levelSpend.toFixed(1) + 'B';
+  const levelRev = curRev + (levelSpend * roas * years * 0.35);
+  document.getElementById('out-level').innerHTML =
+    `<div style="padding:16px; background:var(--card2); border-radius:10px;">
+      <p style="color:var(--text-light); margin-bottom:8px;">Projected: <strong style="color:var(--green)">$${Math.min(levelRev, 12).toFixed(1)}B</strong></p>
+      <p style="color:var(--text-mid); margin-bottom:8px;">${levelRev >= targetRev ? '<span style="color:var(--green)">Target Met</span>' : 'Gap: <span style="color:var(--red)">$' + (targetRev - levelRev).toFixed(1) + 'B</span>'}</p>
+      <p style="color:var(--text-dim);">Total: $${(levelSpend * years).toFixed(1)}B</p>
+    </div>`;
+
+  const gradedY1 = parseFloat(document.getElementById('slider-graded').value);
+  document.getElementById('val-graded').textContent = '$' + gradedY1.toFixed(1) + 'B';
+  let gradedTotal = 0, gradedRev = curRev;
+  for (let i = 0; i < years; i++) {
+    const yrSpend = gradedY1 + (i * 0.15);
+    gradedTotal += yrSpend;
+    gradedRev += yrSpend * roas * 0.35 + gradedRev * 0.03;
+  }
+  document.getElementById('out-graded').innerHTML =
+    `<div style="padding:16px; background:var(--card2); border-radius:10px;">
+      <p style="color:var(--text-light); margin-bottom:8px;">Projected: <strong style="color:var(--red)">$${gradedRev.toFixed(1)}B</strong></p>
+      <p style="color:var(--text-mid); margin-bottom:8px;">${gradedRev >= targetRev ? '<span style="color:var(--green)">Target Met</span>' : 'Gap: <span style="color:var(--red)">$' + (targetRev - gradedRev).toFixed(1) + 'B</span>'}</p>
+      <p style="color:var(--text-dim);">Total: $${gradedTotal.toFixed(1)}B (graded)</p>
+    </div>`;
+
+  const effGain = parseInt(document.getElementById('slider-efficiency').value);
+  document.getElementById('val-efficiency').textContent = effGain + '%/yr';
+  let effRev = curRev, effRoas = roas, effTotalSpend = 0;
+  for (let i = 0; i < years; i++) {
+    effRoas *= (1 + effGain / 100);
+    const yrSpend = 1.4;
+    effTotalSpend += yrSpend;
+    effRev += yrSpend * effRoas * 0.35 + effRev * 0.03;
+  }
+  document.getElementById('out-efficiency').innerHTML =
+    `<div style="padding:16px; background:var(--card2); border-radius:10px;">
+      <p style="color:var(--text-light); margin-bottom:8px;">Projected: <strong style="color:#5a9eff">$${effRev.toFixed(1)}B</strong></p>
+      <p style="color:var(--text-mid); margin-bottom:8px;">${effRev >= targetRev ? '<span style="color:var(--green)">Target Met</span>' : 'Gap: <span style="color:#5a9eff">$' + (targetRev - effRev).toFixed(1) + 'B</span>'}</p>
+      <p style="color:var(--text-dim);">End ROAS: ${effRoas.toFixed(1)}x &middot; Total: $${effTotalSpend.toFixed(1)}B</p>
+    </div>`;
+}
+
+// ==================== CONDITIONS ====================
+function getConditionsData() {
+  return [
+    { id: 'c1', text: 'U.S. High School Football: ~1.03M participants in 2024-25, largest boys\' sport', theme: 'Sports System', themeKey: 'sports-system', source: 'NFHS Survey 2024-25', connections: ['strategy','journey'], link: 'https://www.nfhs.org/articles/high-school-sports-participation-increases-for-fifth-consecutive-year/', implication: 'Massive teamwear + training addressable market — Adidas can own the youth football equipment pipeline.', viz: { type: 'bar', value: 1.03, max: 8.27, label: '% of total HS sports', color: 'var(--green)' }, ccc: ['culture','community'] },
+    { id: 'c2', text: 'Texas UIL football championships drew 191,815 attendees at AT&T Stadium in 2025', theme: 'Sports System', themeKey: 'sports-system', source: 'UIL / Texas Athletics', connections: ['strategy'], link: 'https://www.uiltexas.org/football', implication: 'State championship scale = professional-level live entertainment. Adidas should be present at these cultural events.', ccc: ['culture'] },
+    { id: 'c3', text: 'Overall U.S. high school sports participation at record ~8.27M in 2024-25', theme: 'Sports System', themeKey: 'sports-system', source: 'NFHS Participation Data', connections: ['strategy','math'], link: 'https://www.nfhs.org/articles/high-school-sports-participation-increases-for-fifth-consecutive-year/', implication: 'Record participation = record demand for performance apparel. Youth-first product strategy unlocks this market.', ccc: ['culture','community'] },
+    { id: 'c4', text: 'Hockey Canada: 603,000+ registered players in 2024-25, record women/girls participation', theme: 'Sports System', themeKey: 'sports-system', source: 'Hockey Canada Annual Report', connections: ['strategy'], link: 'https://www.hockeycanada.ca/en-ca/news/hockey-canada-annual-report', implication: 'Hockey-adjacent lifestyle and training capsules can tap into Canada\'s deepest cultural identity.', ccc: ['culture','community'] },
+    { id: 'c5', text: 'Stanley Cup Final Game 7 reached 15M Canadians (nearly 2/5 of population)', theme: 'Sports System', themeKey: 'sports-system', source: 'Rogers Sports & Media', connections: ['media'], link: 'https://www.reuters.com/sports/', implication: 'Hockey still delivers near-national mass reach in Canada — ideal for brand tentpole moments.', ccc: ['culture'] },
+    { id: 'c6', text: 'NCAA NIL policy (June 2021) structurally changed athlete endorsement market', theme: 'Sports System', themeKey: 'sports-system', source: 'NCAA Interim Policy', connections: ['strategy','journey'], link: 'https://www.ncaa.org/news/2021/6/30/ncaa-adopts-interim-name-image-and-likeness-policy.aspx', implication: 'NIL creates a scalable long-tail endorsement channel — Adidas needs an operating system, not just deals.', ccc: ['community','commerce'] },
+    { id: 'c7', text: 'College Football Playoff rights: ESPN exclusive through 2031-32 season', theme: 'Sports System', themeKey: 'sports-system', source: 'ESPN/CFP Agreement', connections: ['media'], link: 'https://espnpressroom.com/us/press-releases/college-football-playoff/', implication: 'ESPN exclusivity means Adidas campus retail should align promotional calendars to CFP windows.', ccc: ['culture','commerce'] },
+    { id: 'c8', text: 'SFIA: 11% increase in U.S. team sports participation 2022-2023 (highest since 2014)', theme: 'Sports System', themeKey: 'sports-system', source: 'SFIA Topline Report', connections: ['math'], link: 'https://www.sfia.org/reports/participation', implication: 'Post-pandemic participation rebound signals renewed demand for team sports apparel and footwear.', viz: { type: 'growth', value: 11, label: 'YoY increase' }, ccc: ['culture','community'] },
+    { id: 'c9', text: 'Canada: ~68% of ages 5-17 participated in sport in 2022', theme: 'Sports System', themeKey: 'sports-system', source: 'CFLRI Research', connections: [], link: 'https://cflri.ca/participation-sport', implication: 'Two-thirds of Canadian youth in sport — opportunity for community-level brand programs to build loyalty early.', ccc: ['community'] },
+    { id: 'c10', text: 'NFL normalizing "event streaming" — Netflix holiday games, Peacock exclusives', theme: 'Media Landscape', themeKey: 'media', source: 'NFL Media Deals / Reuters', connections: ['strategy'], link: 'https://www.reuters.com/business/media-telecom/nfl-netflix-deal/', implication: 'Streaming tentpoles create new premium ad + commerce moments for limited drops and real-time merch.', ccc: ['culture','commerce'] },
+    { id: 'c11', text: 'NBA new rights (2025-26): Disney, NBCUniversal, Amazon — streaming is a pillar', theme: 'Media Landscape', themeKey: 'media', source: 'NBA Rights Announcement', connections: ['strategy'], link: 'https://www.reuters.com/sports/basketball/nba-reaches-76-billion-media-rights-deals-with-disney-nbc-amazon-2024-07-24/', implication: 'Amazon as NBA partner opens shoppable content formats that Adidas should build for natively.', ccc: ['culture','commerce'] },
+    { id: 'c12', text: 'MLS-Apple deal: subscription-native distribution redefines soccer media', theme: 'Media Landscape', themeKey: 'media', source: 'MLS/Apple Partnership', connections: ['journey','strategy'], link: 'https://www.apple.com/newsroom/2023/02/apple-and-mls-kick-off-historic-10-year-partnership/', implication: 'MLS-Apple is the model for subscription-native brand integration — Adidas has first-mover advantage as kit partner.', ccc: ['culture','community'] },
+    { id: 'c13', text: 'RSN disruption: Diamond Sports (Bally) pivoting to streaming post-bankruptcy', theme: 'Media Landscape', themeKey: 'media', source: 'Diamond Sports / Reuters', connections: ['strategy'], link: 'https://www.reuters.com/business/media-telecom/diamond-sports-rsn-restructuring/', implication: 'RSN collapse means local fan discovery shifts to streaming — retail and DTC must follow.', ccc: ['commerce'] },
+    { id: 'c14', text: 'MLB taking over local broadcasts (e.g., Padres) amid RSN instability', theme: 'Media Landscape', themeKey: 'media', source: 'MLB Local Rights Coverage', connections: [], link: 'https://www.mlb.com/news/', implication: 'League-controlled local distribution changes how Adidas geo-targets promotions around game content.', ccc: ['culture'] },
+    { id: 'c15', text: 'MLB local media = 20%+ of industry revenue', theme: 'Media Landscape', themeKey: 'media', source: 'MLB Financial Reporting', connections: ['math'], link: 'https://www.mlb.com/news/', implication: '20%+ of revenue from local media means local sponsorship inventory is undervalued and in flux.', ccc: ['commerce'] },
+    { id: 'c16', text: 'Latino fans more likely to use TikTok for sports — digital-first fandom', theme: 'Media Landscape', themeKey: 'media', source: 'Nielsen Fan Insights', connections: ['journey','strategy'], link: 'https://www.nielsen.com/insights/fan-insights/', implication: 'TikTok-first Latino fandom means Adidas creator strategy must be bilingual and platform-native.', ccc: ['culture','community'] },
+    { id: 'c17', text: 'Creator commentary and highlight culture reshaping sports media consumption', theme: 'Media Landscape', themeKey: 'media', source: 'Nielsen / Industry Analysis', connections: ['journey'], link: 'https://www.nielsen.com/insights/', implication: 'Creator commentary > brand advertising for discovery. Invest in creator tools and co-production.', ccc: ['culture','community'] },
+    { id: 'c18', text: 'CFL hybrid model: linear for awareness, free streaming (CFL+) for global reach', theme: 'Media Landscape', themeKey: 'media', source: 'CFL/TSN Partnership', connections: [], link: 'https://www.cfl.ca/cfl-plus/', implication: 'CFL hybrid model shows even smaller leagues are streaming-first — validates Adidas\' digital media pivot.', ccc: ['culture'] },
+    { id: 'c19', text: 'Licensed merchandise flows controlled by Fanatics-style platforms across NFL, MLB, NHL', theme: 'Commerce', themeKey: 'commerce', source: 'League Licensing Agreements', connections: ['strategy'], link: 'https://www.reuters.com/business/retail-consumer/fanatics-leagues-licensing/', implication: 'Fanatics controls the commerce pipe — Adidas must win in adjacent categories (training, lifestyle, footwear).', ccc: ['commerce'] },
+    { id: 'c20', text: 'NFL 10-year Fanatics/Nike deal: exclusive manufacture/distribution of adult products', theme: 'Commerce', themeKey: 'commerce', source: 'NFL/Fanatics/Nike Partnership', connections: ['strategy'], link: 'https://www.reuters.com/business/retail-consumer/nfl-fanatics-nike-deal/', implication: 'Without NFL on-field rights, win through training, lifestyle, and athlete-adjacent content.', ccc: ['commerce'] },
+    { id: 'c21', text: 'NHL shifted to Fanatics as on-ice outfitter and authentic jersey supplier (2024-25)', theme: 'Commerce', themeKey: 'commerce', source: 'NHL/Fanatics Agreement', connections: [], link: 'https://www.nhl.com/news/fanatics-nhl-partnership/', implication: 'NHL jersey market locked up by Fanatics — Adidas opportunity is hockey-adjacent lifestyle and training.', ccc: ['commerce'] },
+    { id: 'c22', text: 'Fanatics + OneTeam Partners: college athlete group licensing for jerseys via NIL', theme: 'Commerce', themeKey: 'commerce', source: 'Fanatics/OneTeam Press Release', connections: ['strategy'], link: 'https://www.oneteampartners.com/', implication: 'Group licensing enables scalable NIL jersey commerce — Adidas can build infrastructure around this.', ccc: ['community','commerce'] },
+    { id: 'c23', text: 'Adidas "Terrace" retro styles (Samba, Gazelle) driving U.S. relevance and share gains', theme: 'Commerce', themeKey: 'commerce', source: 'Reuters / Adidas Reporting', connections: ['journey'], link: 'https://www.reuters.com/business/retail-consumer/adidas-samba-gazelle-sales/', implication: 'Protect Samba/Gazelle momentum with disciplined scarcity and clear price architecture.', ccc: ['culture','commerce'] },
+    { id: 'c24', text: 'StockX rejected 370,000+ counterfeit items valued at ~$74M', theme: 'Commerce', themeKey: 'commerce', source: 'StockX Brand Protection Report / Axios', connections: [], link: 'https://www.axios.com/stockx-counterfeit-items-brand-protection/', implication: 'Drops must pair with anti-counterfeit signaling and credible scarcity strategy.', ccc: ['commerce'] },
+    { id: 'c25', text: 'Adidas wholesale = 60% of net sales, DTC = 40% (2024)', theme: 'Commerce', themeKey: 'commerce', source: 'Adidas Annual Report 2024', connections: ['math','strategy'], link: 'https://www.adidas-group.com/en/investors/financial-reports/', implication: 'Wholesale = 60% means key retailers are brand media. Build retailer-specific storytelling.', viz: { type: 'split', values: [60, 40], labels: ['Wholesale', 'DTC'], colors: ['var(--green)', '#5a9eff'] }, ccc: ['commerce'] },
+    { id: 'c26', text: 'U.S. tariffs + weak dollar expected to reduce Adidas earnings by hundreds of millions \u20AC', theme: 'Commerce', themeKey: 'commerce', source: 'Reuters / Adidas Outlook', connections: ['math'], link: 'https://www.reuters.com/business/adidas-tariffs-impact/', implication: 'Stress-test pricing and promo cadence under tariff/FX scenarios before committing budgets.', ccc: ['commerce'] },
+    { id: 'c27', text: 'Circana: consumers maximizing footwear versatility, prioritizing casual everyday use', theme: 'Commerce', themeKey: 'commerce', source: 'Circana (NPD) Forecast', connections: ['journey'], link: 'https://www.circana.com/industry-expertise/retail/', implication: 'Versatility-first footwear buying supports retro/lifestyle silhouettes over narrow performance-only positioning.', ccc: ['culture','commerce'] },
+    { id: 'c28', text: 'Lululemon entering NFL apparel via NFL Shop/Fanatics — premium athleisure in licensed fandom', theme: 'Commerce', themeKey: 'commerce', source: 'NFL Shop / Reuters', connections: ['strategy'], link: 'https://www.reuters.com/business/retail-consumer/lululemon-nfl-apparel/', implication: 'Lululemon in NFL = premium athleisure encroaching on licensed fandom. Adidas must defend lifestyle territory.', ccc: ['commerce'] },
+    { id: 'c29', text: 'Adidas global market share: 8.9% in 2024 (up from 8.2%). Nike fell to 14.1% (from 15.2%)', theme: 'Competitive', themeKey: 'competitive', source: 'GlobalData via Reuters', connections: ['math'], link: 'https://www.reuters.com/business/retail-consumer/adidas-market-share-gains/', implication: 'Momentum is real but fragile — share gains need to be protected with sustained cultural relevance.', viz: { type: 'compare', items: [{label:'Adidas', value:8.9, color:'var(--green)'}, {label:'Nike', value:14.1, color:'#ff6b35'}] }, ccc: ['commerce'] },
+    { id: 'c30', text: 'Adidas North America revenues: \u20AC5.128B in 2024', theme: 'Competitive', themeKey: 'competitive', source: 'Adidas Annual Report 2024', connections: ['math'], link: 'https://www.adidas-group.com/en/investors/financial-reports/', implication: '\u20AC5.1B NA base = the starting line. Every point of CAGR requires both media and product innovation.', viz: { type: 'progress', value: 5.128, max: 8, label: 'Progress to \u20AC8B target', color: 'var(--green)' }, ccc: ['commerce'] },
+    { id: 'c31', text: 'New Balance: $9.2B in 2025 global sales (+19% YoY)', theme: 'Competitive', themeKey: 'competitive', source: 'New Balance Financial Data', connections: ['strategy'], link: 'https://www.reuters.com/business/retail-consumer/new-balance-sales-growth/', implication: 'New Balance at $9.2B and growing fast — they\'re the real challenger, not just Nike.', viz: { type: 'growth', value: 19, label: 'YoY growth' }, ccc: ['culture','commerce'] },
+    { id: 'c32', text: 'Hispanic fans: younger, more digitally engaged, higher sponsorship responsiveness', theme: 'Competitive', themeKey: 'competitive', source: 'Nielsen Fan Insights', connections: ['journey','strategy'], link: 'https://www.nielsen.com/insights/fan-insights/', implication: 'Hispanic fans should be primary audience, not secondary. Build campaigns that lead with multicultural identity.', ccc: ['culture','community'] },
+    { id: 'c33', text: 'Win youth-first, not league-first in key U.S. categories', theme: 'Strategic', themeKey: 'strategic', source: 'Conditions Analysis', connections: ['strategy'], link: '#', implication: 'High school and community sports are the acquisition funnel. Invest before they choose a brand.', ccc: ['community'] },
+    { id: 'c34', text: 'Treat multicultural fandom as a performance lever, not a niche', theme: 'Strategic', themeKey: 'strategic', source: 'Conditions Analysis', connections: ['strategy','journey'], link: '#', implication: 'Default product, media, and retail planning to multicultural-first, not multicultural-adjacent.', ccc: ['culture','community'] },
+    { id: 'c35', text: 'Rebalance media buying around streaming-native rights packages', theme: 'Strategic', themeKey: 'strategic', source: 'Conditions Analysis', connections: ['math','strategy'], link: '#', implication: 'Reallocate media mix: less linear broadcast, more streaming-native and creator-distributed content.', ccc: ['culture','commerce'] },
+    { id: 'c36', text: 'Create an Adidas NIL operating system for scalable athlete partnerships', theme: 'Strategic', themeKey: 'strategic', source: 'Conditions Analysis', connections: ['strategy'], link: '#', implication: 'Build compliance + content + commerce toolkit that 500+ college athletes can use simultaneously.', ccc: ['community','commerce'] },
+    { id: 'c37', text: 'Build "sport + lifestyle adjacency walls" in wholesale retail', theme: 'Strategic', themeKey: 'strategic', source: 'Conditions Analysis', connections: ['strategy'], link: '#', implication: 'Design wholesale merchandising that bridges sport and lifestyle in-store to capture fuller basket.', ccc: ['culture','commerce'] },
+    { id: 'c38', text: 'Canada: hockey identity + women\'s growth + bilingual compliance', theme: 'Strategic', themeKey: 'strategic', source: 'Conditions Analysis', connections: ['strategy'], link: '#', implication: 'Quebec-ready bilingual execution must be upstream in design, not a late-stage patch.', ccc: ['culture','community'] },
+  ];
+}
+
+function getThemeColor(theme) {
+  const map = { 'Sports System': 'tag-green', 'Media Landscape': 'tag-blue', 'Commerce': 'tag-yellow', 'Competitive': 'tag-red', 'Strategic': 'tag-purple' };
+  return map[theme] || 'tag-white';
+}
+
+function getThemeBorder(theme) {
+  const map = { 'Sports System': 'rgba(0,210,106,0.4)', 'Media Landscape': 'rgba(74,158,255,0.4)', 'Commerce': 'rgba(255,153,0,0.4)', 'Competitive': 'rgba(255,68,68,0.4)', 'Strategic': 'rgba(160,80,255,0.4)' };
+  return map[theme] || 'var(--border)';
+}
+
+function getThemeHighlight(theme) {
+  const map = { 'Sports System': 'rgba(0,210,106,0.15)', 'Media Landscape': 'rgba(74,158,255,0.15)', 'Commerce': 'rgba(255,153,0,0.15)', 'Competitive': 'rgba(255,68,68,0.15)', 'Strategic': 'rgba(160,80,255,0.15)' };
+  return map[theme] || 'rgba(255,255,255,0.06)';
+}
+
+function getThemeAmbient(theme) {
+  const map = { 'Sports System': 'rgba(0,210,106,0.04)', 'Media Landscape': 'rgba(74,158,255,0.05)', 'Commerce': 'rgba(255,153,0,0.04)', 'Competitive': 'rgba(255,68,68,0.04)', 'Strategic': 'rgba(160,80,255,0.04)' };
+  return map[theme] || 'transparent';
+}
+
+function renderViz(viz) {
+  if (!viz) return '';
+  switch(viz.type) {
+    case 'bar': {
+      const pct = (viz.value / viz.max * 100).toFixed(0);
+      return '<div class="viz-container"><div class="viz-bar-track"><div class="viz-bar-fill" style="width:0%; background:' + viz.color + '" data-width="' + pct + '%"></div></div><div class="viz-bar-label"><span>' + viz.label + '</span><span style="color:' + viz.color + '">' + pct + '%</span></div></div>';
+    }
+    case 'growth': {
+      const cls = viz.value >= 0 ? 'positive' : 'negative';
+      const arrow = viz.value >= 0 ? '\u2191' : '\u2193';
+      return '<div class="viz-container"><span class="viz-growth ' + cls + '"><span class="viz-growth-arrow">' + arrow + '</span> +' + Math.abs(viz.value) + '% ' + viz.label + '</span></div>';
+    }
+    case 'split': {
+      const total = viz.values.reduce(function(a,b){return a+b;}, 0);
+      let segs = '', lbls = '';
+      for (let i = 0; i < viz.values.length; i++) {
+        segs += '<div class="viz-split-segment" style="width:0%; background:' + viz.colors[i] + '" data-width="' + (viz.values[i]/total*100).toFixed(0) + '%"></div>';
+        lbls += '<span style="color:' + viz.colors[i] + '">' + viz.labels[i] + ' ' + viz.values[i] + '%</span>';
+      }
+      return '<div class="viz-container"><div class="viz-split">' + segs + '</div><div class="viz-split-labels">' + lbls + '</div></div>';
+    }
+    case 'compare': {
+      const maxVal = Math.max.apply(null, viz.items.map(function(i){return i.value;}));
+      let bars = '';
+      for (let i = 0; i < viz.items.length; i++) {
+        const h = (viz.items[i].value / maxVal * 60).toFixed(0);
+        bars += '<div class="viz-compare-item"><div class="viz-compare-bar" style="height:0px; background:' + viz.items[i].color + '" data-height="' + h + 'px"></div><div class="viz-compare-val" style="color:' + viz.items[i].color + '">' + viz.items[i].value + '%</div><div class="viz-compare-lbl">' + viz.items[i].label + '</div></div>';
+      }
+      return '<div class="viz-container"><div class="viz-compare">' + bars + '</div></div>';
+    }
+    case 'progress': {
+      const pct = (viz.value / viz.max * 100).toFixed(0);
+      return '<div class="viz-container"><div class="viz-bar-track" style="height:8px;"><div class="viz-bar-fill" style="width:0%; background:' + viz.color + '" data-width="' + pct + '%"></div></div><div class="viz-bar-label"><span>' + viz.label + '</span><span style="color:' + viz.color + '">' + pct + '%</span></div></div>';
+    }
+    default: return '';
+  }
+}
+
+let conditionsViewMode = 'grid';
+
+let activeConditionFilter = 'all';
+function filterConditions(filter, btn) {
+  activeConditionFilter = filter;
+  document.querySelectorAll('#conditions-filter .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderConditions();
+}
+
+function setConditionsView(mode) {
+  conditionsViewMode = mode;
+  const grid = document.getElementById('conditions-grid');
+  document.getElementById('view-grid-btn').classList.toggle('active', mode === 'grid');
+  document.getElementById('view-list-btn').classList.toggle('active', mode === 'list');
+  if (mode === 'list') {
+    grid.classList.add('grid-list');
+    grid.classList.remove('grid-2');
+  } else {
+    grid.classList.remove('grid-list');
+    grid.classList.add('grid-2');
+  }
+}
+
+function renderConditions() {
+  const data = getConditionsData();
+  let filtered = activeConditionFilter === 'all' ? data : data.filter(d => d.themeKey === activeConditionFilter);
+  // Apply custom ordering if stored
+  if (STATE.conditionsOrder.length > 0 && activeConditionFilter === 'all') {
+    const orderMap = {};
+    STATE.conditionsOrder.forEach((id, idx) => orderMap[id] = idx);
+    filtered = [...filtered].sort((a, b) => {
+      const aIdx = orderMap[a.id] !== undefined ? orderMap[a.id] : 999;
+      const bIdx = orderMap[b.id] !== undefined ? orderMap[b.id] : 999;
+      return aIdx - bIdx;
+    });
+  }
+  const grid = document.getElementById('conditions-grid');
+  // Apply view mode classes
+  if (conditionsViewMode === 'list') {
+    grid.classList.add('grid-list');
+    grid.classList.remove('grid-2');
+  } else {
+    grid.classList.remove('grid-list');
+    grid.classList.add('grid-2');
+  }
+  grid.innerHTML = filtered.map((item, index) => {
+    const isPinned = STATE.pinnedInsights.some(p => p.id === item.id);
+    const connectionDots = item.connections.map(c => {
+      const colors = { strategy: 'var(--green)', journey: '#c080ff', math: 'var(--red)', media: '#5a9eff' };
+      return `<span class="connection-dot" style="background:${colors[c] || '#333'}" title="Links to ${c}"></span>`;
+    }).join('');
+    const hasLink = item.link && item.link !== '#';
+    const sourceHtml = hasLink
+      ? `<a href="${item.link}" target="_blank" rel="noopener noreferrer">${escHtml(item.source)} <span class="ext-icon">\u2192</span></a>`
+      : escHtml(item.source);
+    const notes = STATE.cardNotes[item.id] || [];
+    const notesHtml = notes.length > 0 ? `<div class="card-note-display">${notes.map((n, i) =>
+      `<div class="card-note-item"><span>${escHtml(n)}</span><button class="card-note-delete" onclick="deleteCardNote('${item.id}', ${i})">&times;</button></div>`
+    ).join('')}</div>` : '';
+    const vizHtml = renderViz(item.viz);
+    const themeAmbient = getThemeAmbient(item.theme);
+    return `<div class="insight-card" style="border-left: 3px solid ${getThemeBorder(item.theme)}; padding-left: 20px; background: var(--card); animation-delay: ${index * 0.02}s;" data-theme="${item.themeKey}" data-id="${item.id}" draggable="true" ondragstart="onDragStart(event)" ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event)">
+      <span class="drag-handle" title="Drag to reorder" style="top:4px;left:4px;font-size:13px;">\u2807</span>
+      <button class="card-note-btn" onclick="toggleCardNoteInput('${item.id}', event)" title="Add note" style="top:4px;right:24px;width:20px;height:20px;font-size:12px;">+</button>
+      <button class="expand-toggle" onclick="toggleCardExpand(this)" title="Expand/collapse" style="top:4px;right:4px;font-size:11px;padding:2px 6px;">\u25B2</button>
+      <div class="flex items-center gap-6 mb-6"><span class="tag ${getThemeColor(item.theme)}" style="font-size:9px; padding:2px 8px;">${item.theme}</span>${(item.ccc||[]).map(c => `<span class="ccc-tag ccc-${c}">${c}</span>`).join('')}${connectionDots}</div>
+      <div class="insight-headline" style="background:${getThemeHighlight(item.theme)}; display:inline-block; padding:3px 8px; border-radius:4px; margin-bottom:6px;"><strong style="color:#e0e0e0; font-size:13px; font-family:'Oswald',sans-serif; text-transform:uppercase; letter-spacing:0.04em;">${escHtml(item.text.split(':')[0].split('–')[0].split('—')[0].substring(0,60).trim())}</strong></div>
+      <div class="insight-text" onclick="expandCardFromText(this)">${escHtml(item.text)}</div>
+      ${vizHtml}
+      <div class="insight-implication">${escHtml(item.implication)}</div>
+      <div class="insight-source">${sourceHtml}</div>
+      <div class="insight-actions">
+        <button class="pin-btn ${isPinned ? 'pinned' : ''}" onclick="togglePin('${item.id}')">${isPinned ? 'Pinned' : 'Pin'}</button>
+      </div>
+      <div id="card-note-area-${item.id}"></div>
+      ${notesHtml}
+    </div>`;
+  }).join('');
+
+  // Trigger viz animations
+  setTimeout(() => {
+    document.querySelectorAll('.viz-bar-fill[data-width]').forEach(el => { el.style.width = el.dataset.width; });
+    document.querySelectorAll('.viz-split-segment[data-width]').forEach(el => { el.style.width = el.dataset.width; });
+    document.querySelectorAll('.viz-compare-bar[data-height]').forEach(el => { el.style.height = el.dataset.height; });
+  }, 50);
+}
+
+function toggleCardExpand(btn) {
+  const card = btn.closest('.insight-card');
+  card.classList.toggle('collapsed');
+  btn.textContent = card.classList.contains('collapsed') ? '\u25BC' : '\u25B2';
+}
+
+function expandCardFromText(el) {
+  const card = el.closest('.insight-card');
+  if (card.classList.contains('collapsed')) {
+    card.classList.remove('collapsed');
+    card.querySelector('.expand-toggle').textContent = '\u25B2';
+  }
+}
+
+// ---- Inline card notes ----
+function toggleCardNoteInput(cardId, event) {
+  event.stopPropagation();
+  const area = document.getElementById('card-note-area-' + cardId);
+  if (area.querySelector('.card-note-input-wrap')) {
+    area.innerHTML = '';
+    return;
+  }
+  area.innerHTML = `<div class="card-note-input-wrap">
+    <input type="text" placeholder="Add a note..." onkeydown="if(event.key==='Enter')saveCardNote('${cardId}',this.value)">
+    <button onclick="saveCardNote('${cardId}', this.previousElementSibling.value)">Save</button>
+  </div>`;
+  area.querySelector('input').focus();
+}
+
+function saveCardNote(cardId, text) {
+  if (!text.trim()) return;
+  if (!STATE.cardNotes[cardId]) STATE.cardNotes[cardId] = [];
+  STATE.cardNotes[cardId].push(text.trim());
+  saveState();
+  renderConditions();
+}
+
+function deleteCardNote(cardId, index) {
+  if (STATE.cardNotes[cardId]) {
+    STATE.cardNotes[cardId].splice(index, 1);
+    if (STATE.cardNotes[cardId].length === 0) delete STATE.cardNotes[cardId];
+    saveState();
+    renderConditions();
+  }
+}
+
+// ---- Drag and drop for conditions cards ----
+let dragSrcId = null;
+
+function onDragStart(e) {
+  const card = e.target.closest('.insight-card');
+  if (!card) return;
+  dragSrcId = card.dataset.id;
+  card.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', dragSrcId);
+}
+
+function onDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  const card = e.target.closest('.insight-card');
+  if (card && card.dataset.id !== dragSrcId) {
+    card.classList.add('drag-over');
+  }
+}
+
+function onDragLeave(e) {
+  const card = e.target.closest('.insight-card');
+  if (card) card.classList.remove('drag-over');
+}
+
+function onDrop(e) {
+  e.preventDefault();
+  const targetCard = e.target.closest('.insight-card');
+  if (!targetCard || !dragSrcId) return;
+  targetCard.classList.remove('drag-over');
+  const targetId = targetCard.dataset.id;
+  if (dragSrcId === targetId) return;
+  // Get current order
+  const data = getConditionsData();
+  let order = STATE.conditionsOrder.length > 0 ? [...STATE.conditionsOrder] : data.map(d => d.id);
+  const srcIdx = order.indexOf(dragSrcId);
+  const tgtIdx = order.indexOf(targetId);
+  if (srcIdx < 0 || tgtIdx < 0) return;
+  order.splice(srcIdx, 1);
+  order.splice(tgtIdx, 0, dragSrcId);
+  STATE.conditionsOrder = order;
+  saveState();
+  dragSrcId = null;
+  renderConditions();
+}
+
+document.addEventListener('dragend', () => {
+  document.querySelectorAll('.insight-card.dragging').forEach(c => c.classList.remove('dragging'));
+  dragSrcId = null;
+})
+
+function togglePin(id) {
+  const existing = STATE.pinnedInsights.findIndex(p => p.id === id);
+  if (existing >= 0) {
+    STATE.pinnedInsights.splice(existing, 1);
+  } else {
+    const item = getConditionsData().find(d => d.id === id);
+    if (item) STATE.pinnedInsights.push({ id: item.id, text: item.text, theme: item.theme });
+  }
+  saveState();
+  renderConditions();
+}
+
+// ==================== CONSUMER JOURNEY: ECO MAP ====================
+let ecoAnimFrame = null;
+let ecoNodes = [];
+let ecoConnections = [];
+let ecoDragging = null; // { nodeIndex, offsetX, offsetY }
+let ecoConnecting = false;
+let ecoSelectedNode = null; // index of first node in connect mode
+let ecoNewNodeColor = '#39FF14';
+let ecoNewNodeTextColor = '#000';
+const ecoDefaultNodeLabels = ['MAYA','Team','Coach','Friends','Creators','TikTok','Instagram','YouTube','Apple TV','StockX','NIL Agent','Adidas','U of M','Fans','Family','Retail'];
+
+function getDefaultEcoNodes(cx, cy) {
+  return [
+    { label: 'MAYA', x: cx, y: cy, r: 32, color: '#39FF14', textColor: '#000' },
+    { label: 'Team', x: cx - 180, y: cy - 80, r: 24, color: '#0047AB', textColor: '#FFF' },
+    { label: 'Coach', x: cx - 220, y: cy + 50, r: 18, color: '#0047AB', textColor: '#FFF' },
+    { label: 'Friends', x: cx + 170, y: cy - 100, r: 24, color: '#c080ff', textColor: '#FFF' },
+    { label: 'Creators', x: cx + 200, y: cy + 30, r: 24, color: '#FF3131', textColor: '#FFF' },
+    { label: 'TikTok', x: cx + 80, y: cy - 155, r: 18, color: '#FF3131', textColor: '#FFF' },
+    { label: 'Instagram', x: cx - 60, y: cy - 165, r: 18, color: '#FF3131', textColor: '#FFF' },
+    { label: 'YouTube', x: cx + 230, y: cy - 50, r: 16, color: '#FF3131', textColor: '#FFF' },
+    { label: 'Apple TV', x: cx - 160, y: cy + 140, r: 16, color: '#666', textColor: '#FFF' },
+    { label: 'StockX', x: cx + 130, y: cy + 150, r: 16, color: '#e6b800', textColor: '#000' },
+    { label: 'NIL Agent', x: cx - 80, y: cy + 155, r: 16, color: '#e6b800', textColor: '#000' },
+    { label: 'Adidas', x: cx + 30, y: cy + 125, r: 26, color: '#39FF14', textColor: '#000' },
+    { label: 'U of M', x: cx - 120, y: cy - 145, r: 20, color: '#0047AB', textColor: '#FFF' },
+    { label: 'Fans', x: cx + 170, y: cy + 110, r: 16, color: '#c080ff', textColor: '#FFF' },
+    { label: 'Family', x: cx - 210, y: cy - 10, r: 18, color: '#c080ff', textColor: '#FFF' },
+    { label: 'Retail', x: cx - 50, y: cy + 110, r: 16, color: '#e6b800', textColor: '#000' },
+  ];
+}
+
+function getDefaultEcoConnections() {
+  const labels = ecoDefaultNodeLabels;
+  const idxPairs = [
+    [0,1],[0,2],[0,3],[0,4],[0,5],[0,6],[0,7],[0,8],[0,9],[0,10],[0,11],[0,12],[0,13],[0,14],[0,15],
+    [1,2],[1,12],[3,5],[3,6],[4,5],[4,7],[4,13],[5,6],[5,7],[9,11],[10,11],[11,15],[11,1],[14,10]
+  ];
+  return idxPairs.map(([a, b]) => ({ from: labels[a], to: labels[b], text: '' }));
+}
+
+function findEcoNodeIndex(label) {
+  for (let i = 0; i < ecoNodes.length; i++) {
+    if (ecoNodes[i].label === label) return i;
+  }
+  return -1;
+}
+
+function findEcoNodeAtPos(mx, my) {
+  // Search in reverse so top-drawn nodes are found first
+  for (let i = ecoNodes.length - 1; i >= 0; i--) {
+    const n = ecoNodes[i];
+    const dx = mx - n.x, dy = my - n.y;
+    if (dx * dx + dy * dy < (n.r + 4) * (n.r + 4)) return i;
+  }
+  return -1;
+}
+
+function findEcoConnectionAtPos(mx, my) {
+  const threshold = 8;
+  for (let i = 0; i < ecoConnections.length; i++) {
+    const conn = ecoConnections[i];
+    const ai = findEcoNodeIndex(conn.from);
+    const bi = findEcoNodeIndex(conn.to);
+    if (ai < 0 || bi < 0) continue;
+    const ax = ecoNodes[ai].x, ay = ecoNodes[ai].y;
+    const bx = ecoNodes[bi].x, by = ecoNodes[bi].y;
+    const dx = bx - ax, dy = by - ay;
+    const len = Math.sqrt(dx * dx + dy * dy);
+    if (len === 0) continue;
+    const t = Math.max(0, Math.min(1, ((mx - ax) * dx + (my - ay) * dy) / (len * len)));
+    const px = ax + t * dx, py = ay + t * dy;
+    const dist = Math.sqrt((mx - px) * (mx - px) + (my - py) * (my - py));
+    if (dist < threshold) return i;
+  }
+  return -1;
+}
+
+function hideEcoContextMenu() {
+  const menu = document.getElementById('eco-context-menu');
+  if (menu) menu.style.display = 'none';
+}
+
+function showEcoContextMenu(x, y, items) {
+  const menu = document.getElementById('eco-context-menu');
+  menu.style.left = x + 'px';
+  menu.style.top = y + 'px';
+  menu.style.display = 'block';
+  menu.innerHTML = items.map(item =>
+    `<div class="eco-context-item${item.danger ? ' danger' : ''}" onclick="${item.action}">${escHtml(item.label)}</div>`
+  ).join('');
+}
+
+function startAddEcoNode() {
+  document.getElementById('eco-color-picker').style.display = 'flex';
+  document.getElementById('eco-add-form').style.display = 'flex';
+  // Select first color by default
+  setEcoNodeColor('#39FF14', '#000');
+  setTimeout(() => document.getElementById('eco-new-label').focus(), 50);
+}
+
+function cancelAddEcoNode() {
+  document.getElementById('eco-color-picker').style.display = 'none';
+  document.getElementById('eco-add-form').style.display = 'none';
+  document.getElementById('eco-new-label').value = '';
+}
+
+function setEcoNodeColor(color, textColor) {
+  ecoNewNodeColor = color;
+  ecoNewNodeTextColor = textColor;
+  document.querySelectorAll('.eco-color-swatch').forEach(s => {
+    s.classList.toggle('selected', s.style.background === color || s.style.backgroundColor === color);
+  });
+}
+
+function confirmAddEcoNode() {
+  const label = document.getElementById('eco-new-label').value.trim();
+  if (!label) return;
+  // Check for duplicate
+  if (findEcoNodeIndex(label) >= 0) { alert('A node with that name already exists.'); return; }
+  const canvas = document.getElementById('eco-canvas');
+  const newNode = { label, color: ecoNewNodeColor, textColor: ecoNewNodeTextColor, r: 20 };
+  STATE.ecoCustomNodes.push(newNode);
+  // Set a default position
+  STATE.ecoNodePositions[label] = { x: canvas.width / 2 + (Math.random() - 0.5) * 200, y: canvas.height / 2 + (Math.random() - 0.5) * 150 };
+  saveState();
+  cancelAddEcoNode();
+  drawEcoMap();
+}
+
+function toggleEcoConnect() {
+  ecoConnecting = !ecoConnecting;
+  ecoSelectedNode = null;
+  const btn = document.getElementById('eco-connect-btn');
+  btn.classList.toggle('eco-connect-active', ecoConnecting);
+  btn.textContent = ecoConnecting ? 'Connecting...' : 'Connect';
+  const canvas = document.getElementById('eco-canvas');
+  canvas.style.cursor = ecoConnecting ? 'crosshair' : 'default';
+}
+
+function deleteEcoNode(label) {
+  STATE.ecoCustomNodes = STATE.ecoCustomNodes.filter(n => n.label !== label);
+  delete STATE.ecoNodePositions[label];
+  STATE.ecoCustomConnections = STATE.ecoCustomConnections.filter(c => c.from !== label && c.to !== label);
+  saveState();
+  hideEcoContextMenu();
+  drawEcoMap();
+}
+
+function editEcoNodeLabel(oldLabel) {
+  hideEcoContextMenu();
+  const newLabel = prompt('New label for "' + oldLabel + '":', oldLabel);
+  if (!newLabel || newLabel.trim() === '' || newLabel.trim() === oldLabel) return;
+  const trimmed = newLabel.trim();
+  // Update custom node
+  const cn = STATE.ecoCustomNodes.find(n => n.label === oldLabel);
+  if (cn) cn.label = trimmed;
+  // Update positions
+  if (STATE.ecoNodePositions[oldLabel]) {
+    STATE.ecoNodePositions[trimmed] = STATE.ecoNodePositions[oldLabel];
+    delete STATE.ecoNodePositions[oldLabel];
+  }
+  // Update connections
+  STATE.ecoCustomConnections.forEach(c => {
+    if (c.from === oldLabel) c.from = trimmed;
+    if (c.to === oldLabel) c.to = trimmed;
+  });
+  saveState();
+  drawEcoMap();
+}
+
+function deleteEcoConnection(idx) {
+  // Determine if it's a default or custom connection
+  const defaultConns = getDefaultEcoConnections();
+  if (idx < defaultConns.length) {
+    // Can't delete defaults from the default array, but we can track deleted defaults
+    // For simplicity, we just skip - only custom connections are deletable
+    hideEcoContextMenu();
+    return;
+  }
+  const customIdx = idx - defaultConns.length;
+  STATE.ecoCustomConnections.splice(customIdx, 1);
+  saveState();
+  hideEcoContextMenu();
+  drawEcoMap();
+}
+
+function editEcoConnectionLabel(connIdx) {
+  hideEcoContextMenu();
+  const defaultConns = getDefaultEcoConnections();
+  let conn;
+  if (connIdx < defaultConns.length) {
+    // For default connections, we store edited labels in custom connections
+    const dc = ecoConnections[connIdx];
+    const newText = prompt('Connection label:', dc.text || '');
+    if (newText === null) return;
+    // Find if there's already a matching custom override
+    const existing = STATE.ecoCustomConnections.find(c => c.from === dc.from && c.to === dc.to);
+    if (existing) {
+      existing.text = newText;
+    } else {
+      // We need to modify the default — store as custom override
+      // Actually, let's just modify it in ecoConnections and track text in a separate way
+      // Simplest: store text overrides for default connections in ecoCustomConnections too
+      STATE.ecoCustomConnections.push({ from: dc.from, to: dc.to, text: newText, isLabelOverride: true });
+    }
+    saveState();
+    drawEcoMap();
+    return;
+  }
+  const customIdx = connIdx - defaultConns.length;
+  conn = STATE.ecoCustomConnections[customIdx];
+  const newText = prompt('Connection label:', conn.text || '');
+  if (newText === null) return;
+  conn.text = newText;
+  saveState();
+  drawEcoMap();
+}
+
+function drawEcoMap() {
+  const canvas = document.getElementById('eco-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const rect = canvas.parentElement.getBoundingClientRect();
+  canvas.width = rect.width;
+  canvas.height = 420;
+
+  const cx = canvas.width / 2;
+  const cy = canvas.height / 2;
+
+  // Build nodes: defaults + custom
+  ecoNodes = getDefaultEcoNodes(cx, cy);
+
+  // Add custom nodes
+  (STATE.ecoCustomNodes || []).forEach(cn => {
+    const pos = STATE.ecoNodePositions[cn.label] || { x: cx, y: cy };
+    ecoNodes.push({ label: cn.label, x: pos.x, y: pos.y, r: cn.r || 20, color: cn.color, textColor: cn.textColor });
+  });
+
+  // Apply saved positions for all nodes
+  ecoNodes.forEach(n => {
+    if (STATE.ecoNodePositions[n.label]) {
+      n.x = STATE.ecoNodePositions[n.label].x;
+      n.y = STATE.ecoNodePositions[n.label].y;
+    }
+  });
+
+  // Build connections: defaults + custom (merge label overrides)
+  const defaultConns = getDefaultEcoConnections();
+  // Apply label overrides from custom connections
+  const labelOverrides = {};
+  (STATE.ecoCustomConnections || []).forEach(c => {
+    if (c.isLabelOverride) {
+      labelOverrides[c.from + '|||' + c.to] = c.text;
+    }
+  });
+  defaultConns.forEach(c => {
+    const key = c.from + '|||' + c.to;
+    if (labelOverrides[key] !== undefined) c.text = labelOverrides[key];
+  });
+  const customConns = (STATE.ecoCustomConnections || []).filter(c => !c.isLabelOverride);
+  ecoConnections = [...defaultConns, ...customConns];
+
+  if (ecoAnimFrame) cancelAnimationFrame(ecoAnimFrame);
+  let dashOffset = 0;
+
+  function animateEcoMap() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    dashOffset -= 0.5;
+
+    // Draw connections
+    ecoConnections.forEach((conn, ci) => {
+      const ai = findEcoNodeIndex(conn.from);
+      const bi = findEcoNodeIndex(conn.to);
+      if (ai < 0 || bi < 0) return;
+      ctx.beginPath();
+      ctx.moveTo(ecoNodes[ai].x, ecoNodes[ai].y);
+      ctx.lineTo(ecoNodes[bi].x, ecoNodes[bi].y);
+      ctx.strokeStyle = 'rgba(255,153,0,0.12)';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([4, 6]);
+      ctx.lineDashOffset = dashOffset;
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Draw connection label if present
+      if (conn.text) {
+        const midX = (ecoNodes[ai].x + ecoNodes[bi].x) / 2;
+        const midY = (ecoNodes[ai].y + ecoNodes[bi].y) / 2;
+        ctx.fillStyle = 'rgba(255,153,0,0.4)';
+        ctx.font = '500 10px Inter';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(conn.text, midX, midY);
+      }
+    });
+
+    const time = Date.now() / 1000;
+
+    // Draw nodes
+    ecoNodes.forEach((n, i) => {
+      let glowExtra = 0;
+      // Pulsing glow for MAYA or for selected node in connect mode
+      if (n.label === 'MAYA') {
+        glowExtra = Math.sin(time * 2) * 6 + 6;
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, n.r + 12 + glowExtra, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(0,153,77,' + (0.05 + Math.sin(time * 2) * 0.03) + ')';
+        ctx.fill();
+      }
+
+      // Pulsing highlight for selected node in connect mode
+      if (ecoConnecting && ecoSelectedNode === i) {
+        const pulse = Math.sin(time * 4) * 4 + 8;
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, n.r + pulse, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(0,153,77,0.5)';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+
+      // Glow
+      ctx.shadowColor = n.color;
+      ctx.shadowBlur = n.label === 'MAYA' ? 30 + glowExtra : 20;
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.r + 4, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(0,0,0,0.01)';
+      ctx.fill();
+      ctx.shadowBlur = 0;
+
+      // Circle
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+      ctx.fillStyle = n.color;
+      ctx.fill();
+
+      // Text
+      ctx.fillStyle = n.textColor;
+      ctx.font = (n.r > 22 ? '600 ' : '500 ') + Math.max(9, n.r * 0.5) + 'px Inter';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(n.label, n.x, n.y);
+    });
+
+    ecoAnimFrame = requestAnimationFrame(animateEcoMap);
+  }
+  animateEcoMap();
+
+  // --- Mouse interactions ---
+  canvas.onmousedown = function(e) {
+    if (e.button !== 0) return; // left click only
+    const cr = canvas.getBoundingClientRect();
+    const mx = e.clientX - cr.left;
+    const my = e.clientY - cr.top;
+    hideEcoContextMenu();
+    const nodeIdx = findEcoNodeAtPos(mx, my);
+
+    if (ecoConnecting) {
+      if (nodeIdx >= 0) {
+        if (ecoSelectedNode === null) {
+          ecoSelectedNode = nodeIdx;
+        } else if (ecoSelectedNode !== nodeIdx) {
+          // Create connection
+          const fromLabel = ecoNodes[ecoSelectedNode].label;
+          const toLabel = ecoNodes[nodeIdx].label;
+          // Check if connection already exists
+          const exists = ecoConnections.some(c =>
+            (c.from === fromLabel && c.to === toLabel) || (c.from === toLabel && c.to === fromLabel)
+          );
+          if (!exists) {
+            STATE.ecoCustomConnections.push({ from: fromLabel, to: toLabel, text: '' });
+            saveState();
+            drawEcoMap();
+          }
+          ecoSelectedNode = null;
+        }
+      } else {
+        ecoSelectedNode = null;
+      }
+      return;
+    }
+
+    if (nodeIdx >= 0) {
+      ecoDragging = { nodeIndex: nodeIdx, offsetX: mx - ecoNodes[nodeIdx].x, offsetY: my - ecoNodes[nodeIdx].y };
+      canvas.style.cursor = 'grabbing';
+    }
+  };
+
+  canvas.onmousemove = function(e) {
+    const cr = canvas.getBoundingClientRect();
+    const mx = e.clientX - cr.left;
+    const my = e.clientY - cr.top;
+
+    if (ecoDragging) {
+      ecoNodes[ecoDragging.nodeIndex].x = mx - ecoDragging.offsetX;
+      ecoNodes[ecoDragging.nodeIndex].y = my - ecoDragging.offsetY;
+      return;
+    }
+
+    // Tooltip and cursor
+    const tooltip = document.getElementById('eco-tooltip');
+    const nodeIdx = findEcoNodeAtPos(mx, my);
+    if (nodeIdx >= 0) {
+      tooltip.textContent = ecoNodes[nodeIdx].label;
+      tooltip.style.display = 'block';
+      tooltip.style.left = (ecoNodes[nodeIdx].x + ecoNodes[nodeIdx].r + 10) + 'px';
+      tooltip.style.top = (ecoNodes[nodeIdx].y - 15) + 'px';
+      canvas.style.cursor = ecoConnecting ? 'crosshair' : 'grab';
+    } else {
+      tooltip.style.display = 'none';
+      canvas.style.cursor = ecoConnecting ? 'crosshair' : 'default';
+    }
+  };
+
+  canvas.onmouseup = function(e) {
+    if (ecoDragging) {
+      const n = ecoNodes[ecoDragging.nodeIndex];
+      STATE.ecoNodePositions[n.label] = { x: n.x, y: n.y };
+      saveState();
+      ecoDragging = null;
+      canvas.style.cursor = 'default';
+    }
+  };
+
+  canvas.onmouseleave = function() {
+    document.getElementById('eco-tooltip').style.display = 'none';
+    if (ecoDragging) {
+      const n = ecoNodes[ecoDragging.nodeIndex];
+      STATE.ecoNodePositions[n.label] = { x: n.x, y: n.y };
+      saveState();
+      ecoDragging = null;
+    }
+  };
+
+  canvas.oncontextmenu = function(e) {
+    e.preventDefault();
+    const cr = canvas.getBoundingClientRect();
+    const mx = e.clientX - cr.left;
+    const my = e.clientY - cr.top;
+    const nodeIdx = findEcoNodeAtPos(mx, my);
+
+    if (nodeIdx >= 0) {
+      const node = ecoNodes[nodeIdx];
+      const isCustom = !ecoDefaultNodeLabels.includes(node.label);
+      const items = [];
+      if (isCustom) {
+        items.push({ label: 'Edit Label', action: "editEcoNodeLabel('" + node.label.replace(/'/g, "\\'") + "')" });
+        items.push({ label: 'Delete Node', danger: true, action: "deleteEcoNode('" + node.label.replace(/'/g, "\\'") + "')" });
+      } else {
+        items.push({ label: node.label + ' (default node)', action: 'hideEcoContextMenu()' });
+      }
+      showEcoContextMenu(mx, my, items);
+      return;
+    }
+
+    const connIdx = findEcoConnectionAtPos(mx, my);
+    if (connIdx >= 0) {
+      const conn = ecoConnections[connIdx];
+      const defaultConns = getDefaultEcoConnections();
+      const isCustomConn = connIdx >= defaultConns.length;
+      const items = [
+        { label: 'Edit Label', action: 'editEcoConnectionLabel(' + connIdx + ')' }
+      ];
+      if (isCustomConn) {
+        items.push({ label: 'Delete Connection', danger: true, action: 'deleteEcoConnection(' + connIdx + ')' });
+      }
+      showEcoContextMenu(mx, my, items);
+    }
+  };
+}
+
+// Close eco context menu on click outside
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.eco-context-menu') && !e.target.closest('#eco-canvas')) {
+    hideEcoContextMenu();
+  }
+});
+
+// ==================== STRATEGY LIBRARY ====================
+function getDefaultStrategyItems() {
+  return [
+    { id: 's1', type: 'insight', title: 'Youth sports = addressable market, not pipeline', description: 'High school football alone is ~1.03M participants. This is a teamwear + training + spiritwear market with intense local identity.', tags: ['youth','football','market-sizing'], section: 'conditions' },
+    { id: 's2', type: 'opportunity', title: 'NIL operating system for scalable partnerships', description: 'Build a compliant NIL roster + content + commerce system. The edge is compliance + workflow + content production, not just signing power.', tags: ['NIL','college','partnerships'], section: 'conditions' },
+    { id: 's3', type: 'tension', title: 'Wholesale dependency vs DTC ambition', description: 'Adidas wholesale = 60% of net sales. North America cannot be won purely through DTC. Wholesale partners remain structurally essential.', tags: ['channel','wholesale','DTC'], section: 'conditions' },
+    { id: 's4', type: 'hypothesis', title: 'Creator-led > brand-led for Gen Z', description: 'If creator commentary and highlight culture are reshaping consumption, invest in creator tools and partnerships over traditional brand advertising.', tags: ['creator','gen-z','media'], section: 'journey' },
+    { id: 's5', type: 'idea', title: 'MLS x Community Drops', description: 'Convert MLS partnership into creator-led, community-led drops and localized street-to-pitch assortments targeting Hispanic fandom.', tags: ['MLS','multicultural','drops'], section: 'conditions' },
+    { id: 's6', type: 'idea', title: 'Streaming-First Media Portfolio', description: 'Rebalance media buying around streaming-native rights packages. Align launch calendars to streaming tentpoles (Netflix NFL, Apple MLS, Amazon NBA).', tags: ['media','streaming','launch'], section: 'math' },
+    { id: 's7', type: 'insight', title: 'Retro silhouettes as culture lever', description: 'Samba and Gazelle are driving U.S. relevance and market share gains. Terrace styles connect heritage to street culture.', tags: ['product','retro','culture'], section: 'conditions' },
+    { id: 's8', type: 'opportunity', title: 'Canada women\'s hockey storytelling', description: 'Record women/girls participation in Hockey Canada. Connect women\'s sports growth to retail and product truths (fit, style, training).', tags: ['Canada','women','hockey'], section: 'conditions' },
+    { id: 's9', type: 'tension', title: 'Tariff + FX headwinds vs growth investment', description: 'U.S. tariffs + weak dollar expected to reduce earnings by hundreds of millions. Pricing must be stress-tested against tariff/FX scenarios.', tags: ['tariffs','pricing','risk'], section: 'math' },
+    { id: 's10', type: 'hypothesis', title: 'Community-first wins the identity layer', description: 'The path from $5.1B to $8B runs through local identity (schools, clubs, campuses), not just national media.', tags: ['community','growth','strategy'], section: 'strategy' },
+  ];
+}
+
+function initStrategy() {
+  if (STATE.strategyItems.length === 0) {
+    STATE.strategyItems = getDefaultStrategyItems();
+    saveState();
+  }
+}
+initStrategy();
+
+let activeStratFilter = 'all';
+let stratSearchTerm = '';
+
+function filterStrategyType(type, btn) {
+  activeStratFilter = type;
+  document.querySelectorAll('#strategy-filter .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderStrategy();
+}
+
+function filterStrategy() {
+  stratSearchTerm = document.getElementById('strategy-search').value.toLowerCase();
+  renderStrategy();
+}
+
+function renderStrategy() {
+  let items = STATE.strategyItems;
+  if (activeStratFilter !== 'all') items = items.filter(i => i.type === activeStratFilter);
+  if (stratSearchTerm) items = items.filter(i => (i.title + ' ' + i.description + ' ' + (i.tags || []).join(' ')).toLowerCase().includes(stratSearchTerm));
+  const grid = document.getElementById('strategy-grid');
+  const typeColors = { insight: 'tag-green', tension: 'tag-yellow', opportunity: 'tag-red', hypothesis: 'tag-blue', idea: 'tag-purple' };
+  const typeBorders = { insight: 'rgba(0,210,106,0.4)', tension: 'rgba(255,153,0,0.4)', opportunity: 'rgba(255,68,68,0.4)', hypothesis: 'rgba(74,158,255,0.4)', idea: 'rgba(160,80,255,0.4)' };
+  grid.innerHTML = items.map(item => {
+    const isPinned = STATE.pinnedInsights.some(p => p.id === item.id);
+    const notes = STATE.cardNotes[item.id] || [];
+    const notesHtml = notes.length > 0 ? `<div class="card-note-display">${notes.map((n, i) =>
+      `<div class="card-note-item"><span>${escHtml(n)}</span><button class="card-note-delete" onclick="deleteCardNote('${item.id}', ${i}); renderStrategy();">&times;</button></div>`
+    ).join('')}</div>` : '';
+    return `<div class="insight-card" style="border-left: 3px solid ${typeBorders[item.type] || 'var(--border)'}; position: relative;">
+      <button class="card-note-btn" onclick="toggleStrategyCardNote('${item.id}', event)" title="Add note">+</button>
+      <div class="flex items-center gap-8 mb-12">
+        <span class="tag ${typeColors[item.type] || 'tag-white'}">${item.type}</span>
+        ${item.section ? `<span class="text-xs text-dim">${item.section}</span>` : ''}
+      </div>
+      <h4 class="heading" style="font-size:16px; margin-bottom:8px;">${escHtml(item.title)}</h4>
+      <div class="insight-text">${escHtml(item.description)}</div>
+      <div class="flex flex-wrap gap-8 mt-12">
+        ${(item.tags || []).map(t => `<span class="text-xs text-dim">#${t}</span>`).join('')}
+      </div>
+      <div class="insight-actions">
+        <button class="pin-btn ${isPinned ? 'pinned' : ''}" onclick="toggleStrategyPin('${item.id}')">${isPinned ? 'Pinned' : 'Pin'}</button>
+        <button class="btn btn-sm btn-ghost" onclick="deleteStrategyItem('${item.id}')">Delete</button>
+      </div>
+      <div id="card-note-area-${item.id}"></div>
+      ${notesHtml}
+    </div>`;
+  }).join('');
+}
+
+function toggleStrategyPin(id) {
+  const existing = STATE.pinnedInsights.findIndex(p => p.id === id);
+  if (existing >= 0) {
+    STATE.pinnedInsights.splice(existing, 1);
+  } else {
+    const item = STATE.strategyItems.find(d => d.id === id);
+    if (item) STATE.pinnedInsights.push({ id: item.id, text: item.title + ': ' + item.description, type: item.type });
+  }
+  saveState();
+  renderStrategy();
+}
+
+function deleteStrategyItem(id) {
+  STATE.strategyItems = STATE.strategyItems.filter(i => i.id !== id);
+  saveState();
+  renderStrategy();
+}
+
+function toggleStrategyCardNote(cardId, event) {
+  event.stopPropagation();
+  const area = document.getElementById('card-note-area-' + cardId);
+  if (area.querySelector('.card-note-input-wrap')) {
+    area.innerHTML = '';
+    return;
+  }
+  area.innerHTML = `<div class="card-note-input-wrap">
+    <input type="text" placeholder="Add a note..." onkeydown="if(event.key==='Enter'){saveStrategyCardNote('${cardId}',this.value)}">
+    <button onclick="saveStrategyCardNote('${cardId}', this.previousElementSibling.value)">Save</button>
+  </div>`;
+  area.querySelector('input').focus();
+}
+
+function saveStrategyCardNote(cardId, text) {
+  if (!text.trim()) return;
+  if (!STATE.cardNotes[cardId]) STATE.cardNotes[cardId] = [];
+  STATE.cardNotes[cardId].push(text.trim());
+  saveState();
+  renderStrategy();
+}
+
+function openStrategyModal(preType) {
+  const modal = document.getElementById('modal-content');
+  modal.innerHTML = `
+    <div class="modal-title">New Strategy Item</div>
+    <div class="mb-20"><label>Type</label>
+      <select id="new-strat-type">
+        <option value="insight" ${preType === 'insight' ? 'selected' : ''}>Insight</option>
+        <option value="tension" ${preType === 'tension' ? 'selected' : ''}>Tension</option>
+        <option value="opportunity" ${preType === 'opportunity' ? 'selected' : ''}>Opportunity</option>
+        <option value="hypothesis">Hypothesis</option>
+        <option value="idea">Strategic Idea</option>
+      </select>
+    </div>
+    <div class="mb-20"><label>Title</label><input type="text" id="new-strat-title" placeholder="Enter title..."></div>
+    <div class="mb-20"><label>Description</label><textarea id="new-strat-desc" placeholder="Describe the insight, tension, or idea..."></textarea></div>
+    <div class="mb-20"><label>Tags (comma-separated)</label><input type="text" id="new-strat-tags" placeholder="e.g., youth, media, strategy"></div>
+    <div class="mb-24"><label>Section Link</label>
+      <select id="new-strat-section">
+        <option value="">None</option>
+        <option value="conditions">Conditions</option>
+        <option value="journey">Journey</option>
+        <option value="math">Math</option>
+      </select>
+    </div>
+    <div class="flex gap-12">
+      <button class="btn btn-fill" onclick="saveStrategyItem()">Save</button>
+      <button class="btn" onclick="closeModal()">Cancel</button>
+    </div>`;
+  document.getElementById('modal-overlay').classList.add('show');
+  setTimeout(() => document.getElementById('new-strat-title').focus(), 100);
+}
+
+function saveStrategyItem() {
+  const type = document.getElementById('new-strat-type').value;
+  const title = document.getElementById('new-strat-title').value.trim();
+  const desc = document.getElementById('new-strat-desc').value.trim();
+  const tags = document.getElementById('new-strat-tags').value.split(',').map(t => t.trim()).filter(Boolean);
+  const section = document.getElementById('new-strat-section').value;
+  if (!title) return;
+  STATE.strategyItems.push({ id: 's' + Date.now(), type, title, description: desc, tags, section });
+  saveState();
+  closeModal();
+  switchTab('strategy');
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('show');
+}
+
+// ==================== WHITEBOARD ====================
+function initWhiteboard() {
+  if (STATE.whiteboardNotes.length === 0) {
+    STATE.whiteboardNotes = [
+      { id: 'w1', text: 'Youth-first growth engine', x: 60, y: 50, bg: '#39FF14', color: '#000' },
+      { id: 'w2', text: 'MLS multicultural flywheel', x: 320, y: 70, bg: '#FF3131', color: '#FFF' },
+      { id: 'w3', text: 'NIL operating system', x: 580, y: 50, bg: '#0047AB', color: '#FFF' },
+      { id: 'w4', text: 'Streaming-first media', x: 200, y: 250, bg: '#ffc800', color: '#000' },
+      { id: 'w5', text: 'Canada hockey + women\'s', x: 470, y: 270, bg: '#b450ff', color: '#FFF' },
+    ];
+    saveState();
+  }
+}
+initWhiteboard();
+
+function renderWhiteboard() {
+  const canvas = document.getElementById('whiteboard-canvas');
+  canvas.innerHTML = '';
+  STATE.whiteboardNotes.forEach(note => {
+    const el = createDraggableNote(note, 'whiteboard');
+    canvas.appendChild(el);
+  });
+}
+
+function addWhiteboardNote(bg, color) {
+  const note = { id: 'w' + Date.now(), text: 'New idea...', x: 60 + Math.random() * 400, y: 40 + Math.random() * 300, bg, color };
+  STATE.whiteboardNotes.push(note);
+  saveState();
+  renderWhiteboard();
+}
+
+function clearWhiteboard() {
+  STATE.whiteboardNotes = [];
+  saveState();
+  renderWhiteboard();
+}
+
+function createDraggableNote(note, type) {
+  const el = document.createElement('div');
+  el.className = 'sticky-note';
+  el.style.left = note.x + 'px';
+  el.style.top = note.y + 'px';
+  el.style.background = note.bg;
+  el.style.color = note.color;
+  el.innerHTML = `<div class="note-content" contenteditable="true">${escHtml(note.text)}</div>
+    <div class="note-actions"><button class="note-delete" onclick="deleteNote('${note.id}','${type}')" title="Delete">&times;</button></div>`;
+
+  const content = el.querySelector('.note-content');
+  content.addEventListener('blur', () => { note.text = content.textContent; saveState(); });
+
+  let isDragging = false, startX, startY, origX, origY;
+  el.addEventListener('mousedown', (e) => {
+    if (e.target.contentEditable === 'true' || e.target.tagName === 'BUTTON') return;
+    isDragging = true;
+    startX = e.clientX; startY = e.clientY;
+    origX = parseInt(el.style.left); origY = parseInt(el.style.top);
+    el.style.zIndex = '100';
+    e.preventDefault();
+  });
+  document.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    el.style.left = (origX + e.clientX - startX) + 'px';
+    el.style.top = (origY + e.clientY - startY) + 'px';
+  });
+  document.addEventListener('mouseup', () => {
+    if (!isDragging) return;
+    isDragging = false;
+    el.style.zIndex = '';
+    note.x = parseInt(el.style.left);
+    note.y = parseInt(el.style.top);
+    saveState();
+  });
+  return el;
+}
+
+function deleteNote(id, type) {
+  if (type === 'whiteboard') {
+    STATE.whiteboardNotes = STATE.whiteboardNotes.filter(n => n.id !== id);
+    renderWhiteboard();
+  } else {
+    STATE.notes = STATE.notes.filter(n => n.id !== id);
+    renderNotes();
+  }
+  saveState();
+}
+
+// ==================== NOTES ====================
+function initNotes() {
+  if (STATE.notes.length === 0) {
+    STATE.notes = [
+      { id: 'n1', text: 'Explore high school football teamwear bundles as entry point', bg: '#39FF14', color: '#000' },
+      { id: 'n2', text: 'MLS creator drops — find 5 Latino creators in top 10 MLS markets', bg: '#FF3131', color: '#FFF' },
+      { id: 'n3', text: 'NIL compliance workflow — what does the tech stack look like?', bg: '#0047AB', color: '#FFF' },
+      { id: 'n4', text: 'Samba lifecycle management — how long can the wave last?', bg: '#ffc800', color: '#000' },
+    ];
+    saveState();
+  }
+}
+initNotes();
+
+function renderNotes() {
+  const grid = document.getElementById('notes-grid');
+  grid.innerHTML = STATE.notes.map(note =>
+    `<div class="card" style="background:${note.bg}; color:${note.color}; border-color:transparent; min-height:160px; position:relative; border-radius:12px;">
+      <div contenteditable="true" style="outline:none; min-height:100px; font-size:14px; line-height:1.6;" onblur="updateNoteText('${note.id}', this.textContent)">${escHtml(note.text)}</div>
+      <button style="position:absolute; top:12px; right:12px; background:none; border:none; color:${note.color}; opacity:0.3; cursor:pointer; font-size:18px; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='0.3'" onclick="deleteNote('${note.id}','notes')">&times;</button>
+    </div>`
+  ).join('');
+}
+
+function addStickyNote(bg, color) {
+  STATE.notes.push({ id: 'n' + Date.now(), text: 'New note...', bg, color });
+  saveState();
+  renderNotes();
+}
+
+function updateNoteText(id, text) {
+  const note = STATE.notes.find(n => n.id === id);
+  if (note) { note.text = text; saveState(); }
+}
+
+// ==================== FLOATING ACTION BUTTON ====================
+function toggleFab() {
+  const menu = document.getElementById('fab-menu');
+  const btn = document.getElementById('fab-btn');
+  menu.classList.toggle('show');
+  btn.classList.toggle('open');
+}
+
+function fabAction(type) {
+  toggleFab();
+  if (type === 'insight') {
+    openStrategyModal('insight');
+  } else if (type === 'whiteboard') {
+    switchTab('whiteboard');
+    setTimeout(() => addWhiteboardNote('#39FF14', '#000'), 100);
+  }
+}
+
+// ==================== DROPZONE ====================
+const dropzone = document.getElementById('research-dropzone');
+const fileInput = document.getElementById('research-file-input');
+if (dropzone) {
+  dropzone.addEventListener('click', () => fileInput.click());
+  dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('dragover'); });
+  dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+  dropzone.addEventListener('drop', (e) => {
+    e.preventDefault(); dropzone.classList.remove('dragover');
+    handleFiles(e.dataTransfer.files);
+  });
+  fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
+}
+
+function handleFiles(files) {
+  if (files.length === 0) return;
+  const file = files[0];
+  document.getElementById('upload-filename').textContent = file.name + ' (' + (file.size / 1024).toFixed(1) + ' KB)';
+  document.getElementById('upload-workflow').style.display = 'block';
+}
+
+// ==================== UTILITIES ====================
+function escHtml(str) { const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
+function escAttr(str) { return str.replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
+
+// ==================== INIT ====================
+document.addEventListener('DOMContentLoaded', () => {
+  renderConditions();
+  renderStrategy();
+  renderWhiteboard();
+  setTimeout(() => { updateMathModel(); updateScenarios(); }, 200);
+});
+
+// Close modal on overlay click
+document.getElementById('modal-overlay').addEventListener('click', (e) => {
+  if (e.target === document.getElementById('modal-overlay')) closeModal();
+});
+
+// Window resize handler for eco map
+window.addEventListener('resize', () => {
+  if (document.getElementById('section-journey').classList.contains('active')) {
+    drawEcoMap();
+  }
+});
+
+// Bloomberg clock
+function updateClock() {
+  const now = new Date();
+  const pad = n => String(n).padStart(2, '0');
+  const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  const el = document.getElementById('bb-clock');
+  if (el) el.textContent = pad(now.getDate()) + ' ' + months[now.getMonth()] + ' ' + now.getFullYear() + ' ' + pad(now.getHours()) + ':' + pad(now.getMinutes()) + ':' + pad(now.getSeconds());
+}
+updateClock();
+setInterval(updateClock, 1000);
+
+// Manual save with visual feedback
+function manualSave() {
+  saveState();
+  const btn = document.getElementById('save-btn');
+  if (btn) { btn.textContent = 'SAVED'; btn.style.color = '#00d26a'; btn.style.borderColor = '#00d26a'; setTimeout(() => { btn.textContent = 'SAVE'; btn.style.color = ''; btn.style.borderColor = ''; }, 1500); }
+}
+
+// ==================== FLOATING STICKY NOTES ====================
+const NOTE_COLORS = [
+  { name: 'amber', bg: '#1a1a00', border: 'rgba(255,200,0,0.3)', headerBg: 'rgba(255,200,0,0.1)' },
+  { name: 'green', bg: '#001a0a', border: 'rgba(0,210,106,0.3)', headerBg: 'rgba(0,210,106,0.1)' },
+  { name: 'blue', bg: '#001020', border: 'rgba(74,158,255,0.3)', headerBg: 'rgba(74,158,255,0.1)' },
+  { name: 'red', bg: '#1a0505', border: 'rgba(255,68,68,0.3)', headerBg: 'rgba(255,68,68,0.1)' },
+  { name: 'purple', bg: '#120520', border: 'rgba(160,80,255,0.3)', headerBg: 'rgba(160,80,255,0.1)' }
+];
+
+function addFloatingNote() {
+  const id = 'fn_' + Date.now();
+  const x = 200 + Math.random() * 300;
+  const y = 150 + Math.random() * 200;
+  const note = { id, text: '', x, y, color: 0 };
+  STATE.floatingNotes.push(note);
+  renderFloatingNote(note);
+  saveState();
+}
+
+function renderFloatingNote(note) {
+  const c = NOTE_COLORS[note.color || 0];
+  const el = document.createElement('div');
+  el.className = 'floating-note';
+  el.id = note.id;
+  el.style.left = note.x + 'px';
+  el.style.top = note.y + 'px';
+  el.style.background = c.bg;
+  el.style.borderColor = c.border;
+
+  const colorBtns = NOTE_COLORS.map((nc, i) =>
+    `<div class="floating-note-color" data-ci="${i}" style="background:${nc.border.replace(',0.3)',',0.8)')};" onclick="changeNoteColor('${note.id}',${i})"></div>`
+  ).join('');
+
+  el.innerHTML = `
+    <div class="floating-note-header" style="background:${c.headerBg}" onmousedown="startDragNote(event,'${note.id}')">
+      <span>NOTE</span>
+      <div style="display:flex;align-items:center;gap:6px;">
+        <div class="floating-note-colors">${colorBtns}</div>
+        <button class="floating-note-close" onclick="deleteFloatingNote('${note.id}')">&times;</button>
+      </div>
+    </div>
+    <textarea placeholder="Type here..." oninput="updateNoteText('${note.id}',this.value)">${note.text || ''}</textarea>
+  `;
+  document.body.appendChild(el);
+  el.querySelector('textarea').focus();
+}
+
+function renderAllFloatingNotes() {
+  document.querySelectorAll('.floating-note').forEach(el => el.remove());
+  (STATE.floatingNotes || []).forEach(n => renderFloatingNote(n));
+}
+
+function updateNoteText(id, text) {
+  const note = STATE.floatingNotes.find(n => n.id === id);
+  if (note) { note.text = text; saveState(); }
+}
+
+function deleteFloatingNote(id) {
+  STATE.floatingNotes = STATE.floatingNotes.filter(n => n.id !== id);
+  const el = document.getElementById(id);
+  if (el) el.remove();
+  saveState();
+}
+
+function changeNoteColor(id, ci) {
+  const note = STATE.floatingNotes.find(n => n.id === id);
+  if (!note) return;
+  note.color = ci;
+  const c = NOTE_COLORS[ci];
+  const el = document.getElementById(id);
+  if (el) {
+    el.style.background = c.bg;
+    el.style.borderColor = c.border;
+    el.querySelector('.floating-note-header').style.background = c.headerBg;
+  }
+  saveState();
+}
+
+let dragNote = null, dragOff = { x: 0, y: 0 };
+function startDragNote(e, id) {
+  e.preventDefault();
+  dragNote = id;
+  const el = document.getElementById(id);
+  const rect = el.getBoundingClientRect();
+  dragOff.x = e.clientX - rect.left;
+  dragOff.y = e.clientY - rect.top;
+}
+document.addEventListener('mousemove', e => {
+  if (!dragNote) return;
+  const el = document.getElementById(dragNote);
+  if (!el) return;
+  const x = e.clientX - dragOff.x;
+  const y = e.clientY - dragOff.y;
+  el.style.left = x + 'px';
+  el.style.top = y + 'px';
+});
+document.addEventListener('mouseup', () => {
+  if (!dragNote) return;
+  const el = document.getElementById(dragNote);
+  if (el) {
+    const note = STATE.floatingNotes.find(n => n.id === dragNote);
+    if (note) {
+      note.x = parseInt(el.style.left);
+      note.y = parseInt(el.style.top);
+      saveState();
+    }
+  }
+  dragNote = null;
+});
+
+renderAllFloatingNotes();
+
+// ==================== REMIX JOURNEY ====================
+const REMIX_PRESETS = [
+  {
+    name: 'D1 Soccer (Default)', emoji: '⚽', age: 19, sport: 'Soccer', level: 'D1 Student Athlete',
+    school: 'University of Michigan', persona: 'Maya',
+    traits: ['Gen Z', 'NIL Aware', 'D1 Athlete', 'Creator Consumer', 'Style + Performance', 'Streaming Native'],
+    bio: 'Gen Z. NIL-aware and actively exploring personal brand opportunities. Socially connected across Instagram, TikTok, and team group chats. Performance-driven on the field, style-driven off it. Follows creators and athletes more than brands. Bilingual (English/Spanish). Streams everything, watches nothing linear.',
+    journey: [
+      ['Mon','Morning training. Afternoon classes. Evening film review.','TikTok between classes. YouTube highlights. Spotify during training.','Team group chat. Posts training clip to IG story.','Training gear visibility. Post-training recovery content.'],
+      ['Tue','Light training. Study groups. NIL meeting with advisor.','Instagram Reels. StockX drop checks. Reddit soccer threads.','NIL discussion with teammates. Group chat about match.','NIL partnership touchpoint. Campus retail activation.'],
+      ['Wed','Full practice. Weights. Campus life — dining, library.','MLS highlights on Apple TV. Creator commentary on TikTok.','Casual pickup with friends. Soccer culture chat.','Lifestyle-to-pitch crossover. Pickup culture content.'],
+      ['Thu','Pre-match prep. Travel day if away. Kit check and ritual.','Match preview on ESPN+. Pre-game playlist. Team hype videos.','Team bonding. Pre-match rituals. Coach sessions.','Match-day kit experience. Travel gear integration.'],
+      ['Fri','MATCH DAY. Pre-match routine. Post-match recovery.','Dark pre-match. Post: highlights, stats, group FaceTimes.','Peak social — match photos, fans, team celebration.','On-field performance showcase. Post-match social content.'],
+      ['Sat','Recovery. Brunch with friends. Shopping/thrifting. Going out.','Premier League on Peacock. Football on ESPN. TikTok deep scroll.','Non-sport friend groups. Social scene. Cultural life.','Lifestyle product moments. Retro silhouettes (Samba/Gazelle).'],
+      ['Sun','Light recovery. Meal prep. Content creation for personal brand.','NFL streaming. Creating TikTok/IG content. Watching creators.','Family FaceTime. NIL content calendar. Engaging followers.','Creator tools/support. Content creation partnership.']
+    ]
+  },
+  {
+    name: 'HS Basketball', emoji: '🏀', age: 17, sport: 'Basketball', level: 'High School Varsity',
+    school: 'Oak Hill Academy', persona: 'Jaylen',
+    traits: ['Gen Z', 'Hoop Culture', 'Sneakerhead', 'Highlight Driven', 'AAU Circuit', 'TikTok Native'],
+    bio: '17-year-old varsity point guard with AAU aspirations. Lives for sneaker drops and highlight reels. Runs a basketball TikTok with 12K followers. Influenced by Overtime, Ballislife, and NBA Twitter. Style is everything — on and off court.',
+    journey: [
+      ['Mon','School. After-school practice. Weight room.','Overtime clips. NBA Twitter takes. Sneaker release calendars.','AAU group chat. School hallway culture.','Basketball training gear. Signature shoe visibility.'],
+      ['Tue','Practice. Film session with coach. Homework.','YouTube basketball breakdowns. TikTok challenges.','Teammates posting gym clips. Pickup game planning.','Performance gear tech stories. School team sponsorship.'],
+      ['Wed','Open gym. Pickup games after school.','Ballislife highlights. Instagram explore page.','Pickup culture — mixed friend groups, trash talk.','Pickup/streetball culture content. Court-to-street style.'],
+      ['Thu','Game day prep. Early release. Pre-game meal.','Pre-game playlist on Spotify. Hype videos shared in group chat.','Team bonding. Locker room energy. Student section hype.','Game-day experience. Student section activation.'],
+      ['Fri','GAME NIGHT. Pre-game warmups. Post-game celebration.','Dark pre-game. Post-game highlight clips everywhere.','Peak social — student section, post-game hangout, viral moments.','On-court showcase. Post-game sneaker content.'],
+      ['Sat','Recovery. Sneaker shopping. Mall with friends. AAU practice.','StockX/GOAT browsing. Sneaker unboxing videos. NBA games.','Friend group hangouts. Sneaker culture conversations.','Retail sneaker experience. Drop culture integration.'],
+      ['Sun','Church/family. Light shooting. Content creation.','NFL RedZone background. Creating highlight edits. Scrolling.','Family time. Planning next week. Group chat memes.','Lifestyle crossover. Creator tools for highlights.']
+    ]
+  },
+  {
+    name: 'NCAA Runner', emoji: '🏃', age: 20, sport: 'Track & Field', level: 'D1 Student Athlete',
+    school: 'University of Oregon', persona: 'Aisha',
+    traits: ['Gen Z', 'Running Culture', 'Strava Obsessed', 'Health Focused', 'NIL Active', 'Podcast Listener'],
+    bio: '20-year-old D1 middle-distance runner. Training is her identity. Active on Strava and running TikTok. Follows pro runners, running creators, and nutrition science. NIL deal with a supplement brand. Streams podcasts on every run.',
+    journey: [
+      ['Mon','6AM track session. Classes. Afternoon recovery run.','Running TikTok. Strava feed. Podcast during recovery run.','Running club group chat. Strava kudos and comments.','Training footwear tech. Recovery product placement.'],
+      ['Tue','Strength training. Sports psych meeting. Study.','YouTube race breakdowns. Instagram running community.','Training partner runs. Team meals.','Performance apparel for training. Campus athlete visibility.'],
+      ['Wed','Tempo run. Classes. Physical therapy.','Running podcasts (Ali on the Run, Citius Mag). Strava.','PT conversations. Coach check-in. Teammate planning.','Running tech content. Injury prevention storytelling.'],
+      ['Thu','Easy recovery. NIL content creation. Race prep.','Creating running content for IG/TikTok. Pro race replays.','NIL brand meetings. Content collaboration with teammates.','NIL partnership activation. Athlete creator tools.'],
+      ['Fri','Pre-race routine. Travel to meet. Shakeout run.','Dark pre-race. Team playlist. Mental visualization.','Team travel bonding. Coach strategy talk.','Race-day kit experience. Travel gear showcase.'],
+      ['Sat','RACE DAY. Warm-up ritual. Competition. Cool-down.','Post-race: results tracking, highlight sharing, competitor analysis.','Peak social — race photos, team celebration, competitor respect.','On-track performance showcase. Race-day content.'],
+      ['Sun','Long recovery run. Meal prep. Strava analysis.','Strava deep dive. Running YouTube. Planning next week.','Family call. Running community engagement online.','Recovery product integration. Weekly gear rotation.']
+    ]
+  },
+  {
+    name: 'Canadian Hockey', emoji: '🏒', age: 18, sport: 'Hockey', level: 'OHL / Junior',
+    school: 'London Knights (OHL)', persona: 'Connor',
+    traits: ['Gen Z', 'Hockey Culture', 'Draft Hopeful', 'Tim Hortons Regular', 'Billet Life', 'Hockey Twitter'],
+    bio: '18-year-old OHL forward billeting in London, Ontario. NHL draft eligible. Lives the billet family life — rink, school, repeat. Deep in Hockey Twitter, watches every NHL game. Style is understated but gear-obsessed. Canadian hockey culture runs deep.',
+    journey: [
+      ['Mon','Morning skate. School/tutoring. Afternoon nap. Film.','Hockey Twitter. NHL highlights on YouTube. TSN clips.','Billet family dinner. Team group chat. FaceTime home.','Training gear. Rink-to-street style moments.'],
+      ['Tue','Practice. Weights. Video review with coaches.','Podcast (Spittin Chiclets). Instagram hockey community.','Teammate hangouts. Billet family time.','Performance gear visibility. Hockey lifestyle content.'],
+      ['Wed','Game day prep. Pre-game meal. Pre-game nap.','Dark before games. Pre-game playlist.','Pre-game rituals with teammates. Locker room energy.','Game-day experience. Arena branding.'],
+      ['Thu','GAME NIGHT. Warm-up. Game. Post-game meal.','Post-game highlights shared. NHL games on TV.','Peak energy — fans, billets, post-game team hangout.','On-ice showcase. Post-game content moments.'],
+      ['Fri','Recovery. Light skate. School catch-up.','NHL Friday night games. TikTok scroll. Gaming.','Friday hangout with teammates. Movie night at billets.','Recovery product placement. Lifestyle gear.'],
+      ['Sat','Morning practice. Afternoon free. Evening game possible.','Full NHL Saturday slate. Hockey YouTube deep dives.','Weekend teammate bonding. Mall trips. Tim Hortons runs.','Weekend lifestyle. Retail hockey culture.'],
+      ['Sun','Travel day or rest. Family FaceTime. Meal prep.','Sunday NFL/NHL. Creating content. Planning week.','Family connection. Billet family activities.','Travel gear. Cross-sport culture moments.']
+    ]
+  },
+  {
+    name: 'Fitness Creator', emoji: '📱', age: 22, sport: 'Fitness / CrossFit', level: 'Content Creator',
+    school: 'Self-employed / Online', persona: 'Dani',
+    traits: ['Gen Z', 'Creator Economy', '500K Followers', 'Brand Deal Savvy', 'Gym Culture', 'Multi-Platform'],
+    bio: '22-year-old fitness content creator with 500K+ across TikTok and Instagram. Former D3 volleyball player turned full-time creator. Partners with 4-5 brands. Training content, day-in-my-life vlogs, and supplement reviews. Lives in Austin, TX.',
+    journey: [
+      ['Mon','Morning gym session (filmed). Editing content. Brand emails.','Posting AM workout. Engaging comments. Watching competitor creators.','Gym community. DM conversations with followers. Creator friends.','Gym apparel showcase. Training content partnership.'],
+      ['Tue','Filming day — batch content. Afternoon meetings with brands.','Trending audio research. Analytics review. Posting Reels.','Creator mastermind group. Brand meeting networking.','Brand collaboration content. Product seeding.'],
+      ['Wed','Gym. Podcast recording. Admin/invoicing.','Podcast publishing. YouTube uploads. Newsletter.','Podcast guest networking. Gym buddy training.','Multi-platform content integration. Podcast sponsorship.'],
+      ['Thu','Active recovery. Content planning for weekend. Shopping.','Content calendar planning. Engaging on Twitter/Threads.','Austin creator meetup. Coffee with brand contacts.','Lifestyle content. Shopping/haul content opportunities.'],
+      ['Fri','Morning gym (filmed). Afternoon — personal time. Going out.','Posting schedule. Friday vibes content. Going-out prep content.','Friend group. Social scene. Influencer events.','Night-out style. Lifestyle beyond gym.'],
+      ['Sat','Long gym session. Farmers market. Lifestyle content.','Weekend content push. Engagement peaks. Story dumps.','Weekend social life. Gym community events.','Weekend lifestyle showcase. Event activations.'],
+      ['Sun','Rest day content. Meal prep (filmed). Week planning.','Batch editing. Scheduling week\'s content. Analytics deep dive.','Online community engagement. Family time.','Recovery content. Meal prep integration. Weekly reset.']
+    ]
+  }
+];
+
+function openRemixModal() {
+  const overlay = document.createElement('div');
+  overlay.className = 'remix-overlay';
+  overlay.id = 'remix-overlay';
+  overlay.onclick = e => { if (e.target === overlay) closeRemixModal(); };
+
+  overlay.innerHTML = `
+    <div class="remix-modal">
+      <h3 class="heading">&#x1f3b2; Remix Consumer Journey</h3>
+      <label>Quick Presets</label>
+      <div class="remix-presets">
+        ${REMIX_PRESETS.map((p, i) => `<button class="remix-preset" onclick="applyRemixPreset(${i})">${p.emoji} ${p.name}</button>`).join('')}
+      </div>
+      <div class="divider"></div>
+      <label>Or Customize</label>
+      <div class="remix-row">
+        <div><label>Persona Name</label><input type="text" id="remix-name" value="Maya"></div>
+        <div><label>Age</label><input type="number" id="remix-age" value="19" min="14" max="40"></div>
+      </div>
+      <div class="remix-row">
+        <div><label>Sport</label><input type="text" id="remix-sport" value="Soccer"></div>
+        <div><label>Level</label><input type="text" id="remix-level" value="D1 Student Athlete"></div>
+      </div>
+      <div class="remix-row">
+        <div><label>School / Org</label><input type="text" id="remix-school" value="University of Michigan"></div>
+        <div><label>Emoji</label><input type="text" id="remix-emoji" value="⚽" style="width:60px;"></div>
+      </div>
+      <div class="remix-row-full">
+        <label>Bio</label>
+        <textarea id="remix-bio" rows="3">Gen Z. NIL-aware and actively exploring personal brand opportunities. Socially connected across Instagram, TikTok, and team group chats. Performance-driven on the field, style-driven off it.</textarea>
+      </div>
+      <div class="remix-row-full">
+        <label>Traits (comma-separated)</label>
+        <input type="text" id="remix-traits" value="Gen Z, NIL Aware, D1 Athlete, Creator Consumer, Style + Performance, Streaming Native">
+      </div>
+      <div class="remix-actions">
+        <button class="btn" onclick="closeRemixModal()">Cancel</button>
+        <button class="btn btn-fill" onclick="applyRemix()">Apply Remix</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+}
+
+function closeRemixModal() {
+  const el = document.getElementById('remix-overlay');
+  if (el) el.remove();
+}
+
+function applyRemixPreset(i) {
+  const p = REMIX_PRESETS[i];
+  document.getElementById('remix-name').value = p.persona;
+  document.getElementById('remix-age').value = p.age;
+  document.getElementById('remix-sport').value = p.sport;
+  document.getElementById('remix-level').value = p.level;
+  document.getElementById('remix-school').value = p.school;
+  document.getElementById('remix-emoji').value = p.emoji;
+  document.getElementById('remix-bio').value = p.bio;
+  document.getElementById('remix-traits').value = p.traits.join(', ');
+
+  // Also apply the journey table
+  const tbody = document.querySelector('.journey-table tbody');
+  if (tbody && p.journey) {
+    const rows = tbody.querySelectorAll('tr');
+    p.journey.forEach((day, idx) => {
+      if (rows[idx]) {
+        const cells = rows[idx].querySelectorAll('td[contenteditable]');
+        if (cells.length >= 4) {
+          cells[0].textContent = day[1];
+          cells[1].textContent = day[2];
+          cells[2].textContent = day[3];
+          cells[3].textContent = day[4];
+        }
+      }
+    });
+  }
+}
+
+function applyRemix() {
+  const name = document.getElementById('remix-name').value || 'Maya';
+  const age = document.getElementById('remix-age').value || '19';
+  const sport = document.getElementById('remix-sport').value || 'Soccer';
+  const level = document.getElementById('remix-level').value || 'D1 Student Athlete';
+  const school = document.getElementById('remix-school').value || 'University of Michigan';
+  const emoji = document.getElementById('remix-emoji').value || '⚽';
+  const bio = document.getElementById('remix-bio').value || '';
+  const traits = document.getElementById('remix-traits').value.split(',').map(t => t.trim()).filter(Boolean);
+
+  // Update persona card
+  const avatar = document.querySelector('.persona-avatar');
+  if (avatar) avatar.textContent = emoji;
+
+  const nameEl = document.querySelector('.persona-info h3');
+  if (nameEl) nameEl.textContent = name;
+
+  const subtitle = document.querySelector('.persona-info .text-dim');
+  if (subtitle) subtitle.innerHTML = `${age}-year-old ${level} &middot; ${sport.toLowerCase()} &middot; ${school}`;
+
+  const bioEl = document.querySelector('.persona-info .text-light');
+  if (bioEl) bioEl.textContent = bio;
+
+  const traitColors = ['tag-green', 'tag-red', 'tag-blue', 'tag-yellow', 'tag-purple', 'tag-white'];
+  const traitsEl = document.querySelector('.persona-traits');
+  if (traitsEl) {
+    traitsEl.innerHTML = traits.map((t, i) =>
+      `<span class="tag ${traitColors[i % traitColors.length]}">${t}</span>`
+    ).join('');
+  }
+
+  closeRemixModal();
+}
+</script>
+</body>
+</html>
