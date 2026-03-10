@@ -90,6 +90,16 @@ h1, h2, h3, h4, h5, h6, .heading { font-family: 'Oswald', 'Arial Narrow', sans-s
 }
 .np-card-tab { font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--amber); font-weight: 600; }
 .np-card-time { font-size: 9px; color: var(--text-dim); }
+.np-card-label-select {
+  background: transparent; border: 1px solid; border-radius: 2px;
+  font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600;
+  padding: 2px 4px; cursor: pointer; font-family: 'JetBrains Mono', monospace;
+  appearance: none; -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%23777'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 4px center; padding-right: 14px;
+}
+.np-card-label-select:focus { outline: none; }
+.np-card-label-select option { background: var(--card); color: var(--text-light); }
 .np-card-delete { background: none; border: none; color: var(--text-dim); cursor: pointer; font-size: 13px; padding: 0 2px; line-height: 1; transition: color 0.15s; }
 .np-card-delete:hover { color: var(--red); }
 .np-card textarea {
@@ -4474,6 +4484,11 @@ function updateNoteText(id, text) {
   if (note) { note.text = text; saveState(); }
 }
 
+function changeNoteLabel(id, newTab) {
+  const note = STATE.floatingNotes.find(n => n.id === id);
+  if (note) { note.tab = newTab; saveState(); renderNotesPanel(); }
+}
+
 function filterNotes(filter, btn) {
   _notesPanelFilter = filter;
   document.querySelectorAll('.np-filter-btn').forEach(b => b.classList.remove('active'));
@@ -4497,10 +4512,11 @@ function renderNotesPanel() {
     const t = n.created ? new Date(n.created) : null;
     const timeStr = t ? t.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + ' ' + t.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : '';
     const accent = tabColors[n.tab] || 'var(--amber)';
+    const tabOpts = Object.entries(tabLabels).map(([k,v]) => `<option value="${k}" ${n.tab === k ? 'selected' : ''}>${v}</option>`).join('');
     return `<div class="np-card" data-note-id="${n.id}" style="border-left-color:${accent};">
       <div class="np-card-header">
         <div style="display:flex; align-items:center; gap:8px;">
-          <span class="np-card-tab" style="color:${accent};">${tabLabels[n.tab] || n.tab || 'Note'}</span>
+          <select class="np-card-label-select" style="color:${accent}; border-color:${accent};" onchange="changeNoteLabel('${n.id}',this.value)">${tabOpts}</select>
           <span class="np-card-time">${timeStr}</span>
         </div>
         <button class="np-card-delete" onclick="deleteNote('${n.id}')" title="Delete note">&times;</button>
