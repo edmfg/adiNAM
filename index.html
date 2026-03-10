@@ -186,7 +186,7 @@ h1, h2, h3, h4, h5, h6, .heading { font-family: 'Oswald', 'Arial Narrow', sans-s
 .cloud-sync-note {
   text-align: center; width: 100%; padding: 16px 0 8px;
   font-size: 9px; color: var(--amber); font-family: 'JetBrains Mono', monospace;
-  letter-spacing: 0.03em; opacity: 0.5;
+  letter-spacing: 0.03em; opacity: 0.5; position: relative; z-index: 0; pointer-events: none;
 }
 .section-header h2 {
   font-size: 28px; font-weight: 700; line-height: 1; color: var(--amber);
@@ -3468,7 +3468,15 @@ function createDraggableNote(note, type) {
   el.style.color = note.color;
   el.setAttribute('data-note-id', note.id);
   // Support HTML content (for bold) — use innerHTML if note has HTML, else escape
-  const noteHtml = note.html || escHtml(note.text);
+  // Strip any cloud-sync text that leaked into saved content
+  let noteHtml = note.html || escHtml(note.text);
+  if (note.html && note.html.includes('cloud-sync')) {
+    const tmp = document.createElement('div'); tmp.innerHTML = note.html;
+    tmp.querySelectorAll('.cloud-sync-note').forEach(n => n.remove());
+    noteHtml = tmp.innerHTML;
+    note.html = noteHtml;
+    note.text = tmp.textContent;
+  }
   if (note.w) el.style.width = note.w + 'px';
   if (note.h) el.style.height = note.h + 'px';
   el.innerHTML = `<div class="note-toolbar"><button class="note-bold-btn" title="Bold (Ctrl+B)"><b>B</b></button></div>
@@ -3501,7 +3509,13 @@ function createDraggableNote(note, type) {
       document.execCommand('bold');
     }
   });
-  content.addEventListener('blur', () => { note.text = content.textContent; note.html = content.innerHTML; saveState(); });
+  content.addEventListener('blur', () => {
+    // Strip any cloud-sync note that may have leaked in
+    content.querySelectorAll('.cloud-sync-note').forEach(n => n.remove());
+    note.text = content.textContent;
+    note.html = content.innerHTML;
+    saveState();
+  });
 
   let isDragging = false, startX, startY, origX, origY, batchDragData = [];
   // Drag (batch if selected)
