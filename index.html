@@ -645,6 +645,18 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
   cursor: pointer; padding: 0 4px; transition: color 0.15s;
 }
 .todo-delete:hover { color: var(--red); }
+.todo-images { display: flex; flex-wrap: wrap; gap: 6px; padding: 4px 0 2px 36px; }
+.todo-images img { max-height: 80px; max-width: 140px; border-radius: 3px; border: 1px solid var(--border); cursor: pointer; object-fit: cover; transition: opacity 0.15s; }
+.todo-images img:hover { opacity: 0.7; }
+.todo-img-btn { background: none; border: 1px dashed var(--border); color: var(--text-dim); font-size: 11px; padding: 2px 8px; border-radius: 3px; cursor: pointer; transition: all 0.15s; margin-left: 4px; }
+.todo-img-btn:hover { border-color: var(--amber); color: var(--amber); }
+.np-images { display: flex; flex-wrap: wrap; gap: 6px; padding: 6px 10px; }
+.np-images img { max-height: 100px; max-width: 180px; border-radius: 3px; border: 1px solid var(--border); cursor: pointer; object-fit: cover; transition: opacity 0.15s; }
+.np-images img:hover { opacity: 0.7; }
+.np-img-btn { background: none; border: 1px dashed var(--border); color: var(--text-dim); font-size: 11px; padding: 3px 10px; border-radius: 3px; cursor: pointer; transition: all 0.15s; margin: 0 10px 6px; }
+.np-img-btn:hover { border-color: #FF9F1C; color: #FF9F1C; }
+.img-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); z-index: 100000; display: flex; align-items: center; justify-content: center; cursor: zoom-out; }
+.img-overlay img { max-width: 90vw; max-height: 90vh; border-radius: 4px; }
 
 /* ── CULTURAL MOMENTS ── */
 .moments-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
@@ -2916,9 +2928,10 @@ function renderTodos() {
         ${t.status === 'done' ? '&#10003;' : t.status === 'in-progress' ? '&#9654;' : ''}
       </button>
       <textarea class="todo-text-input" placeholder="Task description..." onblur="updateTodoText('${t.id}',this.value)" oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'">${escHtml(t.text)}</textarea>
+      <button class="todo-img-btn" onclick="triggerImageUpload('todo','${t.id}')" title="Attach screengrab">IMG</button>
       <button class="todo-priority" onclick="cycleTodoPriority('${t.id}')" style="color:${priorityColors[t.priority]}; border-color:${priorityColors[t.priority]};" title="Priority: ${t.priority}">${t.priority.toUpperCase()}</button>
       <button class="todo-delete" onclick="deleteTodo('${t.id}')" title="Delete">&times;</button>
-    </div>
+    </div>${(t.images && t.images.length) ? `<div class="todo-images">${t.images.map((src, i) => `<img src="${src}" onclick="previewImage(this.src)" oncontextmenu="event.preventDefault();removeImage('todo','${t.id}',${i})" title="Click to enlarge / Right-click to remove">`).join('')}</div>` : ''}
   `).join('');
   // Auto-size all textareas after render
   requestAnimationFrame(() => {
@@ -4531,6 +4544,54 @@ function noteDrop(e, targetId) {
   saveState(); renderNotesPanel();
 }
 
+// ── Image upload helpers ──
+function triggerImageUpload(targetType, targetId) {
+  const input = document.createElement('input');
+  input.type = 'file'; input.accept = 'image/*'; input.multiple = true;
+  input.onchange = (e) => {
+    const files = Array.from(e.target.files);
+    files.forEach(file => {
+      if (file.size > 5 * 1024 * 1024) return; // 5MB max per image
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const dataUrl = ev.target.result;
+        if (targetType === 'note') {
+          const note = (STATE.floatingNotes || []).find(n => n.id === targetId);
+          if (note) { if (!note.images) note.images = []; note.images.push(dataUrl); saveState(); renderNotesPanel(); }
+        } else if (targetType === 'todo') {
+          const todo = getTodos().find(t => t.id === targetId);
+          if (todo) { if (!todo.images) todo.images = []; todo.images.push(dataUrl); saveState(); renderTodos(); }
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+  input.click();
+}
+
+function removeImage(targetType, targetId, imgIdx) {
+  if (targetType === 'note') {
+    const note = (STATE.floatingNotes || []).find(n => n.id === targetId);
+    if (note && note.images) { note.images.splice(imgIdx, 1); saveState(); renderNotesPanel(); }
+  } else if (targetType === 'todo') {
+    const todo = getTodos().find(t => t.id === targetId);
+    if (todo && todo.images) { todo.images.splice(imgIdx, 1); saveState(); renderTodos(); }
+  }
+}
+
+function previewImage(src) {
+  const overlay = document.createElement('div');
+  overlay.className = 'img-overlay';
+  overlay.onclick = () => overlay.remove();
+  overlay.innerHTML = `<img src="${src}">`;
+  document.body.appendChild(overlay);
+}
+
+function renderImageThumbs(images, targetType, targetId) {
+  if (!images || images.length === 0) return '';
+  return images.map((src, i) => `<img src="${src}" onclick="previewImage(this.src)" title="Click to enlarge, right-click to remove"><span style="display:none" data-rm="${targetType},${targetId},${i}"></span>`).join('');
+}
+
 function renderNotesPanel() {
   const body = document.getElementById('notes-panel-body');
   const countEl = document.getElementById('notes-count');
@@ -4557,6 +4618,8 @@ function renderNotesPanel() {
         <button class="np-card-delete" onclick="deleteNote('${n.id}')" title="Delete note">&times;</button>
       </div>
       <textarea placeholder="Type your note..." oninput="updateNoteText('${n.id}',this.value); autoSizeNoteCard(this);">${escHtml(n.text || '')}</textarea>
+      ${(n.images && n.images.length) ? `<div class="np-images">${n.images.map((src, i) => `<img src="${src}" onclick="previewImage(this.src)" oncontextmenu="event.preventDefault();removeImage('note','${n.id}',${i})" title="Click to enlarge / Right-click to remove">`).join('')}</div>` : ''}
+      <button class="np-img-btn" onclick="triggerImageUpload('note','${n.id}')">+ Screengrab</button>
     </div>`;
   }).join('') + `<button class="np-add-btn" onclick="addPanelNote()">+ Add Note</button>`;
 
