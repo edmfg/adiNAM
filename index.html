@@ -1928,12 +1928,13 @@ function saveState() {
 }
 
 let _lastSyncTs = 0;
+const _clientId = 'c_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
 async function syncToSupabase() {
   try {
     _lastSyncTs = Date.now();
     const { error } = await supa
       .from('workspace')
-      .upsert({ id: WORKSPACE_ID, state: STATE, updated_at: new Date().toISOString() });
+      .upsert({ id: WORKSPACE_ID, state: { ...STATE, _clientId }, updated_at: new Date().toISOString() });
     if (error) { console.warn('[Supabase] Sync error:', error); updateSyncStatus('error'); }
     else { console.log('[Supabase] Synced to cloud'); updateSyncStatus('synced'); }
   } catch(e) { console.warn('[Supabase] Sync failed:', e); updateSyncStatus('error'); }
@@ -1952,15 +1953,19 @@ function subscribeToChanges() {
   supa
     .channel('workspace-sync')
     .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'workspace', filter: 'id=eq.' + WORKSPACE_ID }, (payload) => {
-      // Ignore our own updates (within 3s of last sync)
+      // Ignore our own updates
+      if (payload.new && payload.new.state && payload.new.state._clientId === _clientId) return;
       if (Date.now() - _lastSyncTs < 3000) return;
+      // Skip if user is actively typing or dragging
+      const active = document.activeElement;
+      const userBusy = active && (active.contentEditable === 'true' || active.tagName === 'TEXTAREA' || active.tagName === 'INPUT');
       if (payload.new && payload.new.state) {
         const remote = payload.new.state;
         Object.assign(STATE, remote);
         localStorage.setItem('adidas_ygt_state', JSON.stringify(STATE));
-        refreshAllViews();
+        if (!userBusy) refreshAllViews();
         updateSyncStatus('synced');
-        console.log('[Supabase] Real-time update received');
+        console.log('[Supabase] Real-time update received' + (userBusy ? ' (deferred refresh)' : ''));
       }
     })
     .subscribe();
