@@ -1841,6 +1841,7 @@ if (sessionStorage.getItem('ygt_auth') === '1') {
     <div class="flex gap-8" style="flex-wrap:wrap;">
       <button class="btn btn-sm btn-fill" onclick="addWhiteboardNote('#39FF14','#000')">+ Note</button>
       <button class="btn btn-sm" onclick="addWhiteboardLabel()">+ Label Group</button>
+      <button class="btn btn-sm" onclick="showWbHelp()" style="color:var(--text-dim); border-color:var(--text-dim);">? How to Use</button>
     </div>
     <button class="btn btn-sm" onclick="clearWhiteboard()">Clear All</button>
   </div>
@@ -1849,13 +1850,13 @@ if (sessionStorage.getItem('ygt_auth') === '1') {
       <div class="canvas-area" id="whiteboard-canvas" style="flex:1; overflow:auto; min-height:0;"></div>
     </div>
     <!-- Collapsible To-Do Panel -->
-    <div id="wb-todo-panel" style="width:400px; flex-shrink:0; transition:width 0.3s var(--ease), opacity 0.3s; display:flex; flex-direction:column; overflow:hidden;">
-      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+    <div id="wb-todo-panel" data-collapsed="0" style="width:400px; flex-shrink:0; transition:width 0.3s var(--ease); display:flex; flex-direction:column; overflow:hidden;">
+      <div style="display:flex; align-items:center; justify-content:flex-end; margin-bottom:4px;">
+        <button class="btn btn-sm" onclick="toggleTodoPanel()" title="Collapse" style="font-size:10px; padding:3px 6px; min-width:28px;" id="todo-collapse-btn">&#9654;</button>
+      </div>
+      <div id="wb-todo-header" style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
         <span style="font-family:'Oswald',sans-serif; font-size:16px; text-transform:uppercase; letter-spacing:0.08em; color:var(--amber);">Tasks</span>
-        <div style="display:flex; gap:6px; align-items:center;">
-          <button class="btn btn-sm btn-fill" onclick="addTodoItem()" style="font-size:10px; padding:3px 8px;">+ Task</button>
-          <button class="btn btn-sm" onclick="toggleTodoPanel()" title="Collapse" style="font-size:10px; padding:3px 6px;" id="todo-collapse-btn">&#9654;</button>
-        </div>
+        <button class="btn btn-sm btn-fill" onclick="addTodoItem()" style="font-size:10px; padding:3px 8px;">+ Task</button>
       </div>
       <div id="wb-todo-inner" style="flex:1; overflow-y:auto; min-height:0;">
         <!-- Filters -->
@@ -2444,16 +2445,23 @@ function toggleTodoPanel() {
   const panel = document.getElementById('wb-todo-panel');
   const inner = document.getElementById('wb-todo-inner');
   const btn = document.getElementById('todo-collapse-btn');
+  const hdr = document.getElementById('wb-todo-header');
   if (!panel) return;
-  const isCollapsed = panel.style.width === '40px';
+  const isCollapsed = panel.getAttribute('data-collapsed') === '1';
   if (isCollapsed) {
+    panel.setAttribute('data-collapsed', '0');
     panel.style.width = '400px';
     inner.style.display = '';
+    hdr.style.display = '';
     btn.innerHTML = '&#9654;';
+    btn.title = 'Collapse';
   } else {
-    panel.style.width = '40px';
+    panel.setAttribute('data-collapsed', '1');
+    panel.style.width = '36px';
     inner.style.display = 'none';
+    hdr.style.display = 'none';
     btn.innerHTML = '&#9664;';
+    btn.title = 'Expand Tasks';
   }
 }
 
@@ -3299,6 +3307,29 @@ function applyWbTransform() {
 }
 function wbZoomTo(z) { wbZoom = Math.max(0.2, Math.min(3, z)); applyWbTransform(); }
 function wbResetView() { wbPan = { x: 0, y: 0 }; wbZoom = 1; applyWbTransform(); }
+
+function showWbHelp() {
+  const m = document.getElementById('modal-overlay');
+  m.innerHTML = `<div class="modal" style="max-width:520px;">
+    <h3 class="heading mb-16" style="color:var(--amber);">WHITEBOARD CONTROLS</h3>
+    <div style="display:grid; gap:12px; font-size:13px; line-height:1.6; color:var(--text-light);">
+      <div><strong style="color:#39FF14;">Pan</strong> — Hold <kbd style="background:var(--card3); padding:2px 6px; border-radius:2px; font-size:11px;">Space</kbd> + drag to move around the canvas</div>
+      <div><strong style="color:#39FF14;">Zoom</strong> — Scroll wheel to zoom in/out toward cursor. Use +/− buttons at bottom-right</div>
+      <div><strong style="color:#39FF14;">Add Note</strong> — Click <em>+ Note</em> to create a new sticky note</div>
+      <div><strong style="color:#39FF14;">Edit Note</strong> — Click the text area to type. Cursor placement works like a word processor</div>
+      <div><strong style="color:#39FF14;">Move Note</strong> — Drag the note border/header area to reposition</div>
+      <div><strong style="color:#39FF14;">Resize Note</strong> — Drag the bottom-right corner handle</div>
+      <div><strong style="color:#39FF14;">Select</strong> — Click a note border to select it. <kbd style="background:var(--card3); padding:2px 6px; border-radius:2px; font-size:11px;">Shift</kbd> + click to multi-select</div>
+      <div><strong style="color:#39FF14;">Box Select</strong> — Click + drag on empty canvas to draw a selection rectangle</div>
+      <div><strong style="color:#39FF14;">Batch Move/Resize</strong> — Select multiple notes, then drag or resize any one to move/resize all</div>
+      <div><strong style="color:#39FF14;">Bold Text</strong> — <kbd style="background:var(--card3); padding:2px 6px; border-radius:2px; font-size:11px;">Ctrl/⌘</kbd> + <kbd style="background:var(--card3); padding:2px 6px; border-radius:2px; font-size:11px;">B</kbd> while editing</div>
+      <div><strong style="color:#39FF14;">Label Group</strong> — Click <em>+ Label Group</em> to create a draggable/resizable grouping box</div>
+      <div><strong style="color:#39FF14;">Reset View</strong> — Click <em>Reset</em> at bottom-right to return to default pan/zoom</div>
+    </div>
+    <button class="btn btn-sm btn-fill" onclick="closeModal()" style="margin-top:20px;">Got It</button>
+  </div>`;
+  m.classList.add('active');
+}
 
 function renderWhiteboard() {
   const canvas = document.getElementById('whiteboard-canvas');
