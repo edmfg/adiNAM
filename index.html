@@ -2714,7 +2714,7 @@ function renderSlides() {
     container.innerHTML = '<div style="text-align:center; padding:60px 20px; color:var(--text-dim);"><p style="font-family:Oswald,sans-serif; font-size:20px; text-transform:uppercase; margin-bottom:8px;">No Slides Yet</p><p>Click "+ Add Slide" to start building your narrative.</p></div>';
     return;
   }
-  const colors = ['var(--amber)', 'var(--green)', 'var(--red)', '#a050ff', '#4a9eff', '#FFD700'];
+  const colors = ['#00C8FF', '#00D26A', '#FF4444', '#A050FF', '#FF9F1C', '#4A9EFF', '#FF45A0', '#E6B800'];
   container.innerHTML = STATE.slides.map((slide, i) => {
     const accent = colors[i % colors.length];
     return `
