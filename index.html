@@ -1203,12 +1203,12 @@ if (sessionStorage.getItem('ygt_auth') === '1') {
     YOU GOT THIS
   </div>
   <div class="nav-tabs">
-    <button class="nav-tab active" data-tab="conditions" onclick="switchTab('conditions')">NAM Conditions</button>
+    <button class="nav-tab" data-tab="conditions" onclick="switchTab('conditions')">NAM Conditions</button>
     <button class="nav-tab" data-tab="journey" onclick="switchTab('journey')">Consumer Journey</button>
     <button class="nav-tab" data-tab="competitive" onclick="switchTab('competitive')">Competitive</button>
-    <button class="nav-tab" data-tab="whiteboard" onclick="switchTab('whiteboard')">Whiteboard</button>
     <button class="nav-tab" data-tab="strategy" onclick="switchTab('strategy')">Strategy</button>
     <button class="nav-tab" data-tab="narrative" onclick="switchTab('narrative')">Narrative</button>
+    <button class="nav-tab active" data-tab="whiteboard" onclick="switchTab('whiteboard')">Whiteboard</button>
   </div>
   <div style="margin-left:auto; display:flex; align-items:center; gap:8px;">
     <div style="display:flex; align-items:center; gap:2px;">
@@ -1239,7 +1239,7 @@ if (sessionStorage.getItem('ygt_auth') === '1') {
 <div class="main">
 
 <!-- ==================== CONDITIONS ==================== -->
-<div class="section active" id="section-conditions">
+<div class="section" id="section-conditions">
   <div class="section-header">
     <h2>NAM Conditions</h2>
     <p>What makes North American sports culture and media unique — and what it means for Adidas.</p>
@@ -1832,7 +1832,7 @@ if (sessionStorage.getItem('ygt_auth') === '1') {
 </div>
 
 <!-- ==================== WHITEBOARD ==================== -->
-<div class="section" id="section-whiteboard">
+<div class="section active" id="section-whiteboard">
   <div class="section-header">
     <h2>Whiteboard</h2>
     <p>Drag-and-drop brainstorming canvas.</p>
@@ -3313,14 +3313,14 @@ function showWbHelp() {
   m.innerHTML = `<div class="modal" style="max-width:520px;">
     <h3 class="heading mb-16" style="color:var(--amber);">WHITEBOARD CONTROLS</h3>
     <div style="display:grid; gap:12px; font-size:13px; line-height:1.6; color:var(--text-light);">
-      <div><strong style="color:#39FF14;">Pan</strong> — Hold <kbd style="background:var(--card3); padding:2px 6px; border-radius:2px; font-size:11px;">Space</kbd> + drag to move around the canvas</div>
+      <div><strong style="color:#39FF14;">Pan</strong> — Drag on empty space to move around the canvas</div>
       <div><strong style="color:#39FF14;">Zoom</strong> — Scroll wheel to zoom in/out toward cursor. Use +/− buttons at bottom-right</div>
       <div><strong style="color:#39FF14;">Add Note</strong> — Click <em>+ Note</em> to create a new sticky note</div>
       <div><strong style="color:#39FF14;">Edit Note</strong> — Click the text area to type. Cursor placement works like a word processor</div>
       <div><strong style="color:#39FF14;">Move Note</strong> — Drag the note border/header area to reposition</div>
       <div><strong style="color:#39FF14;">Resize Note</strong> — Drag the bottom-right corner handle</div>
       <div><strong style="color:#39FF14;">Select</strong> — Click a note border to select it. <kbd style="background:var(--card3); padding:2px 6px; border-radius:2px; font-size:11px;">Shift</kbd> + click to multi-select</div>
-      <div><strong style="color:#39FF14;">Box Select</strong> — Click + drag on empty canvas to draw a selection rectangle</div>
+      <div><strong style="color:#39FF14;">Box Select</strong> — Hold <kbd style="background:var(--card3); padding:2px 6px; border-radius:2px; font-size:11px;">Shift</kbd> + drag on empty canvas to draw a selection rectangle</div>
       <div><strong style="color:#39FF14;">Batch Move/Resize</strong> — Select multiple notes, then drag or resize any one to move/resize all</div>
       <div><strong style="color:#39FF14;">Bold Text</strong> — <kbd style="background:var(--card3); padding:2px 6px; border-radius:2px; font-size:11px;">Ctrl/⌘</kbd> + <kbd style="background:var(--card3); padding:2px 6px; border-radius:2px; font-size:11px;">B</kbd> while editing</div>
       <div><strong style="color:#39FF14;">Label Group</strong> — Click <em>+ Label Group</em> to create a draggable/resizable grouping box</div>
@@ -3392,7 +3392,6 @@ function clearWbSelection() {
 // ── Pan, Zoom & Marquee ──
 let _wbMarquee = null, _wbMqStart = null;
 let _wbPanning = false, _wbPanStart = null, _wbPanOrig = null;
-let _wbSpaceHeld = false;
 
 function screenToWorld(sx, sy) {
   const canvas = document.getElementById('whiteboard-canvas');
@@ -3404,36 +3403,31 @@ function initWbMarquee() {
   const canvas = document.getElementById('whiteboard-canvas');
   if (!canvas) return;
 
-  // Track space key for pan mode
-  document.addEventListener('keydown', (e) => { if (e.code === 'Space' && !e.target.closest('[contenteditable],textarea,input')) { _wbSpaceHeld = true; e.preventDefault(); } });
-  document.addEventListener('keyup', (e) => { if (e.code === 'Space') _wbSpaceHeld = false; });
-
   canvas.addEventListener('mousedown', (e) => {
     const onBg = e.target === canvas || e.target.id === 'wb-inner';
     if (!onBg) return;
     if (e.button !== 0) return;
 
-    // Pan mode: space held or middle-click style
-    if (_wbSpaceHeld) {
+    // Shift+drag = marquee select; plain drag = pan
+    if (e.shiftKey) {
+      // Marquee select
+      const rect = canvas.getBoundingClientRect();
+      _wbMqStart = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+      const mq = document.createElement('div');
+      mq.className = 'wb-marquee';
+      mq.style.left = _wbMqStart.x + 'px';
+      mq.style.top = _wbMqStart.y + 'px';
+      mq.style.width = '0'; mq.style.height = '0';
+      canvas.appendChild(mq);
+      _wbMarquee = mq;
+      clearWbSelection();
+    } else {
+      // Pan mode — drag blank space to move canvas
       _wbPanning = true;
       _wbPanStart = { x: e.clientX, y: e.clientY };
       _wbPanOrig = { ...wbPan };
       canvas.classList.add('wb-panning');
-      e.preventDefault();
-      return;
     }
-
-    // Marquee select
-    const rect = canvas.getBoundingClientRect();
-    _wbMqStart = { x: e.clientX - rect.left, y: e.clientY - rect.top };
-    const mq = document.createElement('div');
-    mq.className = 'wb-marquee';
-    mq.style.left = _wbMqStart.x + 'px';
-    mq.style.top = _wbMqStart.y + 'px';
-    mq.style.width = '0'; mq.style.height = '0';
-    canvas.appendChild(mq);
-    _wbMarquee = mq;
-    if (!e.shiftKey) clearWbSelection();
     e.preventDefault();
   });
 
