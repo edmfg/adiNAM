@@ -890,6 +890,9 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
   text-align: left; padding: 8px 8px; border-bottom: 1px solid var(--amber);
   white-space: nowrap;
 }
+.journey-table th[draggable="true"] { cursor: grab; }
+.journey-table th[draggable="true"]:active { cursor: grabbing; }
+.journey-table th.jcol-drag-over { background: rgba(255,159,28,0.15); border-bottom: 2px solid var(--amber); }
 .journey-table td {
   padding: 6px 8px; border-bottom: 1px solid var(--border);
   font-size: 12px; color: var(--text-mid); line-height: 1.4; vertical-align: top;
@@ -2239,7 +2242,8 @@ const STATE = {
   slides: [],
   whiteboardLabels: [],
   journeyEdits: {},
-  userConditions: []
+  userConditions: [],
+  journeyColOrder: []
 };
 
 // ==================== SUPABASE ====================
@@ -2461,6 +2465,79 @@ function navigateSearchResult(tab) {
   switchTab(tab);
 }
 
+// ==================== JOURNEY COLUMN REORDER ====================
+let _jcolDragIdx = null;
+
+function initJourneyColDrag() {
+  const table = document.querySelector('.journey-table');
+  if (!table) return;
+  const ths = table.querySelectorAll('thead th');
+  ths.forEach((th, i) => {
+    if (i === 0) { th.removeAttribute('draggable'); return; } // Day column stays fixed
+    th.setAttribute('draggable', 'true');
+    th.ondragstart = (e) => { _jcolDragIdx = i; e.dataTransfer.effectAllowed = 'move'; th.style.opacity = '0.4'; };
+    th.ondragend = () => { th.style.opacity = '1'; _jcolDragIdx = null; table.querySelectorAll('th.jcol-drag-over').forEach(el => el.classList.remove('jcol-drag-over')); };
+    th.ondragover = (e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; };
+    th.ondragenter = (e) => { e.preventDefault(); if (i !== 0) th.classList.add('jcol-drag-over'); };
+    th.ondragleave = () => { th.classList.remove('jcol-drag-over'); };
+    th.ondrop = (e) => {
+      e.preventDefault();
+      th.classList.remove('jcol-drag-over');
+      if (_jcolDragIdx === null || _jcolDragIdx === i || i === 0) return;
+      reorderJourneyColumns(_jcolDragIdx, i);
+      _jcolDragIdx = null;
+    };
+  });
+}
+
+function reorderJourneyColumns(fromIdx, toIdx) {
+  const table = document.querySelector('.journey-table');
+  if (!table) return;
+  // Save any journey edits before reorder
+  if (typeof saveCurrentJourneyEdits === 'function') saveCurrentJourneyEdits();
+  // Reorder all rows (thead + tbody)
+  const rows = table.querySelectorAll('tr');
+  rows.forEach(row => {
+    const cells = Array.from(row.children);
+    if (fromIdx >= cells.length || toIdx >= cells.length) return;
+    const movedCell = cells[fromIdx];
+    row.removeChild(movedCell);
+    if (toIdx >= row.children.length) {
+      row.appendChild(movedCell);
+    } else {
+      row.insertBefore(movedCell, row.children[toIdx]);
+    }
+  });
+  // Save column order to state
+  const ths = table.querySelectorAll('thead th');
+  STATE.journeyColOrder = Array.from(ths).map(th => th.textContent.trim());
+  saveState();
+  // Re-init draggable and journey edits
+  initJourneyColDrag();
+  if (typeof initJourneyEdits === 'function') initJourneyEdits();
+}
+
+function restoreJourneyColOrder() {
+  if (!STATE.journeyColOrder || !STATE.journeyColOrder.length) return;
+  const table = document.querySelector('.journey-table');
+  if (!table) return;
+  const ths = Array.from(table.querySelectorAll('thead th'));
+  const currentOrder = ths.map(th => th.textContent.trim());
+  const targetOrder = STATE.journeyColOrder;
+  // Build index mapping: for each target position, find current index
+  const indexMap = targetOrder.map(name => currentOrder.indexOf(name)).filter(i => i >= 0);
+  if (indexMap.length !== currentOrder.length) return; // mismatch, skip
+  // Check if already in correct order
+  if (indexMap.every((v, i) => v === i)) return;
+  const rows = table.querySelectorAll('tr');
+  rows.forEach(row => {
+    const cells = Array.from(row.children);
+    if (cells.length !== indexMap.length) return;
+    const reordered = indexMap.map(i => cells[i]);
+    reordered.forEach(cell => row.appendChild(cell));
+  });
+}
+
 // ==================== NAV ====================
 // ==================== JOURNEY EDITS ====================
 function getJourneyPersonaKey() {
@@ -2593,7 +2670,7 @@ function switchTab(tab) {
   if (tab === 'conditions') { renderConditions(); }
   if (tab === 'strategy') { renderStrategy(); }
   if (tab === 'whiteboard') { renderWhiteboard(); }
-  if (tab === 'journey') { initJourneyEdits(); renderMomentPins(); }
+  if (tab === 'journey') { restoreJourneyColOrder(); initJourneyColDrag(); initJourneyEdits(); renderMomentPins(); }
   showFloatingNotesForTab(tab);
 }
 
@@ -4911,7 +4988,7 @@ function applyRemix() {
 
   closeRemixModal();
   // Re-init journey edits for the new persona (restores any saved edits)
-  setTimeout(() => initJourneyEdits(), 100);
+  setTimeout(() => { restoreJourneyColOrder(); initJourneyColDrag(); initJourneyEdits(); }, 100);
 }
 </script>
 </body>
