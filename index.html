@@ -279,6 +279,8 @@ h1, h2, h3, h4, h5, h6, .heading { font-family: 'Oswald', 'Arial Narrow', sans-s
   padding: 0; line-height: 1; flex-shrink: 0; transition: color 0.15s;
 }
 .pinned-card .pinned-unpin:hover { color: var(--red); }
+.pinned-card.pinned-moment { border-left-color: var(--green); }
+.pinned-card .pinned-opp { font-size: 11px; color: var(--text-dim); margin-top: 4px; line-height: 1.4; }
 
 /* ── INSIGHT CARDS ── */
 .insight-card {
@@ -570,6 +572,11 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
 .moment-desc { font-size: 12px; color: var(--text-light); line-height: 1.5; margin-bottom: 8px; }
 .moment-opp { font-size: 11px; color: var(--text-dim); line-height: 1.4; padding: 6px 10px; background: rgba(0,210,106,0.06); border-radius: 3px; border-left: 2px solid rgba(0,210,106,0.3); }
 .moment-opp strong { color: var(--green); }
+.moment-card { position: relative; }
+.moment-pin-btn { position: absolute; top: 8px; right: 8px; background: none; border: none; color: var(--text-dim); font-size: 16px; cursor: pointer; opacity: 0.3; transition: opacity 0.2s, color 0.2s; padding: 2px 4px; line-height: 1; z-index: 2; }
+.moment-pin-btn:hover { opacity: 0.8; color: var(--amber); }
+.moment-card.moment-pinned .moment-pin-btn { opacity: 1; color: var(--amber); }
+.moment-card.moment-pinned { box-shadow: inset 0 0 0 1px rgba(255,176,0,0.3); }
 
 /* ── CCC FRAMEWORK ── */
 .ccc-framework { background: var(--card); border: 1px solid var(--border); border-radius: 3px; overflow: hidden; }
@@ -1587,230 +1594,47 @@ if (sessionStorage.getItem('ygt_auth') === '1') {
       <!-- Q1 -->
       <div class="moments-quarter">
         <div class="moments-q-header">Q1 &mdash; JAN&ndash;MAR</div>
-
-        <div class="moment-card moment-sports">
-          <div class="moment-cat">SPORTS</div>
-          <div class="moment-title">CFP National Championship</div>
-          <div class="moment-meta">Jan 25 &middot; Las Vegas, Allegiant Stadium</div>
-          <div class="moment-desc">First-ever CFP title game in Vegas. College football's biggest stage — massive Gen Z + alumni audience. Peak social conversation around NIL athletes.</div>
-          <div class="moment-opp"><strong>Adidas Opp:</strong> NIL athlete visibility, campus culture activation, gameday gear moments</div>
-        </div>
-
-        <div class="moment-card moment-sports">
-          <div class="moment-cat">SPORTS</div>
-          <div class="moment-title">Super Bowl LXI</div>
-          <div class="moment-meta">Feb 14 &middot; SoFi Stadium, Los Angeles</div>
-          <div class="moment-desc">Valentine's Day Super Bowl. 120M+ live viewers + 13B+ social impressions. First on ESPN/ABC simulcast. LA amplifies celebrity + culture crossover.</div>
-          <div class="moment-opp"><strong>Adidas Opp:</strong> Culture x commerce activation. 3-day half-life = must own the pre/post conversation. Creator-led content.</div>
-        </div>
-
-        <div class="moment-card moment-sports">
-          <div class="moment-cat">SPORTS</div>
-          <div class="moment-title">NBA All-Star Weekend</div>
-          <div class="moment-meta">Feb 21 &middot; Phoenix, Footprint Center</div>
-          <div class="moment-desc">Culture + style epicenter. Sneaker culture, streetwear, and celebrity converge. High social velocity across TikTok, IG, X.</div>
-          <div class="moment-opp"><strong>Adidas Opp:</strong> Lifestyle silhouette showcase (Samba, Gazelle). Athlete-creator crossover. Streetwear drops timed to weekend.</div>
-        </div>
-
-        <div class="moment-card moment-sports">
-          <div class="moment-cat">SPORTS</div>
-          <div class="moment-title">NCAA March Madness + Final Four</div>
-          <div class="moment-meta">Mar&ndash;Apr &middot; Men's Final Four: Detroit, Ford Field &middot; Potential expansion to 76 teams</div>
-          <div class="moment-desc">3 weeks of wall-to-wall college basketball. Bracket culture drives massive engagement. NCAA considering historic expansion from 68 to 76 teams — 2027 could be first expanded tournament. NIL athletes are social media stars.</div>
-          <div class="moment-opp"><strong>Adidas Opp:</strong> HUGE — Adidas signed Penn State ($300M/10yr) and Tennessee ($200M+/10yr). Both wear Adidas for first time in 2026-27. Deep runs = massive visibility. Plus Kansas, Miami, Louisville, Indiana, Arizona State.</div>
-        </div>
-
-        <div class="moment-card moment-entertainment">
-          <div class="moment-cat">ENTERTAINMENT</div>
-          <div class="moment-title">Grammys on ABC (New Home)</div>
-          <div class="moment-meta">Feb &middot; First year on ABC/Disney+/Hulu</div>
-          <div class="moment-desc">Historic shift from CBS to Disney platforms after 50+ years. Simulcast on ABC + Hulu + Disney+ = massive cross-platform reach. Red carpet = style culture peak.</div>
-          <div class="moment-opp"><strong>Adidas Opp:</strong> Athleisure on the red carpet. Artist partnerships. Music x sport culture crossover.</div>
-        </div>
-
-        <div class="moment-card moment-entertainment">
-          <div class="moment-cat">ENTERTAINMENT</div>
-          <div class="moment-title">Oscars 2027</div>
-          <div class="moment-meta">Feb&ndash;Mar &middot; ABC simulcast year with Super Bowl + Grammys</div>
-          <div class="moment-desc">ABC hosts Super Bowl, Grammys, AND Oscars in 2027 — an unprecedented trifecta. Fashion/style conversation peaks.</div>
-          <div class="moment-opp"><strong>Adidas Opp:</strong> Cross-platform style visibility across all three tentpoles on one network</div>
-        </div>
+        <div class="moment-card moment-sports" data-moment-id="m_cfp"><button class="moment-pin-btn" onclick="toggleMomentPin('m_cfp')" title="Pin moment">&#9733;</button><div class="moment-cat">SPORTS</div><div class="moment-title">CFP National Championship</div><div class="moment-meta">Jan 25 &middot; Las Vegas, Allegiant Stadium</div><div class="moment-desc">First-ever CFP title game in Vegas. College football's biggest stage — massive Gen Z + alumni audience. Peak social conversation around NIL athletes.</div><div class="moment-opp"><strong>Adidas Opp:</strong> NIL athlete visibility, campus culture activation, gameday gear moments</div></div>
+        <div class="moment-card moment-sports" data-moment-id="m_superbowl"><button class="moment-pin-btn" onclick="toggleMomentPin('m_superbowl')" title="Pin moment">&#9733;</button><div class="moment-cat">SPORTS</div><div class="moment-title">Super Bowl LXI</div><div class="moment-meta">Feb 14 &middot; SoFi Stadium, Los Angeles</div><div class="moment-desc">Valentine's Day Super Bowl. 120M+ live viewers + 13B+ social impressions. First on ESPN/ABC simulcast. LA amplifies celebrity + culture crossover.</div><div class="moment-opp"><strong>Adidas Opp:</strong> Culture x commerce activation. 3-day half-life = must own the pre/post conversation. Creator-led content.</div></div>
+        <div class="moment-card moment-sports" data-moment-id="m_nbaallstar"><button class="moment-pin-btn" onclick="toggleMomentPin('m_nbaallstar')" title="Pin moment">&#9733;</button><div class="moment-cat">SPORTS</div><div class="moment-title">NBA All-Star Weekend</div><div class="moment-meta">Feb 21 &middot; Phoenix, Footprint Center</div><div class="moment-desc">Culture + style epicenter. Sneaker culture, streetwear, and celebrity converge. High social velocity across TikTok, IG, X.</div><div class="moment-opp"><strong>Adidas Opp:</strong> Lifestyle silhouette showcase (Samba, Gazelle). Athlete-creator crossover. Streetwear drops timed to weekend.</div></div>
+        <div class="moment-card moment-sports" data-moment-id="m_marchmadness"><button class="moment-pin-btn" onclick="toggleMomentPin('m_marchmadness')" title="Pin moment">&#9733;</button><div class="moment-cat">SPORTS</div><div class="moment-title">NCAA March Madness + Final Four</div><div class="moment-meta">Mar&ndash;Apr &middot; Men's Final Four: Detroit, Ford Field &middot; Potential expansion to 76 teams</div><div class="moment-desc">3 weeks of wall-to-wall college basketball. Bracket culture drives massive engagement. NCAA considering historic expansion from 68 to 76 teams — 2027 could be first expanded tournament. NIL athletes are social media stars.</div><div class="moment-opp"><strong>Adidas Opp:</strong> HUGE — Adidas signed Penn State ($300M/10yr) and Tennessee ($200M+/10yr). Both wear Adidas for first time in 2026-27. Deep runs = massive visibility. Plus Kansas, Miami, Louisville, Indiana, Arizona State.</div></div>
+        <div class="moment-card moment-entertainment" data-moment-id="m_grammys"><button class="moment-pin-btn" onclick="toggleMomentPin('m_grammys')" title="Pin moment">&#9733;</button><div class="moment-cat">ENTERTAINMENT</div><div class="moment-title">Grammys on ABC (New Home)</div><div class="moment-meta">Feb &middot; First year on ABC/Disney+/Hulu</div><div class="moment-desc">Historic shift from CBS to Disney platforms after 50+ years. Simulcast on ABC + Hulu + Disney+ = massive cross-platform reach. Red carpet = style culture peak.</div><div class="moment-opp"><strong>Adidas Opp:</strong> Athleisure on the red carpet. Artist partnerships. Music x sport culture crossover.</div></div>
+        <div class="moment-card moment-entertainment" data-moment-id="m_oscars"><button class="moment-pin-btn" onclick="toggleMomentPin('m_oscars')" title="Pin moment">&#9733;</button><div class="moment-cat">ENTERTAINMENT</div><div class="moment-title">Oscars 2027</div><div class="moment-meta">Feb&ndash;Mar &middot; ABC simulcast year with Super Bowl + Grammys</div><div class="moment-desc">ABC hosts Super Bowl, Grammys, AND Oscars in 2027 — an unprecedented trifecta. Fashion/style conversation peaks.</div><div class="moment-opp"><strong>Adidas Opp:</strong> Cross-platform style visibility across all three tentpoles on one network</div></div>
       </div>
 
       <!-- Q2 -->
       <div class="moments-quarter">
         <div class="moments-q-header">Q2 &mdash; APR&ndash;JUN</div>
-
-        <div class="moment-card moment-sports">
-          <div class="moment-cat">SPORTS</div>
-          <div class="moment-title">NCAA Women's Final Four</div>
-          <div class="moment-meta">Apr &middot; Columbus, Nationwide Arena</div>
-          <div class="moment-desc">Women's basketball viewership exploded — 2024 championship drew 19M viewers (more than men's). 2027 continues the momentum with expanded coverage and NIL stars.</div>
-          <div class="moment-opp"><strong>Adidas Opp:</strong> Women's sports leadership. NIL athlete partnerships. Community-driven storytelling.</div>
-        </div>
-
-        <div class="moment-card moment-sports">
-          <div class="moment-cat">SPORTS</div>
-          <div class="moment-title">NFL Draft</div>
-          <div class="moment-meta">Apr 29&ndash;May 1 &middot; Washington D.C.</div>
-          <div class="moment-desc">3-day cultural event — draft night fashion is a social media tentpole. Gen Z athletes become instant celebrities. D.C. backdrop adds prestige.</div>
-          <div class="moment-opp"><strong>Adidas Opp:</strong> Draft night outfit partnerships. Athlete signing announcements. "Next chapter" storytelling.</div>
-        </div>
-
-        <div class="moment-card moment-entertainment">
-          <div class="moment-cat">ENTERTAINMENT</div>
-          <div class="moment-title">Met Gala</div>
-          <div class="moment-meta">First Monday in May &middot; NYC</div>
-          <div class="moment-desc">Fashion's biggest night. Dominates social media for 48+ hours. Sport x fashion crossover growing — athletes now regular attendees.</div>
-          <div class="moment-opp"><strong>Adidas Opp:</strong> Athlete-as-style-icon positioning. Originals/collab spotlight moment.</div>
-        </div>
-
-        <div class="moment-card moment-entertainment">
-          <div class="moment-cat">ENTERTAINMENT</div>
-          <div class="moment-title">Star Wars: Starfighter + Legend of Zelda</div>
-          <div class="moment-meta">May &middot; Two massive franchise films</div>
-          <div class="moment-desc">Star Wars standalone from the Deadpool & Wolverine director + Nintendo's first live-action Zelda film (dir. Wes Ball). Zelda could match Super Mario Bros. Movie ($1.3B). Gaming x cinema crossover for Gen Z.</div>
-          <div class="moment-opp"><strong>Adidas Opp:</strong> Collab sneaker drops. Gaming/streetwear crossover collections. Pop culture tentpole content.</div>
-        </div>
-
-        <div class="moment-card moment-sports">
-          <div class="moment-cat">SPORTS</div>
-          <div class="moment-title">WNBA Season Tips Off</div>
-          <div class="moment-meta">May &middot; 15+ teams including new expansions</div>
-          <div class="moment-desc">WNBA continues explosive growth — Portland + Toronto debuted 2026, Cleveland 2028. Stars like Caitlin Clark, Angel Reese are genuine social media celebrities. Fastest-growing league in NA.</div>
-          <div class="moment-opp"><strong>Adidas Opp:</strong> Adidas is official NBA/WNBA marketing partner. Signature athletes Aliyah Boston, Chelsea Gray, Satou Sabally. Women's basketball footwear.</div>
-        </div>
-
-        <div class="moment-card moment-sports">
-          <div class="moment-cat">SPORTS</div>
-          <div class="moment-title">MLS Historic Calendar Transition</div>
-          <div class="moment-meta">Feb&ndash;May transition &middot; Jul new season kicks off</div>
-          <div class="moment-desc">MLS runs shortened transition season, then launches first-ever fall-to-spring calendar aligned with global leagues. Most significant structural change in American soccer history. Messi remains league's biggest star.</div>
-          <div class="moment-opp"><strong>Adidas Opp:</strong> Adidas is MLS's official partner through 2030 ($830M deal). Every jersey, ball, sideline outfit is Adidas. New season = new kit launches.</div>
-        </div>
-
-        <div class="moment-card moment-sports">
-          <div class="moment-cat">SPORTS</div>
-          <div class="moment-title">FIFA Women's World Cup</div>
-          <div class="moment-meta">Jun 24&ndash;Jul 25 &middot; Brazil</div>
-          <div class="moment-desc">First Women's World Cup in South America. USWNT remains one of the most followed teams globally. 2023 WWC was a massive social media event. Adidas sponsors Trinity Rodman, Lindsey Horan, Catarina Macario.</div>
-          <div class="moment-opp"><strong>Adidas Opp:</strong> Adidas is FIFA's official partner + match ball provider. Women's football product. Creator content around USWNT. Community activation.</div>
-        </div>
-
-        <div class="moment-card moment-entertainment">
-          <div class="moment-cat">ENTERTAINMENT</div>
-          <div class="moment-title">Shrek 5 + Spider-Verse 3</div>
-          <div class="moment-meta">Late Jun &middot; Back-to-back blockbusters</div>
-          <div class="moment-desc">Shrek returns after 17 years (original cast) — one of the internet's most-memed franchises. Spider-Verse trilogy conclusion the same week. Double nostalgia + meme culture social media supernova for Gen Z.</div>
-          <div class="moment-opp"><strong>Adidas Opp:</strong> Collab drops with massive earned media potential. Spider-Verse street art aesthetic aligns with Originals. Shrek's ironic/meme appeal = viral.</div>
-        </div>
+        <div class="moment-card moment-sports" data-moment-id="m_wfinalfour"><button class="moment-pin-btn" onclick="toggleMomentPin('m_wfinalfour')" title="Pin moment">&#9733;</button><div class="moment-cat">SPORTS</div><div class="moment-title">NCAA Women's Final Four</div><div class="moment-meta">Apr &middot; Columbus, Nationwide Arena</div><div class="moment-desc">Women's basketball viewership exploded — 2024 championship drew 19M viewers (more than men's). 2027 continues the momentum with expanded coverage and NIL stars.</div><div class="moment-opp"><strong>Adidas Opp:</strong> Women's sports leadership. NIL athlete partnerships. Community-driven storytelling.</div></div>
+        <div class="moment-card moment-sports" data-moment-id="m_nfldraft"><button class="moment-pin-btn" onclick="toggleMomentPin('m_nfldraft')" title="Pin moment">&#9733;</button><div class="moment-cat">SPORTS</div><div class="moment-title">NFL Draft</div><div class="moment-meta">Apr 29&ndash;May 1 &middot; Washington D.C.</div><div class="moment-desc">3-day cultural event — draft night fashion is a social media tentpole. Gen Z athletes become instant celebrities. D.C. backdrop adds prestige.</div><div class="moment-opp"><strong>Adidas Opp:</strong> Draft night outfit partnerships. Athlete signing announcements. "Next chapter" storytelling.</div></div>
+        <div class="moment-card moment-entertainment" data-moment-id="m_metgala"><button class="moment-pin-btn" onclick="toggleMomentPin('m_metgala')" title="Pin moment">&#9733;</button><div class="moment-cat">ENTERTAINMENT</div><div class="moment-title">Met Gala</div><div class="moment-meta">First Monday in May &middot; NYC</div><div class="moment-desc">Fashion's biggest night. Dominates social media for 48+ hours. Sport x fashion crossover growing — athletes now regular attendees.</div><div class="moment-opp"><strong>Adidas Opp:</strong> Athlete-as-style-icon positioning. Originals/collab spotlight moment.</div></div>
+        <div class="moment-card moment-entertainment" data-moment-id="m_starwarszelda"><button class="moment-pin-btn" onclick="toggleMomentPin('m_starwarszelda')" title="Pin moment">&#9733;</button><div class="moment-cat">ENTERTAINMENT</div><div class="moment-title">Star Wars: Starfighter + Legend of Zelda</div><div class="moment-meta">May &middot; Two massive franchise films</div><div class="moment-desc">Star Wars standalone from the Deadpool & Wolverine director + Nintendo's first live-action Zelda film (dir. Wes Ball). Zelda could match Super Mario Bros. Movie ($1.3B). Gaming x cinema crossover for Gen Z.</div><div class="moment-opp"><strong>Adidas Opp:</strong> Collab sneaker drops. Gaming/streetwear crossover collections. Pop culture tentpole content.</div></div>
+        <div class="moment-card moment-sports" data-moment-id="m_wnba"><button class="moment-pin-btn" onclick="toggleMomentPin('m_wnba')" title="Pin moment">&#9733;</button><div class="moment-cat">SPORTS</div><div class="moment-title">WNBA Season Tips Off</div><div class="moment-meta">May &middot; 15+ teams including new expansions</div><div class="moment-desc">WNBA continues explosive growth — Portland + Toronto debuted 2026, Cleveland 2028. Stars like Caitlin Clark, Angel Reese are genuine social media celebrities. Fastest-growing league in NA.</div><div class="moment-opp"><strong>Adidas Opp:</strong> Adidas is official NBA/WNBA marketing partner. Signature athletes Aliyah Boston, Chelsea Gray, Satou Sabally. Women's basketball footwear.</div></div>
+        <div class="moment-card moment-sports" data-moment-id="m_mls"><button class="moment-pin-btn" onclick="toggleMomentPin('m_mls')" title="Pin moment">&#9733;</button><div class="moment-cat">SPORTS</div><div class="moment-title">MLS Historic Calendar Transition</div><div class="moment-meta">Feb&ndash;May transition &middot; Jul new season kicks off</div><div class="moment-desc">MLS runs shortened transition season, then launches first-ever fall-to-spring calendar aligned with global leagues. Most significant structural change in American soccer history. Messi remains league's biggest star.</div><div class="moment-opp"><strong>Adidas Opp:</strong> Adidas is MLS's official partner through 2030 ($830M deal). Every jersey, ball, sideline outfit is Adidas. New season = new kit launches.</div></div>
+        <div class="moment-card moment-sports" data-moment-id="m_fifawwc"><button class="moment-pin-btn" onclick="toggleMomentPin('m_fifawwc')" title="Pin moment">&#9733;</button><div class="moment-cat">SPORTS</div><div class="moment-title">FIFA Women's World Cup</div><div class="moment-meta">Jun 24&ndash;Jul 25 &middot; Brazil</div><div class="moment-desc">First Women's World Cup in South America. USWNT remains one of the most followed teams globally. 2023 WWC was a massive social media event. Adidas sponsors Trinity Rodman, Lindsey Horan, Catarina Macario.</div><div class="moment-opp"><strong>Adidas Opp:</strong> Adidas is FIFA's official partner + match ball provider. Women's football product. Creator content around USWNT. Community activation.</div></div>
+        <div class="moment-card moment-entertainment" data-moment-id="m_shrekspider"><button class="moment-pin-btn" onclick="toggleMomentPin('m_shrekspider')" title="Pin moment">&#9733;</button><div class="moment-cat">ENTERTAINMENT</div><div class="moment-title">Shrek 5 + Spider-Verse 3</div><div class="moment-meta">Late Jun &middot; Back-to-back blockbusters</div><div class="moment-desc">Shrek returns after 17 years (original cast) — one of the internet's most-memed franchises. Spider-Verse trilogy conclusion the same week. Double nostalgia + meme culture social media supernova for Gen Z.</div><div class="moment-opp"><strong>Adidas Opp:</strong> Collab drops with massive earned media potential. Spider-Verse street art aesthetic aligns with Originals. Shrek's ironic/meme appeal = viral.</div></div>
       </div>
 
       <!-- Q3 -->
       <div class="moments-quarter">
         <div class="moments-q-header">Q3 &mdash; JUL&ndash;SEP</div>
-
-        <div class="moment-card moment-sports">
-          <div class="moment-cat">SPORTS</div>
-          <div class="moment-title">MLB All-Star Game at Wrigley Field</div>
-          <div class="moment-meta">Jul &middot; Chicago, Wrigley Field</div>
-          <div class="moment-desc">Iconic venue moment. Chicago culture + baseball heritage. Wrigley is bucket-list cultural landmark. Celebrity + home run derby drive social.</div>
-          <div class="moment-opp"><strong>Adidas Opp:</strong> Chicago community activation. Baseball lifestyle content. Heritage x culture storytelling.</div>
-        </div>
-
-        <div class="moment-card moment-sports">
-          <div class="moment-cat">SPORTS</div>
-          <div class="moment-title">CONCACAF Gold Cup</div>
-          <div class="moment-meta">Jul&ndash;Aug &middot; USA/North America</div>
-          <div class="moment-desc">Biennial CONCACAF championship. Massive Latino/multicultural audience engagement. Soccer community passion at peak. Post-World Cup energy sustains.</div>
-          <div class="moment-opp"><strong>Adidas Opp:</strong> Soccer community activation. Multicultural marketing. National team kit visibility.</div>
-        </div>
-
-        <div class="moment-card moment-music">
-          <div class="moment-cat">MUSIC</div>
-          <div class="moment-title">Festival Season Peak</div>
-          <div class="moment-meta">Jul&ndash;Aug &middot; Lollapalooza, Outside Lands, Governors Ball</div>
-          <div class="moment-desc">Summer music festival circuit peaks. Gen Z lives on TikTok/IG during festivals. Style + music + community collide. 84% of Billboard Global 200 were TikTok-famous first.</div>
-          <div class="moment-opp"><strong>Adidas Opp:</strong> Festival style moments. Creator partnerships. Music x streetwear drops. Community content.</div>
-        </div>
-
-        <div class="moment-card moment-sports">
-          <div class="moment-cat">SPORTS</div>
-          <div class="moment-title">NFL Season Kickoff + College Football</div>
-          <div class="moment-meta">Sep &middot; Nationwide</div>
-          <div class="moment-desc">America's most-watched sport returns. College football = campus culture epicenter. Both drive massive social conversation from Sep through Feb.</div>
-          <div class="moment-opp"><strong>Adidas Opp:</strong> Campus community activation. NIL deals. Tailgate culture. Back-to-school sport lifestyle.</div>
-        </div>
-
-        <div class="moment-card moment-sports">
-          <div class="moment-cat">SPORTS</div>
-          <div class="moment-title">Ryder Cup &mdash; Centenary Edition</div>
-          <div class="moment-meta">Sep 17&ndash;19 &middot; Adare Manor, Ireland</div>
-          <div class="moment-desc">100th anniversary of golf's fiercest rivalry (est. 1927). USA vs. Europe team format creates intense social conversation. Golf continues growing among younger demographics via social media.</div>
-          <div class="moment-opp"><strong>Adidas Opp:</strong> Adidas Golf footwear + apparel showcase. Centenary heritage storytelling. PGA Tour athlete visibility.</div>
-        </div>
-
-        <div class="moment-card moment-culture">
-          <div class="moment-cat">CULTURE</div>
-          <div class="moment-title">GTA 6 Cultural Aftershock</div>
-          <div class="moment-meta">Ongoing &middot; Released late 2026</div>
-          <div class="moment-desc">GTA is the biggest entertainment franchise launch in history (GTA V: $1B in 3 days). By 2027, the cultural impact is in full swing — speedruns, memes, online mode, fashion influence. Vice City's Miami aesthetic influences real-world streetwear.</div>
-          <div class="moment-opp"><strong>Adidas Opp:</strong> In-game brand placement. GTA's streetwear aesthetic aligns with Originals. Miami/Latin culture = strong Adidas territory.</div>
-        </div>
+        <div class="moment-card moment-sports" data-moment-id="m_mlballstar"><button class="moment-pin-btn" onclick="toggleMomentPin('m_mlballstar')" title="Pin moment">&#9733;</button><div class="moment-cat">SPORTS</div><div class="moment-title">MLB All-Star Game at Wrigley Field</div><div class="moment-meta">Jul &middot; Chicago, Wrigley Field</div><div class="moment-desc">Iconic venue moment. Chicago culture + baseball heritage. Wrigley is bucket-list cultural landmark. Celebrity + home run derby drive social.</div><div class="moment-opp"><strong>Adidas Opp:</strong> Chicago community activation. Baseball lifestyle content. Heritage x culture storytelling.</div></div>
+        <div class="moment-card moment-sports" data-moment-id="m_goldcup"><button class="moment-pin-btn" onclick="toggleMomentPin('m_goldcup')" title="Pin moment">&#9733;</button><div class="moment-cat">SPORTS</div><div class="moment-title">CONCACAF Gold Cup</div><div class="moment-meta">Jul&ndash;Aug &middot; USA/North America</div><div class="moment-desc">Biennial CONCACAF championship. Massive Latino/multicultural audience engagement. Soccer community passion at peak. Post-World Cup energy sustains.</div><div class="moment-opp"><strong>Adidas Opp:</strong> Soccer community activation. Multicultural marketing. National team kit visibility.</div></div>
+        <div class="moment-card moment-music" data-moment-id="m_festivals"><button class="moment-pin-btn" onclick="toggleMomentPin('m_festivals')" title="Pin moment">&#9733;</button><div class="moment-cat">MUSIC</div><div class="moment-title">Festival Season Peak</div><div class="moment-meta">Jul&ndash;Aug &middot; Lollapalooza, Outside Lands, Governors Ball</div><div class="moment-desc">Summer music festival circuit peaks. Gen Z lives on TikTok/IG during festivals. Style + music + community collide. 84% of Billboard Global 200 were TikTok-famous first.</div><div class="moment-opp"><strong>Adidas Opp:</strong> Festival style moments. Creator partnerships. Music x streetwear drops. Community content.</div></div>
+        <div class="moment-card moment-sports" data-moment-id="m_nflcfb"><button class="moment-pin-btn" onclick="toggleMomentPin('m_nflcfb')" title="Pin moment">&#9733;</button><div class="moment-cat">SPORTS</div><div class="moment-title">NFL Season Kickoff + College Football</div><div class="moment-meta">Sep &middot; Nationwide</div><div class="moment-desc">America's most-watched sport returns. College football = campus culture epicenter. Both drive massive social conversation from Sep through Feb.</div><div class="moment-opp"><strong>Adidas Opp:</strong> Campus community activation. NIL deals. Tailgate culture. Back-to-school sport lifestyle.</div></div>
+        <div class="moment-card moment-sports" data-moment-id="m_rydercup"><button class="moment-pin-btn" onclick="toggleMomentPin('m_rydercup')" title="Pin moment">&#9733;</button><div class="moment-cat">SPORTS</div><div class="moment-title">Ryder Cup &mdash; Centenary Edition</div><div class="moment-meta">Sep 17&ndash;19 &middot; Adare Manor, Ireland</div><div class="moment-desc">100th anniversary of golf's fiercest rivalry (est. 1927). USA vs. Europe team format creates intense social conversation. Golf continues growing among younger demographics via social media.</div><div class="moment-opp"><strong>Adidas Opp:</strong> Adidas Golf footwear + apparel showcase. Centenary heritage storytelling. PGA Tour athlete visibility.</div></div>
+        <div class="moment-card moment-culture" data-moment-id="m_gta6"><button class="moment-pin-btn" onclick="toggleMomentPin('m_gta6')" title="Pin moment">&#9733;</button><div class="moment-cat">CULTURE</div><div class="moment-title">GTA 6 Cultural Aftershock</div><div class="moment-meta">Ongoing &middot; Released late 2026</div><div class="moment-desc">GTA is the biggest entertainment franchise launch in history (GTA V: $1B in 3 days). By 2027, the cultural impact is in full swing — speedruns, memes, online mode, fashion influence. Vice City's Miami aesthetic influences real-world streetwear.</div><div class="moment-opp"><strong>Adidas Opp:</strong> In-game brand placement. GTA's streetwear aesthetic aligns with Originals. Miami/Latin culture = strong Adidas territory.</div></div>
       </div>
 
       <!-- Q4 -->
       <div class="moments-quarter">
         <div class="moments-q-header">Q4 &mdash; OCT&ndash;DEC</div>
-
-        <div class="moment-card moment-sports">
-          <div class="moment-cat">SPORTS</div>
-          <div class="moment-title">NBA + NHL Season Openers</div>
-          <div class="moment-meta">Oct &middot; Nationwide</div>
-          <div class="moment-desc">Dual league launches drive sports social conversation. NBA opening night = sneaker culture moment. NHL growing cultural relevance.</div>
-          <div class="moment-opp"><strong>Adidas Opp:</strong> Basketball lifestyle. NHL partnerships (adidas makes NHL jerseys). Sneaker drops timed to openers.</div>
-        </div>
-
-        <div class="moment-card moment-sports">
-          <div class="moment-cat">SPORTS</div>
-          <div class="moment-title">MLB World Series</div>
-          <div class="moment-meta">Oct&ndash;Nov &middot; TBD</div>
-          <div class="moment-desc">Baseball's championship. Community-driven — local fan bases explode on social. Moments define cultural memory (walk-offs, celebrations).</div>
-          <div class="moment-opp"><strong>Adidas Opp:</strong> Baseball lifestyle. Community activation around finalist cities. Watch party culture.</div>
-        </div>
-
-        <div class="moment-card moment-entertainment">
-          <div class="moment-cat">ENTERTAINMENT</div>
-          <div class="moment-title">The Batman Part II</div>
-          <div class="moment-meta">Oct &middot; Pattinson, Johansson, Keoghan as Joker</div>
-          <div class="moment-desc">Robert Pattinson returns as Batman with Barry Keoghan's Joker. The gothic noir aesthetic has influenced Gen Z fashion and content creation. Massive franchise with strong social buzz.</div>
-          <div class="moment-opp"><strong>Adidas Opp:</strong> Fashion/lifestyle crossover through premiere events. Dark aesthetic aligns with Originals collabs.</div>
-        </div>
-
-        <div class="moment-card moment-entertainment">
-          <div class="moment-cat">ENTERTAINMENT</div>
-          <div class="moment-title">Frozen III + Avengers: Secret Wars</div>
-          <div class="moment-meta">Nov &amp; Dec &middot; Back-to-back blockbusters</div>
-          <div class="moment-desc">Frozen III (Nov) + Avengers: Secret Wars (Dec 17) — Secret Wars is the Endgame-level event of the decade. RDJ returns as Doctor Doom. Russo Brothers direct. MCU's 40th film. Could match Endgame's $2.8B box office. Months of trailer analysis, theories, fan content.</div>
-          <div class="moment-opp"><strong>Adidas Opp:</strong> Adidas x Marvel collabs are proven. Secret Wars collection timed to release. Frozen III x Adidas Kids. Superhero culture x streetwear.</div>
-        </div>
-
-        <div class="moment-card moment-culture">
-          <div class="moment-cat">CULTURE</div>
-          <div class="moment-title">Holiday Shopping Season + Sneaker Culture Peak</div>
-          <div class="moment-meta">Nov&ndash;Dec &middot; Black Friday &rarr; Christmas</div>
-          <div class="moment-desc">Peak commerce window. Sneaker drops dominate wishlists. TikTok Shop projected $8B+ social commerce by 2027. Omnichannel shoppers spend 30% more. UGC gift guides drive discovery.</div>
-          <div class="moment-opp"><strong>Adidas Opp:</strong> Connected commerce activation. Creator gift guides. Drop calendar strategy. Community &rarr; Commerce conversion peak.</div>
-        </div>
-
-        <div class="moment-card moment-culture">
-          <div class="moment-cat">CULTURE</div>
-          <div class="moment-title">Year-End Creator Economy Surge</div>
-          <div class="moment-meta">Dec &middot; Cross-platform</div>
-          <div class="moment-desc">"Best of 2027" content floods social. Wrapped/Rewind culture drives retrospective engagement. Creator partnerships peak for brand visibility.</div>
-          <div class="moment-opp"><strong>Adidas Opp:</strong> Year-in-review content. "Best of" creator partnerships. Community celebration moments.</div>
-        </div>
-
+        <div class="moment-card moment-sports" data-moment-id="m_nbanhl"><button class="moment-pin-btn" onclick="toggleMomentPin('m_nbanhl')" title="Pin moment">&#9733;</button><div class="moment-cat">SPORTS</div><div class="moment-title">NBA + NHL Season Openers</div><div class="moment-meta">Oct &middot; Nationwide</div><div class="moment-desc">Dual league launches drive sports social conversation. NBA opening night = sneaker culture moment. NHL growing cultural relevance.</div><div class="moment-opp"><strong>Adidas Opp:</strong> Basketball lifestyle. NHL partnerships (adidas makes NHL jerseys). Sneaker drops timed to openers.</div></div>
+        <div class="moment-card moment-sports" data-moment-id="m_worldseries"><button class="moment-pin-btn" onclick="toggleMomentPin('m_worldseries')" title="Pin moment">&#9733;</button><div class="moment-cat">SPORTS</div><div class="moment-title">MLB World Series</div><div class="moment-meta">Oct&ndash;Nov &middot; TBD</div><div class="moment-desc">Baseball's championship. Community-driven — local fan bases explode on social. Moments define cultural memory (walk-offs, celebrations).</div><div class="moment-opp"><strong>Adidas Opp:</strong> Baseball lifestyle. Community activation around finalist cities. Watch party culture.</div></div>
+        <div class="moment-card moment-entertainment" data-moment-id="m_batman"><button class="moment-pin-btn" onclick="toggleMomentPin('m_batman')" title="Pin moment">&#9733;</button><div class="moment-cat">ENTERTAINMENT</div><div class="moment-title">The Batman Part II</div><div class="moment-meta">Oct &middot; Pattinson, Johansson, Keoghan as Joker</div><div class="moment-desc">Robert Pattinson returns as Batman with Barry Keoghan's Joker. The gothic noir aesthetic has influenced Gen Z fashion and content creation. Massive franchise with strong social buzz.</div><div class="moment-opp"><strong>Adidas Opp:</strong> Fashion/lifestyle crossover through premiere events. Dark aesthetic aligns with Originals collabs.</div></div>
+        <div class="moment-card moment-entertainment" data-moment-id="m_avengers"><button class="moment-pin-btn" onclick="toggleMomentPin('m_avengers')" title="Pin moment">&#9733;</button><div class="moment-cat">ENTERTAINMENT</div><div class="moment-title">Frozen III + Avengers: Secret Wars</div><div class="moment-meta">Nov &amp; Dec &middot; Back-to-back blockbusters</div><div class="moment-desc">Frozen III (Nov) + Avengers: Secret Wars (Dec 17) — Secret Wars is the Endgame-level event of the decade. RDJ returns as Doctor Doom. Russo Brothers direct. MCU's 40th film. Could match Endgame's $2.8B box office. Months of trailer analysis, theories, fan content.</div><div class="moment-opp"><strong>Adidas Opp:</strong> Adidas x Marvel collabs are proven. Secret Wars collection timed to release. Frozen III x Adidas Kids. Superhero culture x streetwear.</div></div>
+        <div class="moment-card moment-culture" data-moment-id="m_holiday"><button class="moment-pin-btn" onclick="toggleMomentPin('m_holiday')" title="Pin moment">&#9733;</button><div class="moment-cat">CULTURE</div><div class="moment-title">Holiday Shopping Season + Sneaker Culture Peak</div><div class="moment-meta">Nov&ndash;Dec &middot; Black Friday &rarr; Christmas</div><div class="moment-desc">Peak commerce window. Sneaker drops dominate wishlists. TikTok Shop projected $8B+ social commerce by 2027. Omnichannel shoppers spend 30% more. UGC gift guides drive discovery.</div><div class="moment-opp"><strong>Adidas Opp:</strong> Connected commerce activation. Creator gift guides. Drop calendar strategy. Community &rarr; Commerce conversion peak.</div></div>
+        <div class="moment-card moment-culture" data-moment-id="m_yearend"><button class="moment-pin-btn" onclick="toggleMomentPin('m_yearend')" title="Pin moment">&#9733;</button><div class="moment-cat">CULTURE</div><div class="moment-title">Year-End Creator Economy Surge</div><div class="moment-meta">Dec &middot; Cross-platform</div><div class="moment-desc">"Best of 2027" content floods social. Wrapped/Rewind culture drives retrospective engagement. Creator partnerships peak for brand visibility.</div><div class="moment-opp"><strong>Adidas Opp:</strong> Year-in-review content. "Best of" creator partnerships. Community celebration moments.</div></div>
       </div>
     </div>
   </div>
@@ -2653,7 +2477,7 @@ function switchTab(tab) {
   if (tab === 'conditions') { renderConditions(); }
   if (tab === 'strategy') { renderStrategy(); }
   if (tab === 'whiteboard') { renderWhiteboard(); }
-  if (tab === 'journey') { initJourneyEdits(); }
+  if (tab === 'journey') { initJourneyEdits(); renderMomentPins(); }
   showFloatingNotesForTab(tab);
 }
 
@@ -3559,12 +3383,16 @@ function renderPinned() {
   if (_pinnedCollapsed) grid.style.display = 'none';
   grid.innerHTML = STATE.pinnedInsights.map(p => {
     const shortText = p.text.length > 100 ? p.text.substring(0, 100) + '...' : p.text;
-    return `<div class="pinned-card">
+    const isMoment = p.id && p.id.startsWith('m_');
+    const unpinFn = isMoment ? 'toggleMomentPin' : 'togglePin';
+    const oppLine = p.momentOpp ? `<div class="pinned-opp">${escHtml(p.momentOpp)}</div>` : '';
+    return `<div class="pinned-card${isMoment ? ' pinned-moment' : ''}">
       <div>
         <div class="pinned-theme">${escHtml(p.theme || p.type || '')}</div>
         <div class="pinned-text">${escHtml(shortText)}</div>
+        ${oppLine}
       </div>
-      <button class="pinned-unpin" onclick="togglePin('${p.id}')" title="Unpin">&times;</button>
+      <button class="pinned-unpin" onclick="${unpinFn}('${p.id}')" title="Unpin">&times;</button>
     </div>`;
   }).join('');
 }
@@ -3606,6 +3434,33 @@ function filterStrategyType(type, btn) {
 function filterStrategy() {
   stratSearchTerm = document.getElementById('strategy-search').value.toLowerCase();
   renderStrategy();
+}
+
+function toggleMomentPin(momentId) {
+  const existing = STATE.pinnedInsights.findIndex(p => p.id === momentId);
+  if (existing >= 0) {
+    STATE.pinnedInsights.splice(existing, 1);
+  } else {
+    const card = document.querySelector(`[data-moment-id="${momentId}"]`);
+    if (card) {
+      const title = card.querySelector('.moment-title')?.textContent || '';
+      const cat = card.querySelector('.moment-cat')?.textContent || '';
+      const meta = card.querySelector('.moment-meta')?.textContent || '';
+      const opp = card.querySelector('.moment-opp')?.textContent || '';
+      STATE.pinnedInsights.push({ id: momentId, text: title + ' — ' + meta, theme: '2027 ' + cat, momentOpp: opp });
+    }
+  }
+  saveState();
+  renderMomentPins();
+  renderPinned();
+}
+
+function renderMomentPins() {
+  document.querySelectorAll('.moment-card[data-moment-id]').forEach(card => {
+    const id = card.getAttribute('data-moment-id');
+    const isPinned = STATE.pinnedInsights.some(p => p.id === id);
+    card.classList.toggle('moment-pinned', isPinned);
+  });
 }
 
 function toggleCCCFramework() {
@@ -4389,6 +4244,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   renderConditions();
   renderPinned();
+  renderMomentPins();
   renderStrategy();
   renderWhiteboard();
   renderTodos();
