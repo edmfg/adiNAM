@@ -7,6 +7,7 @@
 <link rel="icon" type="image/jpeg" href="689347.jpg">
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -212,6 +213,7 @@ h1, h2, h3, h4, h5, h6, .heading { font-family: 'Oswald', 'Arial Narrow', sans-s
 .tag-blue { background: rgba(74,158,255,0.12); color: var(--blue); }
 .tag-yellow { background: rgba(0,200,255,0.12); color: var(--amber); }
 .tag-purple { background: rgba(160,80,255,0.12); color: #a050ff; }
+.tag-amber { background: rgba(255,165,0,0.12); color: #FFA500; }
 .tag-white { background: rgba(255,255,255,0.06); color: var(--text-mid); }
 
 /* ── CCC LABELS (Culture / Community / Commerce) ── */
@@ -992,9 +994,9 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
     <button class="nav-tab active" data-tab="conditions" onclick="switchTab('conditions')">Conditions</button>
     <button class="nav-tab" data-tab="journey" onclick="switchTab('journey')">Consumer Journey</button>
     <button class="nav-tab" data-tab="competitive" onclick="switchTab('competitive')">Competitive</button>
+    <button class="nav-tab" data-tab="whiteboard" onclick="switchTab('whiteboard')">Whiteboard</button>
     <button class="nav-tab" data-tab="strategy" onclick="switchTab('strategy')">Strategy</button>
     <button class="nav-tab" data-tab="narrative" onclick="switchTab('narrative')">Narrative</button>
-    <button class="nav-tab" data-tab="whiteboard" onclick="switchTab('whiteboard')">Whiteboard</button>
   </div>
   <div style="margin-left:auto; display:flex; align-items:center; gap:8px;">
     <div style="display:flex; align-items:center; gap:2px;">
@@ -1130,6 +1132,7 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
     <button class="filter-btn" data-filter="media" onclick="filterConditions('media',this)">Media Landscape</button>
     <button class="filter-btn" data-filter="commerce" onclick="filterConditions('commerce',this)">Commerce</button>
     <button class="filter-btn" data-filter="competitive" onclick="filterConditions('competitive',this)">Competitive</button>
+    <button class="filter-btn" data-filter="community" onclick="filterConditions('community',this)">Community</button>
     <button class="filter-btn" data-filter="strategic" onclick="filterConditions('strategic',this)">Strategic</button>
     <div class="view-toggle">
       <button class="view-toggle-btn active" id="view-grid-btn" onclick="setConditionsView('grid')" title="Grid view">&#9638;</button>
@@ -1687,16 +1690,102 @@ const STATE = {
   whiteboardLabels: []
 };
 
-function loadState() {
+// ==================== SUPABASE ====================
+const SUPABASE_URL = 'https://yywvgubfzzgvervntayy.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_-7ipLDbKV4NzKuNrp6dzDg_Jop_xwGz';
+const supa = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const WORKSPACE_ID = 'adidas-nam-main';
+
+// Load from Supabase first, fall back to localStorage
+async function loadState() {
+  // Try localStorage first for instant load
   try {
     const s = localStorage.getItem('adidas_ygt_state');
     if (s) { const parsed = JSON.parse(s); Object.assign(STATE, parsed); }
   } catch(e) {}
+
+  // Then sync from Supabase (cloud is source of truth)
+  try {
+    const { data, error } = await supa
+      .from('workspace')
+      .select('state')
+      .eq('id', WORKSPACE_ID)
+      .single();
+    if (data && data.state) {
+      Object.assign(STATE, data.state);
+      localStorage.setItem('adidas_ygt_state', JSON.stringify(STATE));
+      refreshAllViews();
+      console.log('[Supabase] State loaded from cloud');
+    } else if (error && error.code === 'PGRST116') {
+      // No row yet — insert initial state
+      await supa.from('workspace').insert({ id: WORKSPACE_ID, state: STATE });
+      console.log('[Supabase] Initial state created in cloud');
+    }
+  } catch(e) { console.warn('[Supabase] Load failed, using local:', e); }
 }
+
 let lastSavedTime = Date.now();
+let _saveTimeout = null;
+
 function saveState() {
-  try { localStorage.setItem('adidas_ygt_state', JSON.stringify(STATE)); lastSavedTime = Date.now(); updateSaveIndicator(); } catch(e) {}
+  // Always save to localStorage immediately
+  try { localStorage.setItem('adidas_ygt_state', JSON.stringify(STATE)); } catch(e) {}
+  lastSavedTime = Date.now();
+  updateSaveIndicator();
+
+  // Debounce Supabase sync (500ms)
+  clearTimeout(_saveTimeout);
+  _saveTimeout = setTimeout(syncToSupabase, 500);
 }
+
+async function syncToSupabase() {
+  try {
+    const { error } = await supa
+      .from('workspace')
+      .upsert({ id: WORKSPACE_ID, state: STATE, updated_at: new Date().toISOString() });
+    if (error) { console.warn('[Supabase] Sync error:', error); updateSyncStatus('error'); }
+    else { console.log('[Supabase] Synced to cloud'); updateSyncStatus('synced'); }
+  } catch(e) { console.warn('[Supabase] Sync failed:', e); updateSyncStatus('error'); }
+}
+
+function updateSyncStatus(status) {
+  const el = document.getElementById('auto-save-indicator');
+  if (!el) return;
+  if (status === 'synced') { el.textContent = 'Synced'; el.style.color = 'var(--green)'; }
+  else if (status === 'error') { el.textContent = 'Local only'; el.style.color = 'var(--red)'; }
+  else if (status === 'syncing') { el.textContent = 'Syncing...'; el.style.color = 'var(--amber)'; }
+}
+
+// Real-time subscription — sync changes from other users
+function subscribeToChanges() {
+  supa
+    .channel('workspace-sync')
+    .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'workspace', filter: 'id=eq.' + WORKSPACE_ID }, (payload) => {
+      if (payload.new && payload.new.state) {
+        const remote = payload.new.state;
+        Object.assign(STATE, remote);
+        localStorage.setItem('adidas_ygt_state', JSON.stringify(STATE));
+        refreshAllViews();
+        updateSyncStatus('synced');
+        console.log('[Supabase] Real-time update received');
+      }
+    })
+    .subscribe();
+}
+
+function refreshAllViews() {
+  const activeTab = document.querySelector('.nav-tab.active');
+  if (activeTab) {
+    const tab = activeTab.getAttribute('data-tab');
+    if (tab === 'conditions') renderConditions();
+    if (tab === 'strategy') renderStrategy();
+    if (tab === 'whiteboard') { renderWhiteboard(); renderTodos(); }
+    if (tab === 'narrative') renderSlides();
+    if (tab === 'todo') renderTodos();
+  }
+  applyFontSize();
+}
+
 function updateSaveIndicator() {
   const el = document.getElementById('auto-save-indicator');
   if (!el) return;
@@ -1705,6 +1794,9 @@ function updateSaveIndicator() {
   else if (diff < 60000) { el.textContent = Math.floor(diff / 1000) + 's ago'; el.style.color = 'var(--text-dim)'; }
   else { el.textContent = Math.floor(diff / 60000) + 'm ago'; el.style.color = 'var(--text-dim)'; }
 }
+
+// Start real-time subscription
+subscribeToChanges();
 loadState();
 
 const DEFAULT_FONT_SIZE = 18;
@@ -2138,11 +2230,67 @@ function getConditionsData() {
     { id: 'c36', text: 'Create an Adidas NIL operating system for scalable athlete partnerships', theme: 'Strategic', themeKey: 'strategic', source: 'Conditions Analysis', connections: ['strategy'], link: '#', implication: 'Build compliance + content + commerce toolkit that 500+ college athletes can use simultaneously.', ccc: ['community','commerce'] },
     { id: 'c37', text: 'Build "sport + lifestyle adjacency walls" in wholesale retail', theme: 'Strategic', themeKey: 'strategic', source: 'Conditions Analysis', connections: ['strategy'], link: '#', implication: 'Design wholesale merchandising that bridges sport and lifestyle in-store to capture fuller basket.', ccc: ['culture','commerce'] },
     { id: 'c38', text: 'Canada: hockey identity + women\'s growth + bilingual compliance', theme: 'Strategic', themeKey: 'strategic', source: 'Conditions Analysis', connections: ['strategy'], link: '#', implication: 'Quebec-ready bilingual execution must be upstream in design, not a late-stage patch.', ccc: ['culture','community'] },
+
+    // ── NEW RESEARCH: NA Sports Culture & Community Dynamics ──
+
+    // Sports System — Women's Sports Explosion
+    { id: 'c39', text: '46 billion minutes of women\'s sports consumed in U.S. in 2025 — viewership up 430% from 2021', theme: 'Sports System', themeKey: 'sports-system', source: 'Nielsen 2025', connections: ['strategy'], link: 'https://www.nielsen.com/news-center/2026/nielsen-46-billion-minutes-of-womens-sports-were-consumed-in-2025/', implication: 'Women\'s sports is the single biggest white-space opportunity. First-mover brand investment builds permanent equity.', ccc: ['culture','community'] },
+    { id: 'c40', text: 'WNBA $2.2B media deal (4x increase) — outpacing NBA renewal rate by 2.6x', theme: 'Sports System', themeKey: 'sports-system', source: 'ESPN / WNBA', connections: ['strategy'], link: 'https://www.espn.com/wnba/story/_/id/40634341/wnba-secures-monumental-media-deal-disney-amazon-nbcu', implication: 'WNBA media value is accelerating faster than any other league. Adidas should lead investment before costs catch up to demand.', ccc: ['culture','commerce'] },
+    { id: 'c41', text: 'NWSL viewership up 61% on ESPN — championship surpassed 1M viewers for first time ever', theme: 'Sports System', themeKey: 'sports-system', source: 'ESPN / NWSL', connections: ['strategy'], link: 'https://www.nwslsoccer.com/news/nwsl-2025-regular-season-growth', implication: 'NWSL is MLS\'s sister property for Adidas. Combined soccer strategy (men\'s + women\'s) creates dominant cultural presence.', ccc: ['culture','community'] },
+    { id: 'c42', text: 'McKinsey: $2.5B monetization gap in women\'s sports — market is underfunding vs. audience demand', theme: 'Sports System', themeKey: 'sports-system', source: 'McKinsey 2024', connections: ['strategy'], link: 'https://www.mckinsey.com/industries/technology-media-and-telecommunications/our-insights/closing-the-monetization-gap-in-womens-sports-a-2-point-5-billion-dollar-opportunity', implication: 'The gap represents underinvestment, not lack of demand. Brands that invest now get outsized ROI.', ccc: ['commerce'] },
+
+    // Sports System — NIL Depth
+    { id: 'c43', text: 'NIL is now a $1B+ endorsement economy — House Settlement allows universities to share $20.5M/year directly with athletes', theme: 'Sports System', themeKey: 'sports-system', source: 'SponsorUnited / NCAA', connections: ['strategy'], link: 'https://youthsportsbusinessreport.com/the-evolution-of-nil-how-college-athletes-and-brands-are-reshaping-the-1b-endorsement-economy-in-2025-sponsorunited/', implication: 'University revenue-sharing creates a new institutional layer. Adidas can build school-level partnerships, not just athlete-level.', ccc: ['community','commerce'] },
+    { id: 'c44', text: '58% of NIL athletes say deals "didn\'t deliver what was promised" — satisfaction gap = brand opportunity', theme: 'Sports System', themeKey: 'sports-system', source: 'Morning Consult / SAI', connections: ['strategy'], link: 'https://pro.morningconsult.com/analysis/nil-college-athletes-public-opinion-brand-strategy-2025', implication: 'Transactional NIL deals are failing athletes. Adidas can differentiate with genuine development programs that build loyalty before athletes go pro.', ccc: ['community'] },
+
+    // Sports System — MLS Depth
+    { id: 'c45', text: 'MLS Cup hit record 4.6M+ viewers — 70% of audience under 45, youngest-ever MLS Cup audience', theme: 'Sports System', themeKey: 'sports-system', source: 'Front Office Sports / MLS', connections: ['strategy','journey'], link: 'https://frontofficesports.com/mls-cup-surges-to-record-4-6m-viewers-as-nielsen-sorts-data-issues/', implication: 'MLS is Adidas\'s home court with the youngest, most digitally native, multicultural audience of any NA league.', ccc: ['culture','community'] },
+
+    // Sports System — Emerging Sports
+    { id: 'c46', text: 'Pickleball: ~22.7M players, 223.5% growth in 3 years — fastest-growing sport in America for 4th straight year', theme: 'Sports System', themeKey: 'sports-system', source: 'USA Pickleball / APP', connections: ['strategy'], link: 'https://usapickleball.org/about/annual-growth-report/', implication: 'Pickleball is inherently social (doubles-first). Community + commerce alignment is natural. Underserved by performance sportswear brands.', ccc: ['culture','community','commerce'] },
+    { id: 'c47', text: 'Girls flag football surged 60% YoY to 68,847 participants — wrestling topped 74,000 girls for first time', theme: 'Sports System', themeKey: 'sports-system', source: 'NFHS 2024-25', connections: ['strategy'], link: 'https://nfhs.org/stories/participation-in-high-school-sports-hits-record-high-with-sizable-increase-in-2024-25', implication: 'New girls\' sports categories = new product opportunities. First brands to serve these athletes earn lifetime loyalty.', ccc: ['culture','community'] },
+
+    // Sports System — Esports
+    { id: 'c48', text: 'Gen Z = 43% of esports audience. 70% of gamers play a sports game weekly — gaming is a sports consumption gateway', theme: 'Sports System', themeKey: 'sports-system', source: 'DemandSage / SQ Magazine', connections: ['journey'], link: 'https://www.demandsage.com/esports-statistics/', implication: 'The "athlete" in 2025 includes streamers. Gaming-sports crossover reaches the exact demographic Adidas needs.', ccc: ['culture','community'] },
+
+    // Media Landscape — Creator Economy
+    { id: 'c49', text: '33 athlete-owned production companies producing 370+ media properties — athletes ARE the media now', theme: 'Media Landscape', themeKey: 'media', source: 'USC Annenberg Study', connections: ['strategy','journey'], link: 'https://annenberg.usc.edu/news/research-and-impact/first-its-kind-study-reveals-rise-athlete-owned-media', implication: 'A $5M partnership with an athlete-media company may deliver more cultural impact than $20M in traditional broadcast ads.', ccc: ['culture','community'] },
+    { id: 'c50', text: 'Kelce brothers podcast: $100M Amazon deal. Pat McAfee: $85M ESPN license. Podcasts = new sports broadcast', theme: 'Media Landscape', themeKey: 'media', source: 'Entrepreneur / ESPN', connections: ['strategy'], link: 'https://www.entrepreneur.com/starting-a-business/how-this-entrepreneur-turned-athlete-podcasts-into-a-25/488360', implication: 'Athlete podcasts are the new locker room — unfiltered, high-trust, long-form. Adidas should treat them as primary media channels.', ccc: ['culture','community'] },
+    { id: 'c51', text: 'Streamers will spend $14.2B on sports rights in 2026 — Amazon becoming top global sports rights spender', theme: 'Media Landscape', themeKey: 'media', source: 'Ampere Analysis', connections: ['strategy'], link: 'https://www.thewrap.com/culture-lifestyle/sports/streaming-service-sports-rights-spend-ampere-analysis-forecast/', implication: 'Sports viewing fragmentation creates planning complexity but enables better attribution and interactive ad formats.', ccc: ['culture','commerce'] },
+    { id: 'c52', text: 'NFL streaming costs hit ~$800/season across all required platforms — fan cost fragmentation rising', theme: 'Media Landscape', themeKey: 'media', source: 'Hollywood Reporter', connections: ['journey'], link: 'https://www.hollywoodreporter.com/business/business-news/sports-streaming-wars-1236440665/', implication: 'Fragmented viewing = fragmented attention. Adidas must follow audiences across platforms rather than buying monolithic packages.', ccc: ['culture'] },
+    { id: 'c53', text: '60%+ of social media users follow platforms specifically for sports highlights — short-form is where discovery happens', theme: 'Media Landscape', themeKey: 'media', source: 'IMG Digital Trends 2025', connections: ['journey'], link: 'https://www.img.com/digital-trends-2025/trend/sports-monetizes-short-form-non-live-content', implication: 'Use short-form for top-of-funnel cultural relevance. Funnel to longer-form content and owned channels for conversion.', ccc: ['culture'] },
+
+    // Media Landscape — Betting
+    { id: 'c54', text: '84M adults in U.S./Canada in fantasy sports or betting — transforms passive viewers into hyper-engaged participants', theme: 'Media Landscape', themeKey: 'media', source: 'FSGA 2025', connections: ['journey','strategy'], link: 'https://thefsga.org/fsgas-2025-research-fantasy-sports-womens-betting-social-sportsbooks/', implication: 'Betting makes every play matter. This creates new attention windows for brand messaging — in-game, in-app, and in the group chat.', ccc: ['community','commerce'] },
+
+    // Community Dynamics
+    { id: 'c55', text: 'Run club participation up 59% in 2024. 72% of Gen Z join to meet people. Women joining up 89% YoY', theme: 'Community', themeKey: 'community', source: 'Strava Year-End Report', connections: ['strategy','journey'], link: 'https://runningmagazine.ca/the-scene/stravas-year-end-trend-report-shows-run-clubs-are-in-nightclubs-are-out/', implication: 'Run clubs are the new third place — combining culture, community, and commerce in a single weekly touchpoint. Adidas\'s highest-potential owned community play.', ccc: ['culture','community','commerce'] },
+    { id: 'c56', text: 'Club-affiliated runners log 78% more active time than solo runners — group activities increase activity length by 40%', theme: 'Community', themeKey: 'community', source: 'Strava / Form Nutrition', connections: ['strategy'], link: 'https://formnutrition.com/us/inform/how-2025-became-the-year-of-the-run-club/', implication: 'Community drives deeper engagement. Adidas-sponsored run clubs create recurring branded touchpoints with measurable participation lift.', ccc: ['community'] },
+    { id: 'c57', text: 'Gen Z is 18% more likely to buy products to "access the community built around them"', theme: 'Community', themeKey: 'community', source: 'GWI / Socium Media', connections: ['strategy','journey'], link: 'https://www.sociummedia.com/blog/gen-z-shopping-behavior/', implication: 'For Gen Z, product IS membership. Adidas should sell community access, not just shoes.', ccc: ['community','commerce'] },
+    { id: 'c58', text: 'Women\'s sports building distinct fandom communities — WNBA, NWSL, NCAA WBB have their own creators, podcasts, and social spaces', theme: 'Community', themeKey: 'community', source: 'Industry Analysis', connections: ['strategy'], link: '#', implication: 'Brands that treat women\'s sports as "also" rather than "first" miss the authenticity required. Build women\'s-first strategies.', ccc: ['culture','community'] },
+    { id: 'c59', text: 'NIL collectives (fan-funded orgs pooling money for athletes) creating new community structures bridging boosters, fans, and athletes', theme: 'Community', themeKey: 'community', source: 'NCAA / OC&C Strategy', connections: ['strategy'], link: 'https://www.occstrategy.com/en/article/scoring-big-unlocking-the-nil-opportunity-in-college-sports/', implication: 'NIL collectives are micro-communities that didn\'t exist before 2021. Adidas can embed into this infrastructure as a platform partner.', ccc: ['community','commerce'] },
+    { id: 'c60', text: 'Fantasy sports: 57M players creating micro-communities around drafts, trades, and weekly matchups — group chat culture IS the second screen', theme: 'Community', themeKey: 'community', source: 'FSGA 2025', connections: ['journey'], link: 'https://thefsga.org/new-fsga-research-highlights-industry-stability-and-next-generation-growth-in-fantasy-sports-and-sports-betting/', implication: 'Games are experienced through parallel group chats. Brand messaging must be shareable, meme-able, and group-chat native.', ccc: ['community'] },
+
+    // Commerce — Social Commerce & Retail
+    { id: 'c61', text: 'TikTok Shop = ~20% of social commerce ($15.82B). PUMA saw 737% revenue spike in one week via LIVE + creator affiliates', theme: 'Commerce', themeKey: 'commerce', source: 'eMarketer / Retail Dive', connections: ['strategy'], link: 'https://www.emarketer.com/press-releases/tiktok-shop-makes-up-nearly-20-of-social-commerce-in-2025/', implication: 'Live shopping + creator affiliates on TikTok is a proven commerce model. Adidas needs an always-on TikTok Shop strategy.', ccc: ['community','commerce'] },
+    { id: 'c62', text: 'Both Nike and Adidas abandoned aggressive DTC-only targets — industry returning to balanced DTC + wholesale model', theme: 'Commerce', themeKey: 'commerce', source: 'Statista / Modern Retail', connections: ['strategy'], link: 'https://www.modernretail.co/operations/why-nikes-dtc-pivot-didnt-pan-out/', implication: 'The DTC vs. wholesale debate is over. The winner is connected commerce — seamless experience with data flowing everywhere.', ccc: ['commerce'] },
+    { id: 'c63', text: 'Adidas leads sportswear in EMV at $741M vs. Nike $415M — athletes contribute 56% of total sportswear EMV', theme: 'Commerce', themeKey: 'commerce', source: 'Lefty Influencer Report 2025', connections: ['strategy'], link: 'https://lefty.io/blog/influencer-marketing-trend-2025', implication: 'Adidas already wins the influence game. Double down on athlete-creator partnerships that convert attention to commerce.', ccc: ['community','commerce'] },
+    { id: 'c64', text: 'Running silhouettes dominating sneaker culture — ASICS +45%, Brooks +1,508% on StockX. Only 47% of new releases trade above retail', theme: 'Commerce', themeKey: 'commerce', source: 'StockX Big Facts 2025', connections: ['strategy'], link: 'https://stockx.com/about/stockx-rolls-out-latest-big-facts-report-revealing-top-resale-trends-in-2025/', implication: 'The hype cycle is normalizing, lifestyle-running is the new cultural currency. Adidas should lean into this shift (Samba success proves it).', ccc: ['culture','commerce'] },
+    { id: 'c65', text: 'TikTok is #1 discovery engine for Gen Z — but physical stores remain preferred for purchase. 2/3 of Gen Z wear athleisure multiple times/week', theme: 'Commerce', themeKey: 'commerce', source: 'GWI / BoF State of Fashion', connections: ['journey','strategy'], link: 'https://www.gwi.com/blog/athleisure-trends', implication: 'Digital discovery → physical purchase. Adidas retail must be the conversion point for social-driven demand. Seamless handoff is critical.', ccc: ['culture','commerce'] },
+
+    // Commerce — Emerging
+    { id: 'c66', text: 'Global sneaker resale market projected $51.2B by 2032 — but only 5% of sneakers recycled, 30M pairs thrown away annually in U.S.', theme: 'Commerce', themeKey: 'commerce', source: 'ShelfTrend / Industry Data', connections: ['strategy'], link: 'https://www.shelftrend.com/fashion/sneaker-resale-profit-margins-2025-marketplace-analysis', implication: 'Sustainability + resale is a Gen Z expectation. Adidas refurbishment/trade-in programs build brand equity AND commerce loops.', ccc: ['commerce'] },
+    { id: 'c67', text: 'Adaptive sports market: $5.09B growing to $10.97B by 2032. Wheelchair sales surged 53% in H1 2024', theme: 'Commerce', themeKey: 'commerce', source: 'Future Data Stats / Decathlon', connections: ['strategy'], link: 'https://www.futuredatastats.com/adaptive-sports-market', implication: 'Adaptive sports is underserved and fast-growing. Inclusive product + sponsorship programs build purpose-driven brand equity.', ccc: ['culture','community','commerce'] },
+    { id: 'c68', text: 'U.S. sports tourism: $65.4B in 2025, projected $227.6B by 2035. Marathon tourism growing — 75% of runners plan same or more races', theme: 'Commerce', themeKey: 'commerce', source: 'Future Market Insights', connections: ['strategy'], link: 'https://www.futuremarketinsights.com/reports/usa-sports-tourism-market', implication: 'Sports tourism creates high-intent, high-spend moments. Destination races and events are commerce moments where brand presence converts to purchase.', ccc: ['culture','commerce'] },
+    { id: 'c69', text: 'Fitness app market doubling from $10.6B to $33.58B by 2033. 78% of AI features are adaptive. Gyms with community programs: 75%+ retention', theme: 'Commerce', themeKey: 'commerce', source: 'AthletechNews / Orangesoft', connections: ['strategy','journey'], link: 'https://athletechnews.com/fitness-app-market-33b-projection-driven-by-ai-personalization/', implication: 'App → community → meetup → purchase. Adidas can close the loop with connected fitness partnerships that drive recurring engagement.', ccc: ['community','commerce'] },
+
+    // Sports System — Canadian depth
+    { id: 'c70', text: 'Canadian NHL fans average age 49, 44% women (unusually gender-balanced). CFL Grey Cup up 12% YoY to 4.02M viewers', theme: 'Sports System', themeKey: 'sports-system', source: 'Vividata / CFL', connections: ['strategy'], link: 'https://press.cfl.ca/the-numbers-are-in-112th-grey-cup-caps-successful-2025-season', implication: 'Canada requires dual strategy — respect hockey\'s linear TV dominance while investing in digital-first emerging sports for younger demographics.', ccc: ['culture'] },
   ];
 }
 
 function getThemeColor(theme) {
-  const map = { 'Sports System': 'tag-green', 'Media Landscape': 'tag-blue', 'Commerce': 'tag-yellow', 'Competitive': 'tag-red', 'Strategic': 'tag-purple' };
+  const map = { 'Sports System': 'tag-green', 'Media Landscape': 'tag-blue', 'Commerce': 'tag-yellow', 'Competitive': 'tag-red', 'Community': 'tag-amber', 'Strategic': 'tag-purple' };
   return map[theme] || 'tag-white';
 }
 
@@ -2239,6 +2387,38 @@ const MEDIA_CHAIN_DATA = {
   c36: { mediaBehavior: 'NIL athletes need content tools, compliance help, and commerce infrastructure.', mediaOpp: 'Build the NIL operating system: compliance + content + commerce toolkit for 500+ athletes.', signal: { evidence: 4, scale: 4, relevance: 5, whiteSpace: 5 } },
   c37: { mediaBehavior: 'In-store discovery bridges sport and lifestyle. Wholesale is brand media.', mediaOpp: 'Design wholesale merchandising that bridges sport and lifestyle. Retailer-specific storytelling.', signal: { evidence: 4, scale: 4, relevance: 4, whiteSpace: 3 } },
   c38: { mediaBehavior: 'Canadian market requires bilingual execution across all media channels.', mediaOpp: 'Quebec-ready bilingual execution upstream in creative design, not as late-stage translation.', signal: { evidence: 3, scale: 3, relevance: 3, whiteSpace: 3 } },
+  c39: { mediaBehavior: '46B minutes consumed — women\'s sports now commands premium audience attention across linear and streaming.', mediaOpp: 'Secure first-mover women\'s sports media sponsorships before costs catch up to demand.', signal: { evidence: 5, scale: 5, relevance: 5, whiteSpace: 5 } },
+  c40: { mediaBehavior: 'WNBA rights deal signals institutional legitimacy — broadcast partners investing heavily in production quality.', mediaOpp: 'Integrated sponsorship across Disney/NBCU/Amazon WNBA packages — cross-platform reach at below-market rates.', signal: { evidence: 5, scale: 5, relevance: 5, whiteSpace: 4 } },
+  c41: { mediaBehavior: 'NWSL on ESPN driving mainstream visibility for women\'s soccer — championship breaking 1M viewer barrier.', mediaOpp: 'Bundle MLS + NWSL sponsorship for dominant soccer media presence across gender.', signal: { evidence: 5, scale: 4, relevance: 5, whiteSpace: 4 } },
+  c42: { mediaBehavior: 'Monetization gap means current sponsorship rates undervalue the audience size.', mediaOpp: 'Lock in multi-year deals now while rates are below true market value — first-mover advantage.', signal: { evidence: 5, scale: 5, relevance: 5, whiteSpace: 5 } },
+  c43: { mediaBehavior: 'NIL economy creating 500K+ micro-influencers with authentic campus reach.', mediaOpp: 'Build Adidas NIL platform that scales athlete partnerships with content tools + commerce integration.', signal: { evidence: 5, scale: 5, relevance: 4, whiteSpace: 4 } },
+  c44: { mediaBehavior: 'Athletes dissatisfied with transactional deals — seeking genuine brand relationships.', mediaOpp: 'Adidas development programs (training, content, mentorship) differentiate from cash-only NIL deals.', signal: { evidence: 4, scale: 4, relevance: 4, whiteSpace: 5 } },
+  c45: { mediaBehavior: 'MLS youngest audience of any major NA league — 70% under 45 and digitally native.', mediaOpp: 'Apple TV partnership enables shoppable content experiences during matches. Adidas as kit partner has unique integration rights.', signal: { evidence: 5, scale: 4, relevance: 5, whiteSpace: 4 } },
+  c46: { mediaBehavior: 'Pickleball participation exploding but brand presence is minimal — massive whitespace.', mediaOpp: 'Performance pickleball line + community sponsorships at the 16,210+ facilities nationwide.', signal: { evidence: 4, scale: 4, relevance: 3, whiteSpace: 5 } },
+  c47: { mediaBehavior: 'New girls\' sports categories creating fresh media narratives and hero stories.', mediaOpp: 'Grassroots sponsorship of girls\' flag football and wrestling — build brand loyalty at the origin point.', signal: { evidence: 4, scale: 3, relevance: 4, whiteSpace: 5 } },
+  c48: { mediaBehavior: 'Gaming-sports crossover reaches Gen Z through Twitch, YouTube, EA Sports.', mediaOpp: 'In-game Adidas skins, virtual try-ons, esports team sponsorships that bridge physical and digital.', signal: { evidence: 4, scale: 4, relevance: 4, whiteSpace: 3 } },
+  c49: { mediaBehavior: 'Athletes bypassing traditional media entirely — producing their own shows, podcasts, content.', mediaOpp: 'Co-produce content with athlete-owned media companies. Embedded brand integration > interruptive ads.', signal: { evidence: 5, scale: 5, relevance: 5, whiteSpace: 4 } },
+  c50: { mediaBehavior: 'Sports podcasts command 1+ hour of unfiltered attention — highest trust medium.', mediaOpp: 'Adidas-branded podcast segments or athlete podcast network. Long-form storytelling builds deeper brand connection.', signal: { evidence: 5, scale: 4, relevance: 5, whiteSpace: 3 } },
+  c51: { mediaBehavior: 'Streaming platforms fragmenting sports rights — fans following content across 4-5 services.', mediaOpp: 'Platform-agnostic media strategy with dynamic creative optimized per streaming environment.', signal: { evidence: 5, scale: 5, relevance: 4, whiteSpace: 3 } },
+  c52: { mediaBehavior: 'Cost fragmentation ($800+/season) pushing fans toward highlight clips and social recaps.', mediaOpp: 'Sponsor the highlight/recap layer — own the post-game social moment where most fans actually engage.', signal: { evidence: 4, scale: 5, relevance: 4, whiteSpace: 4 } },
+  c53: { mediaBehavior: 'Short-form is the discovery engine; long-form is the engagement engine.', mediaOpp: 'TikTok/Reels for cultural relevance → YouTube/podcast for depth → owned channels for conversion.', signal: { evidence: 5, scale: 5, relevance: 4, whiteSpace: 3 } },
+  c54: { mediaBehavior: '84M fantasy/betting participants are hyper-engaged — every play is a personal stake.', mediaOpp: 'In-app betting platform partnerships for contextual brand moments during live games.', signal: { evidence: 4, scale: 5, relevance: 3, whiteSpace: 3 } },
+  c55: { mediaBehavior: 'Run clubs driving 59% participation increase — Gen Z joining for social connection, not just fitness.', mediaOpp: 'Adidas-hosted run clubs as owned media channels: weekly community touchpoint + product trial + content creation.', signal: { evidence: 5, scale: 4, relevance: 5, whiteSpace: 5 } },
+  c56: { mediaBehavior: 'Community participation dramatically increases engagement — 78% more active time.', mediaOpp: 'Community-first programming: Adidas Runners clubs as recurring branded experiences with measurable engagement lift.', signal: { evidence: 4, scale: 4, relevance: 5, whiteSpace: 4 } },
+  c57: { mediaBehavior: 'Gen Z buys products to access communities — product is membership.', mediaOpp: 'Adidas membership/loyalty programs that unlock community experiences, not just discounts.', signal: { evidence: 4, scale: 5, relevance: 5, whiteSpace: 4 } },
+  c58: { mediaBehavior: 'Women\'s sports fandom building separate ecosystem — own creators, podcasts, social spaces.', mediaOpp: 'Women\'s-first media strategy with dedicated creator partnerships, not repurposed men\'s content.', signal: { evidence: 4, scale: 4, relevance: 5, whiteSpace: 5 } },
+  c59: { mediaBehavior: 'NIL collectives creating new fan-athlete community structures unique to NA.', mediaOpp: 'Partner with NIL collectives as community infrastructure — provide tools, content platforms, and merchandise.', signal: { evidence: 3, scale: 3, relevance: 4, whiteSpace: 5 } },
+  c60: { mediaBehavior: 'Fantasy leagues and group chats are the primary social layer of sports consumption.', mediaOpp: 'Brand messaging must be shareable and group-chat native — meme formats, reaction content, debate-starters.', signal: { evidence: 4, scale: 5, relevance: 3, whiteSpace: 3 } },
+  c61: { mediaBehavior: 'TikTok Shop proving live shopping + creator affiliates = massive commerce conversion.', mediaOpp: 'Always-on TikTok Shop strategy with athlete-creator affiliates driving real-time product discovery.', signal: { evidence: 5, scale: 5, relevance: 5, whiteSpace: 3 } },
+  c62: { mediaBehavior: 'Industry consensus: pure DTC is unsustainable. Connected commerce is the answer.', mediaOpp: 'Media strategy should drive to most frictionless purchase point — DTC, retail, or social — with unified data.', signal: { evidence: 5, scale: 5, relevance: 4, whiteSpace: 2 } },
+  c63: { mediaBehavior: 'Adidas already leads EMV ($741M vs Nike $415M) — influence game is won.', mediaOpp: 'Double down on athlete-creator partnerships. Convert influence advantage into commerce advantage.', signal: { evidence: 5, scale: 5, relevance: 5, whiteSpace: 3 } },
+  c64: { mediaBehavior: 'Running silhouettes replacing hype drops as cultural currency in sneaker culture.', mediaOpp: 'Lifestyle-performance crossover product strategy supported by cultural storytelling, not drop mechanics.', signal: { evidence: 5, scale: 4, relevance: 5, whiteSpace: 3 } },
+  c65: { mediaBehavior: 'Digital discovery → physical purchase is Gen Z\'s dominant path to buy.', mediaOpp: 'Retail stores as conversion points for social-driven demand — seamless digital-to-physical handoff.', signal: { evidence: 5, scale: 5, relevance: 5, whiteSpace: 2 } },
+  c66: { mediaBehavior: 'Sustainability and resale are Gen Z expectations, not differentiators.', mediaOpp: 'Adidas refurbishment/trade-in programs as commerce loops that build brand equity AND repeat purchase.', signal: { evidence: 4, scale: 4, relevance: 4, whiteSpace: 3 } },
+  c67: { mediaBehavior: 'Adaptive sports growing fast but drastically underserved by major brands.', mediaOpp: 'Inclusive product lines + adaptive athlete sponsorships build purpose-driven equity with broad cultural resonance.', signal: { evidence: 3, scale: 3, relevance: 4, whiteSpace: 5 } },
+  c68: { mediaBehavior: 'Sports tourism creating high-intent commerce moments at races and events.', mediaOpp: 'Branded presence at destination races and tournaments — pop-up retail + experiential activations.', signal: { evidence: 4, scale: 4, relevance: 3, whiteSpace: 4 } },
+  c69: { mediaBehavior: 'Connected fitness apps merging digital activity with real-life community meetups.', mediaOpp: 'Fitness app partnerships that close the loop: app → community → in-person meetup → product purchase.', signal: { evidence: 4, scale: 4, relevance: 4, whiteSpace: 4 } },
+  c70: { mediaBehavior: 'Canadian hockey fans skew older and linear TV — but basketball/soccer indexes young and digital.', mediaOpp: 'Dual Canada strategy: linear TV for hockey audience, digital-first for emerging sport audiences.', signal: { evidence: 4, scale: 3, relevance: 3, whiteSpace: 3 } },
 };
 
 function getSignalScore(signal) {
