@@ -50,10 +50,17 @@ h1, h2, h3, h4, h5, h6, .heading { font-family: 'Oswald', 'Arial Narrow', sans-s
 
 /* ── FLOATING STICKY NOTES ── */
 .floating-note {
-  position: fixed; z-index: 900; min-width: 180px; max-width: 300px;
+  position: fixed; z-index: 900; min-width: 180px; width: 280px;
   background: #001a22; border: 1px solid rgba(0,200,255,0.3); border-radius: 3px;
   box-shadow: 0 4px 20px rgba(0,0,0,0.5); font-family: 'JetBrains Mono', monospace;
-  animation: noteIn 0.2s var(--ease);
+  animation: noteIn 0.2s var(--ease); overflow: hidden;
+}
+.floating-note-resize {
+  position: absolute; bottom: 0; right: 0; width: 16px; height: 16px; cursor: nwse-resize; z-index: 2;
+}
+.floating-note-resize::after {
+  content: ''; position: absolute; bottom: 3px; right: 3px;
+  width: 6px; height: 6px; border-right: 2px solid rgba(255,255,255,0.25); border-bottom: 2px solid rgba(255,255,255,0.25);
 }
 @keyframes noteIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
 .floating-note-header {
@@ -75,9 +82,10 @@ h1, h2, h3, h4, h5, h6, .heading { font-family: 'Oswald', 'Arial Narrow', sans-s
 }
 .floating-note-color:hover { transform: scale(1.3); }
 .floating-note textarea {
-  width: 100%; min-height: 80px; padding: 8px; background: transparent;
+  width: 100%; min-height: 60px; padding: 8px; background: transparent;
   border: none; color: var(--text-light); font-size: 13px; line-height: 1.5;
-  resize: both; font-family: 'JetBrains Mono', monospace;
+  resize: none; font-family: 'JetBrains Mono', monospace; display: block;
+  box-sizing: border-box; overflow: hidden;
 }
 .floating-note textarea:focus { outline: none; }
 
@@ -4431,6 +4439,7 @@ function renderFloatingNote(note) {
   el.id = note.id;
   el.style.left = note.x + 'px';
   el.style.top = note.y + 'px';
+  if (note.w) el.style.width = note.w + 'px';
   el.style.background = c.bg;
   el.style.borderColor = c.border;
 
@@ -4446,11 +4455,49 @@ function renderFloatingNote(note) {
         <button class="floating-note-close" onclick="deleteFloatingNote('${note.id}')">&times;</button>
       </div>
     </div>
-    <textarea placeholder="Type here..." oninput="updateNoteText('${note.id}',this.value)">${note.text || ''}</textarea>
+    <textarea placeholder="Type here...">${note.text || ''}</textarea>
+    <div class="floating-note-resize" onmousedown="startResizeFloatingNote(event,'${note.id}')"></div>
   `;
   document.body.appendChild(el);
-  el.querySelector('textarea').focus();
+  const ta = el.querySelector('textarea');
+  ta.addEventListener('input', function() {
+    updateNoteText(note.id, this.value);
+    autoResizeFloatingNote(el, this);
+  });
+  // Auto-size on render
+  requestAnimationFrame(() => autoResizeFloatingNote(el, ta));
+  ta.focus();
 }
+
+function autoResizeFloatingNote(el, ta) {
+  ta.style.height = 'auto';
+  const needed = Math.max(60, ta.scrollHeight);
+  ta.style.height = needed + 'px';
+}
+
+let _fnResize = null, _fnRsx, _fnRsy, _fnRw;
+function startResizeFloatingNote(e, id) {
+  e.preventDefault(); e.stopPropagation();
+  const el = document.getElementById(id);
+  if (!el) return;
+  _fnResize = { id, el };
+  _fnRsx = e.clientX; _fnRsy = e.clientY;
+  _fnRw = el.offsetWidth;
+}
+document.addEventListener('mousemove', (e) => {
+  if (!_fnResize) return;
+  const dw = e.clientX - _fnRsx;
+  const newW = Math.max(180, _fnRw + dw);
+  _fnResize.el.style.width = newW + 'px';
+  const ta = _fnResize.el.querySelector('textarea');
+  if (ta) autoResizeFloatingNote(_fnResize.el, ta);
+});
+document.addEventListener('mouseup', () => {
+  if (!_fnResize) return;
+  const note = STATE.floatingNotes.find(n => n.id === _fnResize.id);
+  if (note) { note.w = _fnResize.el.offsetWidth; saveState(); }
+  _fnResize = null;
+});
 
 function renderAllFloatingNotes() {
   document.querySelectorAll('.floating-note').forEach(el => el.remove());
