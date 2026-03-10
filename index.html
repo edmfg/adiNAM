@@ -3957,21 +3957,28 @@ function initWbMarquee() {
     _wbMarquee = null; _wbMqStart = null;
   });
 
-  // Zoom with scroll wheel — only vertical (two-finger up/down on trackpad)
+  // Smooth zoom with scroll wheel — only vertical (two-finger up/down on trackpad)
+  let _wbTargetZoom = wbZoom, _wbZoomMx = 0, _wbZoomMy = 0, _wbZoomAnim = false;
+  function _wbAnimateZoom() {
+    const diff = _wbTargetZoom - wbZoom;
+    if (Math.abs(diff) < 0.001) { wbZoom = _wbTargetZoom; applyWbTransform(); _wbZoomAnim = false; return; }
+    const oldZoom = wbZoom;
+    wbZoom += diff * 0.15;
+    wbPan.x = _wbZoomMx - (_wbZoomMx - wbPan.x) * (wbZoom / oldZoom);
+    wbPan.y = _wbZoomMy - (_wbZoomMy - wbPan.y) * (wbZoom / oldZoom);
+    applyWbTransform();
+    requestAnimationFrame(_wbAnimateZoom);
+  }
   canvas.addEventListener('wheel', (e) => {
     e.preventDefault();
-    // Ignore if horizontal scroll is dominant (two-finger left/right)
     if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
     if (e.deltaY === 0) return;
     const rect = canvas.getBoundingClientRect();
-    const mx = e.clientX - rect.left, my = e.clientY - rect.top;
-    const oldZoom = wbZoom;
-    const delta = e.deltaY > 0 ? -0.08 : 0.08;
-    wbZoom = Math.max(0.2, Math.min(3, wbZoom + delta));
-    // Zoom toward cursor
-    wbPan.x = mx - (mx - wbPan.x) * (wbZoom / oldZoom);
-    wbPan.y = my - (my - wbPan.y) * (wbZoom / oldZoom);
-    applyWbTransform();
+    _wbZoomMx = e.clientX - rect.left;
+    _wbZoomMy = e.clientY - rect.top;
+    const step = e.deltaY > 0 ? -0.03 : 0.03;
+    _wbTargetZoom = Math.max(0.2, Math.min(3, _wbTargetZoom + step));
+    if (!_wbZoomAnim) { _wbZoomAnim = true; requestAnimationFrame(_wbAnimateZoom); }
   }, { passive: false });
 }
 
