@@ -1954,20 +1954,27 @@ function subscribeToChanges() {
   supa
     .channel('workspace-sync')
     .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'workspace', filter: 'id=eq.' + WORKSPACE_ID }, (payload) => {
-      // Ignore our own updates
-      if (payload.new && payload.new.state && payload.new.state._clientId === _clientId) return;
-      if (Date.now() - _lastSyncTs < 3000) return;
-      // Skip if user is actively typing or dragging
+      // Ignore our own updates — check client ID and timestamp
+      const remoteState = payload.new && payload.new.state;
+      if (!remoteState) return;
+      if (remoteState._clientId === _clientId) return;
+      if (Date.now() - _lastSyncTs < 8000) return;
+      // Skip if user is actively interacting
       const active = document.activeElement;
       const userBusy = active && (active.contentEditable === 'true' || active.tagName === 'TEXTAREA' || active.tagName === 'INPUT');
-      if (payload.new && payload.new.state) {
-        const remote = payload.new.state;
-        Object.assign(STATE, remote);
+      if (userBusy) {
+        // Just update state silently, don't re-render
+        Object.assign(STATE, remoteState);
         localStorage.setItem('adidas_ygt_state', JSON.stringify(STATE));
-        if (!userBusy) refreshAllViews();
         updateSyncStatus('synced');
-        console.log('[Supabase] Real-time update received' + (userBusy ? ' (deferred refresh)' : ''));
+        console.log('[Supabase] Remote update stored (user busy, no refresh)');
+        return;
       }
+      Object.assign(STATE, remoteState);
+      localStorage.setItem('adidas_ygt_state', JSON.stringify(STATE));
+      refreshAllViews();
+      updateSyncStatus('synced');
+      console.log('[Supabase] Real-time update applied');
     })
     .subscribe();
 }
