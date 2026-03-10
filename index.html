@@ -621,7 +621,7 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
 .sticky-note:hover .note-resize { opacity: 1; }
 .sticky-note .note-toolbar { display:none; }
 .sticky-note .note-bold-btn { display:none; }
-.sticky-note .note-content { outline: none; min-height: 50px; }
+.sticky-note .note-content { outline: none; min-height: 50px; cursor: text; user-select: text; white-space: pre-wrap; word-break: break-word; }
 .sticky-note .note-actions { position: absolute; top: 4px; right: 4px; }
 .sticky-note .note-delete { background: none; border: none; color: rgba(0,0,0,0.25); cursor: pointer; font-size: 16px; line-height: 1; padding: 2px 4px; transition: color 0.15s; }
 .sticky-note .note-delete:hover { color: rgba(0,0,0,0.7); }
@@ -3481,7 +3481,7 @@ function createDraggableNote(note, type) {
   if (type === 'whiteboard') {
     el.addEventListener('click', (e) => {
       if (_noteDidDrag) { _noteDidDrag = false; return; }
-      if (e.target.contentEditable === 'true' || e.target.tagName === 'BUTTON' || e.target.classList.contains('note-resize')) return;
+      if (e.target.closest('.note-content') || e.target.tagName === 'BUTTON' || e.target.classList.contains('note-resize')) return;
       if (!e.shiftKey && !wbSelected.has(note.id)) {
         clearWbSelection();
       }
@@ -3506,7 +3506,8 @@ function createDraggableNote(note, type) {
   let isDragging = false, startX, startY, origX, origY, batchDragData = [];
   // Drag (batch if selected)
   el.addEventListener('mousedown', (e) => {
-    if (e.target.contentEditable === 'true' || e.target.tagName === 'BUTTON' || e.target.classList.contains('note-resize')) return;
+    // Allow normal cursor placement inside the editable content area
+    if (e.target.closest('.note-content') || e.target.tagName === 'BUTTON' || e.target.classList.contains('note-resize')) return;
     isDragging = true;
     startX = e.clientX; startY = e.clientY;
     origX = parseInt(el.style.left); origY = parseInt(el.style.top);
