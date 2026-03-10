@@ -595,7 +595,26 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
 /* ── WHITEBOARD canvas ── */
 .canvas-area {
   position: relative; width: 100%; min-height: 640px;
-  background: #0a0a0a; border: 1px solid var(--amber); border-radius: 2px; overflow: auto;
+  background: #0a0a0a; border: 1px solid var(--amber); border-radius: 2px; overflow: hidden;
+  cursor: grab;
+  background-image: radial-gradient(circle, rgba(57,255,20,0.1) 1px, transparent 1px);
+  background-size: 30px 30px;
+}
+.canvas-area.wb-panning { cursor: grabbing; }
+#wb-inner { position: absolute; top: 0; left: 0; transform-origin: 0 0; }
+.wb-zoom-controls {
+  position: absolute; bottom: 10px; right: 10px; z-index: 200;
+  display: flex; gap: 4px; align-items: center;
+}
+.wb-zoom-controls button {
+  background: rgba(0,0,0,0.7); border: 1px solid rgba(57,255,20,0.3); color: #39FF14;
+  font-family: 'JetBrains Mono', monospace; font-size: 11px; padding: 4px 8px;
+  cursor: pointer; border-radius: 2px;
+}
+.wb-zoom-controls button:hover { background: rgba(57,255,20,0.15); }
+.wb-zoom-controls span {
+  font-family: 'JetBrains Mono', monospace; font-size: 10px; color: rgba(57,255,20,0.5);
+  min-width: 36px; text-align: center;
 }
 .sticky-note {
   position: absolute; width: 180px; min-height: 110px;
@@ -3268,21 +3287,41 @@ function initWhiteboard() {
 }
 initWhiteboard();
 
+let wbPan = { x: 0, y: 0 }, wbZoom = 1;
+function applyWbTransform() {
+  const inner = document.getElementById('wb-inner');
+  const canvas = document.getElementById('whiteboard-canvas');
+  if (inner) inner.style.transform = `translate(${wbPan.x}px, ${wbPan.y}px) scale(${wbZoom})`;
+  // Move dot grid with pan
+  if (canvas) canvas.style.backgroundPosition = `${wbPan.x}px ${wbPan.y}px`;
+  const zl = document.getElementById('wb-zoom-label');
+  if (zl) zl.textContent = Math.round(wbZoom * 100) + '%';
+}
+function wbZoomTo(z) { wbZoom = Math.max(0.2, Math.min(3, z)); applyWbTransform(); }
+function wbResetView() { wbPan = { x: 0, y: 0 }; wbZoom = 1; applyWbTransform(); }
+
 function renderWhiteboard() {
   const canvas = document.getElementById('whiteboard-canvas');
-  canvas.innerHTML = '';
+  canvas.innerHTML = '<div id="wb-inner"></div>';
+  // Zoom controls
+  const zc = document.createElement('div');
+  zc.className = 'wb-zoom-controls';
+  zc.innerHTML = '<button onclick="wbZoomTo(wbZoom-0.1)">−</button><span id="wb-zoom-label">100%</span><button onclick="wbZoomTo(wbZoom+0.1)">+</button><button onclick="wbResetView()">Reset</button>';
+  canvas.appendChild(zc);
+  const inner = document.getElementById('wb-inner');
   // Render labels first (behind notes)
   if (!STATE.whiteboardLabels) STATE.whiteboardLabels = [];
   STATE.whiteboardLabels.forEach(label => {
-    canvas.appendChild(createLabelBox(label));
+    inner.appendChild(createLabelBox(label));
   });
   STATE.whiteboardNotes.forEach(note => {
     // Force all notes to green
     note.bg = '#39FF14';
     note.color = '#000';
     const el = createDraggableNote(note, 'whiteboard');
-    canvas.appendChild(el);
+    inner.appendChild(el);
   });
+  applyWbTransform();
   clearWbSelection();
 }
 
@@ -3319,15 +3358,41 @@ function clearWbSelection() {
   document.querySelectorAll('.sticky-note.wb-selected').forEach(el => el.classList.remove('wb-selected'));
 }
 
-// ── Marquee box selection ──
+// ── Pan, Zoom & Marquee ──
 let _wbMarquee = null, _wbMqStart = null;
+let _wbPanning = false, _wbPanStart = null, _wbPanOrig = null;
+let _wbSpaceHeld = false;
+
+function screenToWorld(sx, sy) {
+  const canvas = document.getElementById('whiteboard-canvas');
+  const rect = canvas.getBoundingClientRect();
+  return { x: (sx - rect.left - wbPan.x) / wbZoom, y: (sy - rect.top - wbPan.y) / wbZoom };
+}
+
 function initWbMarquee() {
   const canvas = document.getElementById('whiteboard-canvas');
   if (!canvas) return;
+
+  // Track space key for pan mode
+  document.addEventListener('keydown', (e) => { if (e.code === 'Space' && !e.target.closest('[contenteditable],textarea,input')) { _wbSpaceHeld = true; e.preventDefault(); } });
+  document.addEventListener('keyup', (e) => { if (e.code === 'Space') _wbSpaceHeld = false; });
+
   canvas.addEventListener('mousedown', (e) => {
-    // Only start marquee on direct canvas background clicks
-    if (e.target !== canvas && !e.target.classList.contains('wb-label-box')) return;
+    const onBg = e.target === canvas || e.target.id === 'wb-inner';
+    if (!onBg) return;
     if (e.button !== 0) return;
+
+    // Pan mode: space held or middle-click style
+    if (_wbSpaceHeld) {
+      _wbPanning = true;
+      _wbPanStart = { x: e.clientX, y: e.clientY };
+      _wbPanOrig = { ...wbPan };
+      canvas.classList.add('wb-panning');
+      e.preventDefault();
+      return;
+    }
+
+    // Marquee select
     const rect = canvas.getBoundingClientRect();
     _wbMqStart = { x: e.clientX - rect.left, y: e.clientY - rect.top };
     const mq = document.createElement('div');
@@ -3340,7 +3405,16 @@ function initWbMarquee() {
     if (!e.shiftKey) clearWbSelection();
     e.preventDefault();
   });
+
   document.addEventListener('mousemove', (e) => {
+    // Pan
+    if (_wbPanning && _wbPanStart) {
+      wbPan.x = _wbPanOrig.x + (e.clientX - _wbPanStart.x);
+      wbPan.y = _wbPanOrig.y + (e.clientY - _wbPanStart.y);
+      applyWbTransform();
+      return;
+    }
+    // Marquee
     if (!_wbMarquee || !_wbMqStart) return;
     const canvas = document.getElementById('whiteboard-canvas');
     const rect = canvas.getBoundingClientRect();
@@ -3350,16 +3424,29 @@ function initWbMarquee() {
     _wbMarquee.style.left = x + 'px'; _wbMarquee.style.top = y + 'px';
     _wbMarquee.style.width = w + 'px'; _wbMarquee.style.height = h + 'px';
   });
+
   document.addEventListener('mouseup', () => {
+    // End pan
+    if (_wbPanning) {
+      _wbPanning = false; _wbPanStart = null; _wbPanOrig = null;
+      const canvas = document.getElementById('whiteboard-canvas');
+      if (canvas) canvas.classList.remove('wb-panning');
+      return;
+    }
+    // End marquee
     if (!_wbMarquee || !_wbMqStart) return;
-    const mql = parseInt(_wbMarquee.style.left), mqt = parseInt(_wbMarquee.style.top);
+    const mqsl = parseInt(_wbMarquee.style.left), mqst = parseInt(_wbMarquee.style.top);
     const mqw = parseInt(_wbMarquee.style.width), mqh = parseInt(_wbMarquee.style.height);
     if (mqw > 5 || mqh > 5) {
-      // Select all notes that overlap the marquee
-      document.querySelectorAll('#whiteboard-canvas .sticky-note').forEach(el => {
+      // Convert screen marquee rect to world coords
+      const canvas = document.getElementById('whiteboard-canvas');
+      const rect = canvas.getBoundingClientRect();
+      const wl = (mqsl - wbPan.x) / wbZoom, wt = (mqst - wbPan.y) / wbZoom;
+      const ww = mqw / wbZoom, wh = mqh / wbZoom;
+      document.querySelectorAll('#wb-inner .sticky-note').forEach(el => {
         const nl = parseInt(el.style.left), nt = parseInt(el.style.top);
         const nw = el.offsetWidth, nh = el.offsetHeight;
-        if (nl + nw > mql && nl < mql + mqw && nt + nh > mqt && nt < mqt + mqh) {
+        if (nl + nw > wl && nl < wl + ww && nt + nh > wt && nt < wt + wh) {
           const id = el.getAttribute('data-note-id');
           if (id && !wbSelected.has(id)) { wbSelected.add(id); el.classList.add('wb-selected'); }
         }
@@ -3368,6 +3455,20 @@ function initWbMarquee() {
     _wbMarquee.remove();
     _wbMarquee = null; _wbMqStart = null;
   });
+
+  // Zoom with scroll wheel
+  canvas.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    const rect = canvas.getBoundingClientRect();
+    const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+    const oldZoom = wbZoom;
+    const delta = e.deltaY > 0 ? -0.08 : 0.08;
+    wbZoom = Math.max(0.2, Math.min(3, wbZoom + delta));
+    // Zoom toward cursor
+    wbPan.x = mx - (mx - wbPan.x) * (wbZoom / oldZoom);
+    wbPan.y = my - (my - wbPan.y) * (wbZoom / oldZoom);
+    applyWbTransform();
+  }, { passive: false });
 }
 
 function paintSelectedNotes(bg, color) {
