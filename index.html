@@ -84,6 +84,9 @@ h1, h2, h3, h4, h5, h6, .heading { font-family: 'Oswald', 'Arial Narrow', sans-s
   transition: border-color 0.15s;
 }
 .np-card:hover { border-color: var(--border-hover); }
+.np-card.note-drag-over { border: 2px dashed #FF9F1C; background: rgba(255,159,28,0.08); }
+.np-card[draggable="true"] { cursor: grab; }
+.np-card[draggable="true"]:active { cursor: grabbing; }
 .np-card-header {
   display: flex; align-items: center; justify-content: space-between;
   padding: 6px 10px; border-bottom: 1px solid var(--border); flex-shrink: 0;
@@ -4508,6 +4511,26 @@ function filterNotes(filter, btn) {
   renderNotesPanel();
 }
 
+let _noteDragId = null;
+function noteDragStart(e, id) { _noteDragId = id; e.dataTransfer.effectAllowed = 'move'; e.target.closest('.np-card').style.opacity = '0.4'; }
+function noteDragEnd(e) { e.target.closest('.np-card').style.opacity = '1'; _noteDragId = null; document.querySelectorAll('.np-card.note-drag-over').forEach(el => el.classList.remove('note-drag-over')); }
+function noteDragEnter(e, el) { e.preventDefault(); el.classList.add('note-drag-over'); }
+function noteDragLeave(e, el) { el.classList.remove('note-drag-over'); }
+function noteDragOver(e) { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; }
+function noteDrop(e, targetId) {
+  e.preventDefault();
+  document.querySelectorAll('.np-card.note-drag-over').forEach(el => el.classList.remove('note-drag-over'));
+  if (!_noteDragId || _noteDragId === targetId) return;
+  const notes = STATE.floatingNotes || [];
+  const fromIdx = notes.findIndex(n => n.id === _noteDragId);
+  const toIdx = notes.findIndex(n => n.id === targetId);
+  if (fromIdx < 0 || toIdx < 0) return;
+  const [moved] = notes.splice(fromIdx, 1);
+  notes.splice(toIdx, 0, moved);
+  _noteDragId = null;
+  saveState(); renderNotesPanel();
+}
+
 function renderNotesPanel() {
   const body = document.getElementById('notes-panel-body');
   const countEl = document.getElementById('notes-count');
@@ -4525,7 +4548,7 @@ function renderNotesPanel() {
     const timeStr = t ? t.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + ' ' + t.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : '';
     const accent = tabColors[n.tab] || 'var(--amber)';
     const tabOpts = Object.entries(tabLabels).map(([k,v]) => `<option value="${k}" ${n.tab === k ? 'selected' : ''}>${v}</option>`).join('');
-    return `<div class="np-card" data-note-id="${n.id}" style="border-left-color:${accent};">
+    return `<div class="np-card" data-note-id="${n.id}" style="border-left-color:${accent};" draggable="true" ondragstart="noteDragStart(event,'${n.id}')" ondragend="noteDragEnd(event)" ondragover="noteDragOver(event)" ondragenter="noteDragEnter(event,this)" ondragleave="noteDragLeave(event,this)" ondrop="noteDrop(event,'${n.id}')">
       <div class="np-card-header">
         <div style="display:flex; align-items:center; gap:8px;">
           <select class="np-card-label-select" style="color:${accent}; border-color:${accent};" onchange="changeNoteLabel('${n.id}',this.value)">${tabOpts}</select>
