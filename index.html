@@ -54,10 +54,11 @@ h1, h2, h3, h4, h5, h6, .heading { font-family: 'Oswald', 'Arial Narrow', sans-s
   position: fixed; bottom: 0; left: 0; right: 0; z-index: 900;
   background: var(--card); border-top: 2px solid #FF9F1C;
   box-shadow: 0 -4px 30px rgba(0,0,0,0.4);
-  transition: transform 0.3s var(--ease);
+  transition: transform 0.3s var(--ease), max-height 0.3s var(--ease);
   display: flex; flex-direction: column;
   max-height: 55vh; font-family: 'JetBrains Mono', monospace;
 }
+#notes-panel.notes-expanded { max-height: 80vh; }
 #notes-panel.notes-collapsed { transform: translateY(calc(100% - 40px)); }
 .notes-panel-header {
   display: flex; align-items: center; justify-content: space-between;
@@ -4481,7 +4482,14 @@ let _notesPanelFilter = 'all';
 
 function toggleNotesPanel() {
   const panel = document.getElementById('notes-panel');
-  panel.classList.toggle('notes-collapsed');
+  const isCollapsed = panel.classList.contains('notes-collapsed');
+  if (isCollapsed) {
+    panel.classList.remove('notes-collapsed');
+    panel.classList.add('notes-expanded');
+  } else {
+    panel.classList.add('notes-collapsed');
+    panel.classList.remove('notes-expanded');
+  }
 }
 
 function addPanelNote() {
@@ -4492,7 +4500,7 @@ function addPanelNote() {
   saveState();
   // Expand panel if collapsed
   const panel = document.getElementById('notes-panel');
-  if (panel.classList.contains('notes-collapsed')) panel.classList.remove('notes-collapsed');
+  if (panel.classList.contains('notes-collapsed')) { panel.classList.remove('notes-collapsed'); panel.classList.add('notes-expanded'); }
   renderNotesPanel();
   // Focus the new note's textarea
   requestAnimationFrame(() => {
