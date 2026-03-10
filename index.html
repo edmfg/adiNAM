@@ -49,45 +49,66 @@ h1, h2, h3, h4, h5, h6, .heading { font-family: 'Oswald', 'Arial Narrow', sans-s
 @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
 /* ── FLOATING STICKY NOTES ── */
-.floating-note {
-  position: fixed; z-index: 900; min-width: 180px; width: 280px;
-  background: #001a22; border: 1px solid rgba(0,200,255,0.3); border-radius: 3px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.5); font-family: 'JetBrains Mono', monospace;
-  animation: noteIn 0.2s var(--ease); overflow: hidden;
+/* ── NOTES BOTTOM PANEL ── */
+#notes-panel {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 900;
+  background: var(--card); border-top: 2px solid var(--amber);
+  box-shadow: 0 -4px 30px rgba(0,0,0,0.4);
+  transition: transform 0.3s var(--ease);
+  display: flex; flex-direction: column;
+  max-height: 55vh; font-family: 'JetBrains Mono', monospace;
 }
-.floating-note-resize {
-  position: absolute; bottom: 0; right: 0; width: 16px; height: 16px; cursor: nwse-resize; z-index: 2;
-}
-.floating-note-resize::after {
-  content: ''; position: absolute; bottom: 3px; right: 3px;
-  width: 6px; height: 6px; border-right: 2px solid rgba(255,255,255,0.25); border-bottom: 2px solid rgba(255,255,255,0.25);
-}
-@keyframes noteIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
-.floating-note-header {
+#notes-panel.notes-collapsed { transform: translateY(calc(100% - 40px)); }
+.notes-panel-header {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 6px 8px; cursor: grab; background: rgba(0,200,255,0.1);
-  border-bottom: 1px solid rgba(0,200,255,0.15); user-select: none;
+  padding: 8px 16px; min-height: 40px; cursor: pointer; user-select: none;
+  background: rgba(0,200,255,0.06); border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
 }
-.floating-note-header:active { cursor: grabbing; }
-.floating-note-header span { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--amber); font-weight: 600; }
-.floating-note-close {
-  background: none; border: none; color: #666; font-size: 14px; cursor: pointer;
-  padding: 0 2px; line-height: 1; transition: color 0.15s;
+.notes-panel-header:hover { background: rgba(0,200,255,0.1); }
+.notes-panel-title { font-family: var(--font-heading); font-size: 13px; letter-spacing: 2px; color: var(--amber); display: flex; align-items: center; gap: 10px; }
+.notes-panel-title .notes-count { font-size: 11px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace; letter-spacing: 0; }
+.notes-panel-actions { display: flex; align-items: center; gap: 8px; }
+.notes-panel-toggle { background: none; border: none; color: var(--text-dim); font-size: 14px; cursor: pointer; transition: transform 0.3s; padding: 4px; }
+.notes-collapsed .notes-panel-toggle { transform: rotate(180deg); }
+.notes-panel-body {
+  flex: 1; overflow-y: auto; padding: 12px 16px;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 10px; align-content: start;
 }
-.floating-note-close:hover { color: var(--red); }
-.floating-note-colors { display: flex; gap: 3px; }
-.floating-note-color {
-  width: 12px; height: 12px; border-radius: 2px; border: 1px solid rgba(255,255,255,0.15);
-  cursor: pointer; transition: transform 0.1s;
+.notes-panel-body::-webkit-scrollbar { width: 4px; }
+.notes-panel-body::-webkit-scrollbar-thumb { background: var(--border-hover); border-radius: 2px; }
+.np-card {
+  background: var(--card2); border: 1px solid var(--border); border-radius: 3px;
+  border-left: 3px solid var(--amber); display: flex; flex-direction: column;
+  transition: border-color 0.15s;
 }
-.floating-note-color:hover { transform: scale(1.3); }
-.floating-note textarea {
-  width: 100%; min-height: 60px; padding: 8px; background: transparent;
-  border: none; color: var(--text-light); font-size: 13px; line-height: 1.5;
+.np-card:hover { border-color: var(--border-hover); }
+.np-card-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 6px 10px; border-bottom: 1px solid var(--border); flex-shrink: 0;
+}
+.np-card-tab { font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--amber); font-weight: 600; }
+.np-card-time { font-size: 9px; color: var(--text-dim); }
+.np-card-delete { background: none; border: none; color: var(--text-dim); cursor: pointer; font-size: 13px; padding: 0 2px; line-height: 1; transition: color 0.15s; }
+.np-card-delete:hover { color: var(--red); }
+.np-card textarea {
+  width: 100%; min-height: 48px; padding: 8px 10px; background: transparent;
+  border: none; color: var(--text-light); font-size: 12px; line-height: 1.5;
   resize: none; font-family: 'JetBrains Mono', monospace; display: block;
   box-sizing: border-box; overflow: hidden;
 }
-.floating-note textarea:focus { outline: none; }
+.np-card textarea:focus { outline: none; }
+.np-card textarea::placeholder { color: var(--text-dim); }
+.np-add-btn {
+  border: 1px dashed var(--border); border-radius: 3px; background: none;
+  color: var(--text-dim); cursor: pointer; padding: 18px; font-size: 12px;
+  font-family: 'JetBrains Mono', monospace; transition: all 0.15s;
+  text-align: center; min-height: 80px; display: flex; align-items: center; justify-content: center;
+}
+.np-add-btn:hover { border-color: var(--amber); color: var(--amber); background: rgba(0,200,255,0.03); }
+.np-filter-btn { background: none; border: 1px solid var(--border); border-radius: 3px; color: var(--text-dim); cursor: pointer; padding: 3px 8px; font-size: 10px; font-family: 'JetBrains Mono', monospace; transition: all 0.15s; text-transform: uppercase; letter-spacing: 0.05em; }
+.np-filter-btn:hover, .np-filter-btn.active { border-color: var(--amber); color: var(--amber); }
 
 /* ── REMIX MODAL ── */
 .remix-overlay {
@@ -180,7 +201,7 @@ h1, h2, h3, h4, h5, h6, .heading { font-family: 'Oswald', 'Arial Narrow', sans-s
 /* ── MAIN ── */
 .main { padding-top: calc(var(--nav-h) + 20px); padding-bottom: 40px; }
 .section {
-  display: none; padding: 0 var(--gutter); max-width: var(--max-w); margin: 0 auto;
+  display: none; padding: 0 var(--gutter); padding-bottom: 50px; max-width: var(--max-w); margin: 0 auto;
   animation: sectionIn 0.2s var(--ease);
 }
 .section.active { display: block; }
@@ -449,7 +470,10 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
   background: #f5f3ee !important; color: #2a2520 !important; border-color: #c8c5bf !important;
 }
 .light-mode input::placeholder, .light-mode textarea::placeholder { color: #9a9590 !important; }
-.light-mode .floating-note { background: #ece9e3 !important; }
+.light-mode #notes-panel { background: #f0eee9 !important; border-top-color: #0098cc !important; }
+.light-mode .notes-panel-header { background: rgba(0,152,204,0.06) !important; }
+.light-mode .np-card { background: #f5f3ee !important; }
+.light-mode .np-card textarea { color: #2a2520 !important; }
 .light-mode .search-overlay { background: rgba(232,230,225,0.92) !important; }
 .light-mode .modal-content { background: #f0eee9 !important; border-color: #d0cdc7 !important; }
 .light-mode .comp-card { background: #f0eee9 !important; }
@@ -493,7 +517,6 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
 .light-mode .ccc-thesis-quote { color: #3a3530 !important; }
 .light-mode .ccc-header:hover { background: rgba(0,0,0,0.03) !important; }
 .light-mode #modal-overlay { background: rgba(0,0,0,0.4) !important; }
-.light-mode .fab-note { box-shadow: 0 2px 12px rgba(0,200,255,0.2) !important; }
 .light-mode ::-webkit-scrollbar-track { background: #e8e8e8; }
 .light-mode ::-webkit-scrollbar-thumb { background: #ccc; }
 
@@ -1060,16 +1083,6 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
 .card-note-delete:hover { opacity: 1; color: var(--red); }
 
 /* ── FLOATING ACTION BUTTON ── */
-.fab-note {
-  position: fixed; bottom: 16px; left: 16px; z-index: 1000;
-  width: 44px; height: 44px; border-radius: 4px;
-  background: var(--amber); color: #000; border: none;
-  font-size: 24px; font-weight: 700; line-height: 1;
-  cursor: pointer; transition: all 0.15s var(--ease);
-  box-shadow: 0 2px 12px rgba(0,200,255,0.3);
-  font-family: 'JetBrains Mono', monospace;
-}
-.fab-note:hover { transform: scale(1.1); background: #33d4ff; }
 .fab-container { position: fixed; bottom: 12px; left: 12px; z-index: 1000; }
 .fab-main {
   width: 40px; height: 40px; border-radius: 2px; background: var(--amber);
@@ -1231,11 +1244,9 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
   .accordion-header { padding: 10px; }
 
   /* Floating notes */
-  .floating-note { width: 200px !important; }
 
 
   /* FAB */
-  .fab-note { width: 36px; height: 36px; font-size: 18px; bottom: 12px; right: 12px; }
 
   /* Persona info */
   .persona-strip { flex-direction: column; }
@@ -2146,8 +2157,28 @@ if (sessionStorage.getItem('ygt_auth') === '1') {
 
 </div><!-- /main -->
 
-<!-- FLOATING NOTE BUTTON -->
-<button class="fab-note" onclick="addFloatingNote()" title="Add sticky note">+</button>
+<!-- NOTES BOTTOM PANEL -->
+<div id="notes-panel" class="notes-collapsed">
+  <div class="notes-panel-header" onclick="toggleNotesPanel()">
+    <div class="notes-panel-title">
+      NOTES <span class="notes-count" id="notes-count"></span>
+      <div style="display:flex; gap:4px; margin-left:8px;" onclick="event.stopPropagation()">
+        <button class="np-filter-btn active" data-nf="all" onclick="filterNotes('all',this)">All</button>
+        <button class="np-filter-btn" data-nf="conditions" onclick="filterNotes('conditions',this)">Conditions</button>
+        <button class="np-filter-btn" data-nf="journey" onclick="filterNotes('journey',this)">Journey</button>
+        <button class="np-filter-btn" data-nf="competitive" onclick="filterNotes('competitive',this)">Competitive</button>
+        <button class="np-filter-btn" data-nf="strategy" onclick="filterNotes('strategy',this)">Strategy</button>
+        <button class="np-filter-btn" data-nf="narrative" onclick="filterNotes('narrative',this)">Narrative</button>
+        <button class="np-filter-btn" data-nf="whiteboard" onclick="filterNotes('whiteboard',this)">Whiteboard</button>
+      </div>
+    </div>
+    <div class="notes-panel-actions">
+      <button class="btn btn-sm" onclick="event.stopPropagation(); addPanelNote()" style="font-size:11px; padding:3px 10px;">+ Note</button>
+      <button class="notes-panel-toggle">&#9650;</button>
+    </div>
+  </div>
+  <div class="notes-panel-body" id="notes-panel-body"></div>
+</div>
 
 <!-- MODAL -->
 <!-- GLOBAL SEARCH -->
@@ -2544,12 +2575,7 @@ function getCurrentTab() {
 }
 
 function showFloatingNotesForTab(tab) {
-  document.querySelectorAll('.floating-note').forEach(el => {
-    const note = (STATE.floatingNotes || []).find(n => n.id === el.id);
-    if (note) {
-      el.style.display = (note.tab === tab) ? '' : 'none';
-    }
-  });
+  // Notes panel doesn't need per-tab visibility — it has its own filter
 }
 
 
@@ -4412,97 +4438,35 @@ function exportAsJpeg() {
   });
 }
 
-// ==================== FLOATING STICKY NOTES ====================
-const NOTE_COLORS = [
-  { name: 'cyan', bg: '#001a22', border: 'rgba(0,200,255,0.3)', headerBg: 'rgba(0,200,255,0.1)' },
-  { name: 'green', bg: '#001a0a', border: 'rgba(0,210,106,0.3)', headerBg: 'rgba(0,210,106,0.1)' },
-  { name: 'blue', bg: '#001020', border: 'rgba(74,158,255,0.3)', headerBg: 'rgba(74,158,255,0.1)' },
-  { name: 'red', bg: '#1a0505', border: 'rgba(255,68,68,0.3)', headerBg: 'rgba(255,68,68,0.1)' },
-  { name: 'purple', bg: '#120520', border: 'rgba(160,80,255,0.3)', headerBg: 'rgba(160,80,255,0.1)' }
-];
+// ==================== NOTES PANEL ====================
+let _notesPanelFilter = 'all';
 
-function addFloatingNote() {
-  const id = 'fn_' + Date.now();
-  const x = 200 + Math.random() * 300;
-  const y = 150 + Math.random() * 200;
+function toggleNotesPanel() {
+  const panel = document.getElementById('notes-panel');
+  panel.classList.toggle('notes-collapsed');
+}
+
+function addPanelNote() {
+  if (!STATE.floatingNotes) STATE.floatingNotes = [];
   const tab = getCurrentTab();
-  const note = { id, text: '', x, y, color: 0, tab: tab };
+  const note = { id: 'fn_' + Date.now(), text: '', tab, created: Date.now() };
   STATE.floatingNotes.push(note);
-  renderFloatingNote(note);
   saveState();
-}
-
-function renderFloatingNote(note) {
-  const c = NOTE_COLORS[note.color || 0];
-  const el = document.createElement('div');
-  el.className = 'floating-note';
-  el.id = note.id;
-  el.style.left = note.x + 'px';
-  el.style.top = note.y + 'px';
-  if (note.w) el.style.width = note.w + 'px';
-  el.style.background = c.bg;
-  el.style.borderColor = c.border;
-
-  const colorBtns = NOTE_COLORS.map((nc, i) =>
-    `<div class="floating-note-color" data-ci="${i}" style="background:${nc.border.replace(',0.3)',',0.8)')};" onclick="changeNoteColor('${note.id}',${i})"></div>`
-  ).join('');
-
-  el.innerHTML = `
-    <div class="floating-note-header" style="background:${c.headerBg}" onmousedown="startDragNote(event,'${note.id}')">
-      <span>NOTE</span>
-      <div style="display:flex;align-items:center;gap:6px;">
-        <div class="floating-note-colors">${colorBtns}</div>
-        <button class="floating-note-close" onclick="deleteFloatingNote('${note.id}')">&times;</button>
-      </div>
-    </div>
-    <textarea placeholder="Type here...">${note.text || ''}</textarea>
-    <div class="floating-note-resize" onmousedown="startResizeFloatingNote(event,'${note.id}')"></div>
-  `;
-  document.body.appendChild(el);
-  const ta = el.querySelector('textarea');
-  ta.addEventListener('input', function() {
-    updateNoteText(note.id, this.value);
-    autoResizeFloatingNote(el, this);
+  // Expand panel if collapsed
+  const panel = document.getElementById('notes-panel');
+  if (panel.classList.contains('notes-collapsed')) panel.classList.remove('notes-collapsed');
+  renderNotesPanel();
+  // Focus the new note's textarea
+  requestAnimationFrame(() => {
+    const ta = document.querySelector(`[data-note-id="${note.id}"] textarea`);
+    if (ta) ta.focus();
   });
-  // Auto-size on render
-  requestAnimationFrame(() => autoResizeFloatingNote(el, ta));
-  ta.focus();
 }
 
-function autoResizeFloatingNote(el, ta) {
-  ta.style.height = 'auto';
-  const needed = Math.max(60, ta.scrollHeight);
-  ta.style.height = needed + 'px';
-}
-
-let _fnResize = null, _fnRsx, _fnRsy, _fnRw;
-function startResizeFloatingNote(e, id) {
-  e.preventDefault(); e.stopPropagation();
-  const el = document.getElementById(id);
-  if (!el) return;
-  _fnResize = { id, el };
-  _fnRsx = e.clientX; _fnRsy = e.clientY;
-  _fnRw = el.offsetWidth;
-}
-document.addEventListener('mousemove', (e) => {
-  if (!_fnResize) return;
-  const dw = e.clientX - _fnRsx;
-  const newW = Math.max(180, _fnRw + dw);
-  _fnResize.el.style.width = newW + 'px';
-  const ta = _fnResize.el.querySelector('textarea');
-  if (ta) autoResizeFloatingNote(_fnResize.el, ta);
-});
-document.addEventListener('mouseup', () => {
-  if (!_fnResize) return;
-  const note = STATE.floatingNotes.find(n => n.id === _fnResize.id);
-  if (note) { note.w = _fnResize.el.offsetWidth; saveState(); }
-  _fnResize = null;
-});
-
-function renderAllFloatingNotes() {
-  document.querySelectorAll('.floating-note').forEach(el => el.remove());
-  (STATE.floatingNotes || []).forEach(n => renderFloatingNote(n));
-  showFloatingNotesForTab(getCurrentTab());
+function deleteNote(id) {
+  STATE.floatingNotes = STATE.floatingNotes.filter(n => n.id !== id);
+  saveState();
+  renderNotesPanel();
 }
 
 function updateNoteText(id, text) {
@@ -4510,60 +4474,55 @@ function updateNoteText(id, text) {
   if (note) { note.text = text; saveState(); }
 }
 
-function deleteFloatingNote(id) {
-  STATE.floatingNotes = STATE.floatingNotes.filter(n => n.id !== id);
-  const el = document.getElementById(id);
-  if (el) el.remove();
-  saveState();
+function filterNotes(filter, btn) {
+  _notesPanelFilter = filter;
+  document.querySelectorAll('.np-filter-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderNotesPanel();
 }
 
-function changeNoteColor(id, ci) {
-  const note = STATE.floatingNotes.find(n => n.id === id);
-  if (!note) return;
-  note.color = ci;
-  const c = NOTE_COLORS[ci];
-  const el = document.getElementById(id);
-  if (el) {
-    el.style.background = c.bg;
-    el.style.borderColor = c.border;
-    el.querySelector('.floating-note-header').style.background = c.headerBg;
-  }
-  saveState();
+function renderNotesPanel() {
+  const body = document.getElementById('notes-panel-body');
+  const countEl = document.getElementById('notes-count');
+  if (!body) return;
+  const notes = (STATE.floatingNotes || []);
+  const filtered = _notesPanelFilter === 'all' ? notes : notes.filter(n => n.tab === _notesPanelFilter);
+
+  if (countEl) countEl.textContent = notes.length > 0 ? '(' + notes.length + ')' : '';
+
+  const tabLabels = { conditions: 'Conditions', journey: 'Journey', competitive: 'Competitive', strategy: 'Strategy', narrative: 'Narrative', whiteboard: 'Whiteboard' };
+  const tabColors = { conditions: 'var(--amber)', journey: '#FF45A0', competitive: 'var(--green)', strategy: 'var(--blue)', narrative: 'var(--amber)', whiteboard: 'var(--green)' };
+
+  body.innerHTML = filtered.map(n => {
+    const t = n.created ? new Date(n.created) : null;
+    const timeStr = t ? t.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + ' ' + t.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : '';
+    const accent = tabColors[n.tab] || 'var(--amber)';
+    return `<div class="np-card" data-note-id="${n.id}" style="border-left-color:${accent};">
+      <div class="np-card-header">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span class="np-card-tab" style="color:${accent};">${tabLabels[n.tab] || n.tab || 'Note'}</span>
+          <span class="np-card-time">${timeStr}</span>
+        </div>
+        <button class="np-card-delete" onclick="deleteNote('${n.id}')" title="Delete note">&times;</button>
+      </div>
+      <textarea placeholder="Type your note..." oninput="updateNoteText('${n.id}',this.value); autoSizeNoteCard(this);">${escHtml(n.text || '')}</textarea>
+    </div>`;
+  }).join('') + `<button class="np-add-btn" onclick="addPanelNote()">+ Add Note</button>`;
+
+  // Auto-size all textareas
+  requestAnimationFrame(() => {
+    body.querySelectorAll('.np-card textarea').forEach(ta => autoSizeNoteCard(ta));
+  });
 }
 
-let dragNote = null, dragOff = { x: 0, y: 0 };
-function startDragNote(e, id) {
-  e.preventDefault();
-  dragNote = id;
-  const el = document.getElementById(id);
-  const rect = el.getBoundingClientRect();
-  dragOff.x = e.clientX - rect.left;
-  dragOff.y = e.clientY - rect.top;
+function autoSizeNoteCard(ta) {
+  ta.style.height = 'auto';
+  ta.style.height = Math.max(48, ta.scrollHeight) + 'px';
 }
-document.addEventListener('mousemove', e => {
-  if (!dragNote) return;
-  const el = document.getElementById(dragNote);
-  if (!el) return;
-  const x = e.clientX - dragOff.x;
-  const y = e.clientY - dragOff.y;
-  el.style.left = x + 'px';
-  el.style.top = y + 'px';
-});
-document.addEventListener('mouseup', () => {
-  if (!dragNote) return;
-  const el = document.getElementById(dragNote);
-  if (el) {
-    const note = STATE.floatingNotes.find(n => n.id === dragNote);
-    if (note) {
-      note.x = parseInt(el.style.left);
-      note.y = parseInt(el.style.top);
-      saveState();
-    }
-  }
-  dragNote = null;
-});
 
-renderAllFloatingNotes();
+// Remove old floating notes from DOM if any exist
+document.querySelectorAll('.floating-note').forEach(el => el.remove());
+renderNotesPanel();
 
 // ==================== REMIX JOURNEY ====================
 const REMIX_PRESETS = [
