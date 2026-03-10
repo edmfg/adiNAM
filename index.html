@@ -134,6 +134,38 @@ h1, h2, h3, h4, h5, h6, .heading { font-family: 'Oswald', 'Arial Narrow', sans-s
   content: ''; position: absolute; bottom: 0; left: 0; right: 0;
   height: 2px; background: var(--amber); border-radius: 0;
 }
+/* ── Per-tab nav colors ── */
+.nav-tab[data-tab="conditions"].active { color: #00C8FF; background: rgba(0,200,255,0.08); }
+.nav-tab[data-tab="conditions"].active::after { background: #00C8FF; }
+.nav-tab[data-tab="conditions"]:hover { color: #00C8FF; }
+
+.nav-tab[data-tab="journey"].active { color: #FF45A0; background: rgba(255,69,160,0.08); }
+.nav-tab[data-tab="journey"].active::after { background: #FF45A0; }
+.nav-tab[data-tab="journey"]:hover { color: #FF45A0; }
+
+.nav-tab[data-tab="competitive"].active { color: #ff6b35; background: rgba(255,107,53,0.08); }
+.nav-tab[data-tab="competitive"].active::after { background: #ff6b35; }
+.nav-tab[data-tab="competitive"]:hover { color: #ff6b35; }
+
+.nav-tab[data-tab="whiteboard"].active { color: #39FF14; background: rgba(57,255,20,0.08); }
+.nav-tab[data-tab="whiteboard"].active::after { background: #39FF14; }
+.nav-tab[data-tab="whiteboard"]:hover { color: #39FF14; }
+
+.nav-tab[data-tab="strategy"].active { color: #a050ff; background: rgba(160,80,255,0.08); }
+.nav-tab[data-tab="strategy"].active::after { background: #a050ff; }
+.nav-tab[data-tab="strategy"]:hover { color: #a050ff; }
+
+.nav-tab[data-tab="narrative"].active { color: #FFD700; background: rgba(255,215,0,0.08); }
+.nav-tab[data-tab="narrative"].active::after { background: #FFD700; }
+.nav-tab[data-tab="narrative"]:hover { color: #FFD700; }
+
+/* ── Per-section accent override ── */
+#section-conditions { --amber: #00C8FF; }
+#section-journey { --amber: #FF45A0; }
+#section-competitive { --amber: #ff6b35; }
+#section-whiteboard { --amber: #39FF14; }
+#section-strategy { --amber: #a050ff; }
+#section-narrative { --amber: #FFD700; }
 
 /* ── MAIN ── */
 .main { padding-top: calc(var(--nav-h) + 20px); padding-bottom: 40px; }
@@ -148,7 +180,12 @@ h1, h2, h3, h4, h5, h6, .heading { font-family: 'Oswald', 'Arial Narrow', sans-s
 }
 
 /* ── SECTION HEADERS ── */
-.section-header { margin-bottom: 20px; border-left: 3px solid var(--amber); padding-left: 12px; }
+.section-header { margin-bottom: 20px; border-left: 3px solid var(--amber); padding-left: 12px; position: relative; }
+.cloud-sync-note {
+  position: absolute; top: 2px; right: 0;
+  font-size: 9px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.03em; opacity: 0.6;
+}
 .section-header h2 {
   font-size: 28px; font-weight: 700; line-height: 1; color: var(--amber);
   margin-bottom: 4px; letter-spacing: 0.06em;
@@ -466,6 +503,15 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
   margin-bottom: 6px; transition: all 0.15s var(--ease);
   animation: noteIn 0.15s var(--ease); cursor: grab;
 }
+.todo-drag-handle {
+  display: flex; flex-direction: column; gap: 2px; cursor: grab; padding: 4px 2px; opacity: 0.3; flex-shrink: 0;
+}
+.todo-drag-handle::before, .todo-drag-handle::after {
+  content: ''; display: block; width: 8px; height: 2px;
+  background: currentColor; border-radius: 1px;
+}
+.todo-drag-handle span { display: block; width: 8px; height: 2px; background: currentColor; border-radius: 1px; }
+.todo-item:hover .todo-drag-handle { opacity: 0.7; }
 .todo-item:hover { border-color: var(--border-hover); }
 .todo-item.todo-dragging { opacity: 0.4; cursor: grabbing; }
 .todo-item.todo-drag-over { border-top: 2px solid var(--amber); margin-top: -2px; }
@@ -530,6 +576,8 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
 .comp-growth { font-size: 11px; font-weight: 600; }
 .comp-growth.positive { color: var(--green); }
 .comp-growth.negative { color: var(--red); }
+.comp-stock { font-size: 10px; color: var(--text-dim); margin-top: 4px; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.02em; }
+.comp-stock span { color: var(--text-mid); }
 .comp-divider { border: none; border-top: 1px solid var(--border); margin: 10px 0; }
 .comp-takeaway {
   background: var(--card); border: 1px solid var(--amber); border-radius: 3px;
@@ -548,19 +596,31 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
 }
 .sticky-note {
   position: absolute; width: 180px; min-height: 110px;
-  padding: 12px; border-radius: 2px; cursor: move; user-select: none;
+  padding: 12px 12px 20px 12px; border-radius: 2px; cursor: move; user-select: none;
   font-size: 11px; line-height: 1.5;
   box-shadow: 0 4px 16px rgba(0,0,0,0.5);
   transition: box-shadow 0.2s var(--ease);
 }
 .sticky-note:hover { box-shadow: 0 6px 24px rgba(0,0,0,0.6); }
 .sticky-note.wb-selected { outline: 3px solid #fff; outline-offset: 2px; box-shadow: 0 0 12px rgba(255,255,255,0.3); }
+.sticky-note .note-resize {
+  position: absolute; bottom: 0; right: 0; width: 18px; height: 18px;
+  cursor: nwse-resize; opacity: 0; z-index: 10; transition: opacity 0.15s;
+}
+.sticky-note .note-resize::before,
+.sticky-note .note-resize::after {
+  content: ''; position: absolute; background: currentColor; opacity: 0.4;
+  height: 1px; transform: rotate(-45deg);
+}
+.sticky-note .note-resize::before { width: 12px; bottom: 5px; right: 1px; }
+.sticky-note .note-resize::after { width: 8px; bottom: 3px; right: 1px; }
+.sticky-note:hover .note-resize { opacity: 1; }
 .sticky-note .note-toolbar { display:none; }
 .sticky-note .note-bold-btn { display:none; }
 .sticky-note .note-content { outline: none; min-height: 50px; }
-.sticky-note .note-actions { display: flex; gap: 4px; margin-top: 8px; }
-.sticky-note .note-delete { background: none; border: none; color: rgba(0,0,0,0.3); cursor: pointer; font-size: 14px; transition: color 0.2s; }
-.sticky-note .note-delete:hover { color: rgba(0,0,0,0.6); }
+.sticky-note .note-actions { position: absolute; top: 4px; right: 4px; }
+.sticky-note .note-delete { background: none; border: none; color: rgba(0,0,0,0.25); cursor: pointer; font-size: 16px; line-height: 1; padding: 2px 4px; transition: color 0.15s; }
+.sticky-note .note-delete:hover { color: rgba(0,0,0,0.7); }
 .wb-select-bar { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
 .wb-select-bar .wb-color-dot { width:22px; height:22px; border-radius:2px; border:2px solid transparent; cursor:pointer; transition:border-color 0.15s; }
 .wb-select-bar .wb-color-dot:hover { border-color:#fff; }
@@ -642,6 +702,16 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
   min-width: 100px;
 }
 .journey-table td[contenteditable]:focus { outline: none; color: var(--amber); background: rgba(0,200,255,0.03); }
+.journey-table td.user-edited { color: var(--green); }
+.journey-table td { position: relative; }
+.journey-cell-revert {
+  position: absolute; top: 2px; right: 2px;
+  background: none; border: none; color: var(--text-dim); cursor: pointer;
+  font-size: 9px; font-family: 'JetBrains Mono', monospace; padding: 1px 4px;
+  opacity: 0; transition: opacity 0.15s; line-height: 1;
+}
+.journey-table td:hover .journey-cell-revert { opacity: 0.6; }
+.journey-cell-revert:hover { opacity: 1 !important; color: var(--red); }
 .journey-table tr:hover td { background: rgba(0,200,255,0.02); }
 .journey-day {
   font-family: 'Oswald', sans-serif; font-size: 12px; font-weight: 600;
@@ -1080,6 +1150,7 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
     onkeydown="if(event.key==='Enter')checkPassword()">
   <button onclick="checkPassword()" style="margin-top:12px; background:#00C8FF; color:#000; border:none; font-family:'Oswald',sans-serif; font-size:14px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; padding:10px 32px; cursor:pointer; border-radius:2px;">Enter</button>
   <div id="password-error" style="margin-top:12px; color:#ff4444; font-size:12px; font-family:'JetBrains Mono',monospace; min-height:16px;"></div>
+  <div style="margin-top:32px; color:#555; font-size:11px; font-family:'JetBrains Mono',monospace; text-align:center;">Ask <a href="mailto:ed.tsue@mediafuturesgroup.com" style="color:var(--amber); text-decoration:none;">ed.tsue@mediafuturesgroup.com</a> for the password</div>
 </div>
 <script>
 function checkPassword() {
@@ -1107,7 +1178,7 @@ if (sessionStorage.getItem('ygt_auth') === '1') {
     YOU GOT THIS
   </div>
   <div class="nav-tabs">
-    <button class="nav-tab active" data-tab="conditions" onclick="switchTab('conditions')">Conditions</button>
+    <button class="nav-tab active" data-tab="conditions" onclick="switchTab('conditions')">NAM Conditions</button>
     <button class="nav-tab" data-tab="journey" onclick="switchTab('journey')">Consumer Journey</button>
     <button class="nav-tab" data-tab="competitive" onclick="switchTab('competitive')">Competitive</button>
     <button class="nav-tab" data-tab="whiteboard" onclick="switchTab('whiteboard')">Whiteboard</button>
@@ -1136,7 +1207,7 @@ if (sessionStorage.getItem('ygt_auth') === '1') {
   <div><span>New Opportunity</span><kbd>O</kbd></div>
   <div><span>Focus Search</span><kbd>F</kbd></div>
   <div><span>Math</span><kbd>G</kbd> then <kbd>M</kbd></div>
-  <div><span>Conditions</span><kbd>G</kbd> then <kbd>C</kbd></div>
+  <div><span>NAM Conditions</span><kbd>G</kbd> then <kbd>C</kbd></div>
   <div><span>Journey</span><kbd>G</kbd> then <kbd>J</kbd></div>
 </div>
 
@@ -1145,7 +1216,7 @@ if (sessionStorage.getItem('ygt_auth') === '1') {
 <!-- ==================== CONDITIONS ==================== -->
 <div class="section active" id="section-conditions">
   <div class="section-header">
-    <h2>Conditions</h2>
+    <h2>NAM Conditions</h2>
     <p>What makes North American sports culture and media unique — and what it means for Adidas.</p>
   </div>
 
@@ -1258,7 +1329,10 @@ if (sessionStorage.getItem('ygt_auth') === '1') {
 
   <!-- Pinned Insights -->
   <div id="pinned-panel" style="display:none;" class="mb-24">
-    <div class="card-label" style="margin-bottom:8px;">Pinned Insights</div>
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; cursor:pointer;" onclick="togglePinnedPanel()">
+      <div class="card-label" style="margin:0;">Pinned Insights <span id="pinned-count" style="opacity:0.5;"></span></div>
+      <span id="pinned-toggle-arrow" style="font-size:10px; color:var(--text-dim); transition:transform 0.2s;">&#9660;</span>
+    </div>
     <div id="pinned-grid" class="pinned-grid"></div>
   </div>
 
@@ -1481,6 +1555,7 @@ if (sessionStorage.getItem('ygt_auth') === '1') {
       <div class="comp-subtitle">Beaverton, OR &middot; NYSE: NKE &middot; FY2025</div>
       <div class="comp-revenue" style="color: #ff6b35;">$46.3B</div>
       <div class="comp-growth negative">-10% YoY &middot; NA: $19.6B</div>
+      <div class="comp-stock">NKE: <span>~$57</span> &middot; 52W H: <span>$80.19</span> &middot; L: <span>$52.28</span></div>
       <hr class="comp-divider">
       <div class="comp-bar-row"><span class="comp-bar-label">Culture</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:90%; background:#ff6b35;"></div></div><span class="comp-bar-val">90</span></div>
       <div class="comp-bar-row"><span class="comp-bar-label">Community</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:65%; background:#ff6b35;"></div></div><span class="comp-bar-val">65</span></div>
@@ -1498,6 +1573,7 @@ if (sessionStorage.getItem('ygt_auth') === '1') {
       <div class="comp-subtitle">Boston, MA &middot; Private &middot; 2025</div>
       <div class="comp-revenue" style="color: #00d26a;">$9.2B</div>
       <div class="comp-growth positive">+19% YoY &middot; Targeting $10B in 2026</div>
+      <div class="comp-stock">Private &middot; No public stock</div>
       <hr class="comp-divider">
       <div class="comp-bar-row"><span class="comp-bar-label">Culture</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:78%; background:#00d26a;"></div></div><span class="comp-bar-val">78</span></div>
       <div class="comp-bar-row"><span class="comp-bar-label">Community</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:82%; background:#00d26a;"></div></div><span class="comp-bar-val">82</span></div>
@@ -1515,6 +1591,7 @@ if (sessionStorage.getItem('ygt_auth') === '1') {
       <div class="comp-subtitle">Zurich, Switzerland &middot; NYSE: ONON &middot; TTM Sept 2025</div>
       <div class="comp-revenue" style="color: #e0e0e0;">$3.4B</div>
       <div class="comp-growth positive">+37% YoY &middot; 3-year CAGR 30%+ &middot; 62.5% gross margin</div>
+      <div class="comp-stock">ONON: <span>~$41</span> &middot; 52W H: <span>$61.29</span> &middot; L: <span>$34.38</span></div>
       <hr class="comp-divider">
       <div class="comp-bar-row"><span class="comp-bar-label">Culture</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:50%; background:#ccc;"></div></div><span class="comp-bar-val">50</span></div>
       <div class="comp-bar-row"><span class="comp-bar-label">Community</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:55%; background:#ccc;"></div></div><span class="comp-bar-val">55</span></div>
@@ -1532,6 +1609,7 @@ if (sessionStorage.getItem('ygt_auth') === '1') {
       <div class="comp-subtitle">Goleta, CA &middot; Deckers Brands (NYSE: DECK) &middot; FY2025</div>
       <div class="comp-revenue" style="color: #4a9eff;">$2.2B</div>
       <div class="comp-growth positive">+24% YoY &middot; Growth decelerating to low-teens FY2026</div>
+      <div class="comp-stock">DECK: <span>~$101</span> &middot; 52W H: <span>$133.43</span> &middot; L: <span>$78.91</span></div>
       <hr class="comp-divider">
       <div class="comp-bar-row"><span class="comp-bar-label">Culture</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:45%; background:#4a9eff;"></div></div><span class="comp-bar-val">45</span></div>
       <div class="comp-bar-row"><span class="comp-bar-label">Community</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:72%; background:#4a9eff;"></div></div><span class="comp-bar-val">72</span></div>
@@ -1549,6 +1627,7 @@ if (sessionStorage.getItem('ygt_auth') === '1') {
       <div class="comp-subtitle">Baltimore, MD &middot; NYSE: UAA &middot; FY2026</div>
       <div class="comp-revenue" style="color: #888;">~$5B</div>
       <div class="comp-growth negative">-4-5% YoY &middot; NA: ~$2.9B (down 8%) &middot; 3rd year of decline</div>
+      <div class="comp-stock">UAA: <span>~$6.12</span> &middot; 52W H: <span>$8.15</span> &middot; L: <span>$4.13</span></div>
       <hr class="comp-divider">
       <div class="comp-bar-row"><span class="comp-bar-label">Culture</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:32%; background:#888;"></div></div><span class="comp-bar-val">32</span></div>
       <div class="comp-bar-row"><span class="comp-bar-label">Community</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:40%; background:#888;"></div></div><span class="comp-bar-val">40</span></div>
@@ -1566,6 +1645,7 @@ if (sessionStorage.getItem('ygt_auth') === '1') {
       <div class="comp-subtitle">Vancouver, BC &middot; NASDAQ: LULU &middot; TTM Oct 2025</div>
       <div class="comp-revenue" style="color: #c080ff;">$11.1B</div>
       <div class="comp-growth positive">+9% YoY &middot; Targeting $12.5B by end of 2026</div>
+      <div class="comp-stock">LULU: <span>~$170</span> &middot; 52W H: <span>$348.50</span> &middot; L: <span>$159.25</span></div>
       <hr class="comp-divider">
       <div class="comp-bar-row"><span class="comp-bar-label">Culture</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:60%; background:#c080ff;"></div></div><span class="comp-bar-val">60</span></div>
       <div class="comp-bar-row"><span class="comp-bar-label">Community</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:75%; background:#c080ff;"></div></div><span class="comp-bar-val">75</span></div>
@@ -1583,6 +1663,7 @@ if (sessionStorage.getItem('ygt_auth') === '1') {
       <div class="comp-subtitle">Herzogenaurach, Germany &middot; ETR: PUM &middot; 2025</div>
       <div class="comp-revenue" style="color: #e6b800;">~$9.5B</div>
       <div class="comp-growth negative">H1 2025 net loss &euro;246.6M &middot; NA sales down 15.2%</div>
+      <div class="comp-stock">PUM (Frankfurt): <span>~&euro;22.40</span> &middot; 52W H: <span>&euro;30.53</span> &middot; L: <span>&euro;15.30</span></div>
       <hr class="comp-divider">
       <div class="comp-bar-row"><span class="comp-bar-label">Culture</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:48%; background:#e6b800;"></div></div><span class="comp-bar-val">48</span></div>
       <div class="comp-bar-row"><span class="comp-bar-label">Community</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:35%; background:#e6b800;"></div></div><span class="comp-bar-val">35</span></div>
@@ -1600,6 +1681,7 @@ if (sessionStorage.getItem('ygt_auth') === '1') {
       <div class="comp-subtitle">Kobe, Japan &middot; TYO: 7936 &middot; FY2025</div>
       <div class="comp-revenue" style="color: #ff4444;">~$4.5B</div>
       <div class="comp-growth positive">+19.5% YoY (record year) &middot; SportStyle up 43.6%</div>
+      <div class="comp-stock">7936 (Tokyo): <span>~&yen;4,373</span> &middot; 52W H: <span>&yen;4,964</span> &middot; L: <span>&yen;2,561</span></div>
       <hr class="comp-divider">
       <div class="comp-bar-row"><span class="comp-bar-label">Culture</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:55%; background:#ff4444;"></div></div><span class="comp-bar-val">55</span></div>
       <div class="comp-bar-row"><span class="comp-bar-label">Community</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:60%; background:#ff4444;"></div></div><span class="comp-bar-val">60</span></div>
@@ -1617,6 +1699,7 @@ if (sessionStorage.getItem('ygt_auth') === '1') {
       <div class="comp-subtitle">Encinitas, CA &middot; Private &middot; 2024-25</div>
       <div class="comp-revenue" style="color: #5ab8a0;">$5.5B valuation</div>
       <div class="comp-growth positive">+23% YoY sales &middot; 85+ stores &middot; $825M funding round</div>
+      <div class="comp-stock">Private &middot; $5.5B valuation (2023)</div>
       <hr class="comp-divider">
       <div class="comp-bar-row"><span class="comp-bar-label">Culture</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:52%; background:#5ab8a0;"></div></div><span class="comp-bar-val">52</span></div>
       <div class="comp-bar-row"><span class="comp-bar-label">Community</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:58%; background:#5ab8a0;"></div></div><span class="comp-bar-val">58</span></div>
@@ -1634,6 +1717,7 @@ if (sessionStorage.getItem('ygt_auth') === '1') {
       <div class="comp-subtitle">Boston, MA &middot; Authentic Brands Group &middot; 2024-25</div>
       <div class="comp-revenue" style="color: #999;">~$5B retail value</div>
       <div class="comp-growth positive">Grew from $1.6B to ~$5B under ABG &middot; Licensing model</div>
+      <div class="comp-stock">Private &middot; Owned by ABG (acquired from Adidas for $2.5B)</div>
       <hr class="comp-divider">
       <div class="comp-bar-row"><span class="comp-bar-label">Culture</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:35%; background:#999;"></div></div><span class="comp-bar-val">35</span></div>
       <div class="comp-bar-row"><span class="comp-bar-label">Community</span><div class="comp-bar-track"><div class="comp-bar-fill" style="width:25%; background:#999;"></div></div><span class="comp-bar-val">25</span></div>
@@ -1803,7 +1887,8 @@ const STATE = {
   theme: 'dark',
   todos: [],
   slides: [],
-  whiteboardLabels: []
+  whiteboardLabels: [],
+  journeyEdits: {}
 };
 
 // ==================== SUPABASE ====================
@@ -2010,6 +2095,90 @@ function navigateSearchResult(tab) {
 }
 
 // ==================== NAV ====================
+// ==================== JOURNEY EDITS ====================
+function getJourneyPersonaKey() {
+  const nameEl = document.querySelector('.persona-info h3');
+  return (nameEl ? nameEl.textContent.trim() : 'default').toLowerCase().replace(/\s+/g, '-');
+}
+
+function initJourneyEdits() {
+  if (!STATE.journeyEdits) STATE.journeyEdits = {};
+  const personaKey = getJourneyPersonaKey();
+  const edits = STATE.journeyEdits[personaKey] || {};
+  const rows = document.querySelectorAll('.journey-table tbody tr');
+  rows.forEach((row, ri) => {
+    const cells = row.querySelectorAll('td[contenteditable]');
+    cells.forEach((cell, ci) => {
+      const key = ri + '-' + ci;
+      // Store original before any edits applied
+      if (!cell.hasAttribute('data-original')) {
+        cell.setAttribute('data-original', cell.textContent);
+      }
+      // Restore saved edits for this persona
+      if (edits[key]) {
+        cell.textContent = edits[key];
+        cell.classList.add('user-edited');
+      }
+      // Remove old listeners by cloning
+      const newCell = cell.cloneNode(true);
+      cell.parentNode.replaceChild(newCell, cell);
+      // Add revert button
+      let revertBtn = newCell.querySelector('.journey-cell-revert');
+      if (!revertBtn) {
+        revertBtn = document.createElement('button');
+        revertBtn.className = 'journey-cell-revert';
+        revertBtn.title = 'Revert to original';
+        revertBtn.textContent = '↩';
+        newCell.appendChild(revertBtn);
+      }
+      revertBtn.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const original = newCell.getAttribute('data-original');
+        if (original != null) {
+          newCell.childNodes.forEach(n => { if (n.nodeType === 3) n.textContent = ''; });
+          // Set text content but keep the button
+          const btn = newCell.querySelector('.journey-cell-revert');
+          newCell.textContent = original;
+          newCell.appendChild(btn);
+          newCell.classList.remove('user-edited');
+          // Remove from saved edits
+          const pk = getJourneyPersonaKey();
+          if (STATE.journeyEdits[pk]) { delete STATE.journeyEdits[pk][key]; }
+          saveState();
+        }
+      });
+      // Save on blur
+      newCell.addEventListener('blur', () => {
+        const original = newCell.getAttribute('data-original');
+        const currentText = Array.from(newCell.childNodes).filter(n => n.nodeType === 3).map(n => n.textContent).join('').trim();
+        if (!STATE.journeyEdits) STATE.journeyEdits = {};
+        const pk = getJourneyPersonaKey();
+        if (!STATE.journeyEdits[pk]) STATE.journeyEdits[pk] = {};
+        STATE.journeyEdits[pk][key] = currentText || newCell.textContent.replace('↩', '').trim();
+        if (currentText !== original) {
+          newCell.classList.add('user-edited');
+        }
+        saveState();
+      });
+    });
+  });
+}
+
+function saveCurrentJourneyEdits() {
+  if (!STATE.journeyEdits) STATE.journeyEdits = {};
+  const personaKey = getJourneyPersonaKey();
+  if (!STATE.journeyEdits[personaKey]) STATE.journeyEdits[personaKey] = {};
+  const rows = document.querySelectorAll('.journey-table tbody tr');
+  rows.forEach((row, ri) => {
+    const cells = row.querySelectorAll('td[contenteditable]');
+    cells.forEach((cell, ci) => {
+      STATE.journeyEdits[personaKey][ri + '-' + ci] = cell.textContent;
+    });
+  });
+  saveState();
+}
+
 function switchTab(tab) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
@@ -2022,6 +2191,7 @@ function switchTab(tab) {
   if (tab === 'conditions') { renderConditions(); }
   if (tab === 'strategy') { renderStrategy(); }
   if (tab === 'whiteboard') { renderWhiteboard(); }
+  if (tab === 'journey') { initJourneyEdits(); }
   showFloatingNotesForTab(tab);
 }
 
@@ -2323,6 +2493,7 @@ function renderTodos() {
 
   list.innerHTML = filtered.map(t => `
     <div class="todo-item ${t.status === 'done' ? 'todo-done' : ''}" data-id="${t.id}" draggable="true" ondragstart="todoDragStart(event,'${t.id}')" ondragover="todoDragOver(event)" ondragenter="todoDragEnter(event,this)" ondragleave="todoDragLeave(event,this)" ondrop="todoDrop(event,'${t.id}')" ondragend="todoDragEnd()">
+      <div class="todo-drag-handle"><span></span></div>
       <button class="todo-check" onclick="cycleTodoStatus('${t.id}')" style="border-color:${statusColors[t.status]}; ${t.status === 'done' ? 'background:var(--green);' : ''}" title="${statusLabels[t.status]}">
         ${t.status === 'done' ? '&#10003;' : t.status === 'in-progress' ? '&#9654;' : ''}
       </button>
@@ -2824,6 +2995,15 @@ function togglePin(id) {
   renderPinned();
 }
 
+let _pinnedCollapsed = false;
+function togglePinnedPanel() {
+  _pinnedCollapsed = !_pinnedCollapsed;
+  const grid = document.getElementById('pinned-grid');
+  const arrow = document.getElementById('pinned-toggle-arrow');
+  if (grid) grid.style.display = _pinnedCollapsed ? 'none' : 'flex';
+  if (arrow) arrow.style.transform = _pinnedCollapsed ? 'rotate(-90deg)' : '';
+}
+
 function renderPinned() {
   const panel = document.getElementById('pinned-panel');
   const grid = document.getElementById('pinned-grid');
@@ -2833,6 +3013,9 @@ function renderPinned() {
     return;
   }
   panel.style.display = 'block';
+  const countEl = document.getElementById('pinned-count');
+  if (countEl) countEl.textContent = '(' + STATE.pinnedInsights.length + ')';
+  if (_pinnedCollapsed) grid.style.display = 'none';
   grid.innerHTML = STATE.pinnedInsights.map(p => {
     const shortText = p.text.length > 100 ? p.text.substring(0, 100) + '...' : p.text;
     return `<div class="pinned-card">
@@ -2977,7 +3160,7 @@ function openStrategyModal(preType) {
     <div class="mb-24"><label>Section Link</label>
       <select id="new-strat-section">
         <option value="">None</option>
-        <option value="conditions">Conditions</option>
+        <option value="conditions">NAM Conditions</option>
         <option value="journey">Journey</option>
         <option value="math">Math</option>
       </select>
@@ -3177,14 +3360,17 @@ function createDraggableNote(note, type) {
   el.setAttribute('data-note-id', note.id);
   // Support HTML content (for bold) — use innerHTML if note has HTML, else escape
   const noteHtml = note.html || escHtml(note.text);
+  if (note.w) el.style.width = note.w + 'px';
+  if (note.h) el.style.height = note.h + 'px';
   el.innerHTML = `<div class="note-toolbar"><button class="note-bold-btn" title="Bold (Ctrl+B)"><b>B</b></button></div>
     <div class="note-content" contenteditable="true">${noteHtml}</div>
-    <div class="note-actions"><button class="note-delete" onclick="deleteNote('${note.id}','${type}')" title="Delete">&times;</button></div>`;
+    <div class="note-actions"><button class="note-delete" onclick="deleteNote('${note.id}','${type}')" title="Delete">&times;</button></div>
+    <div class="note-resize"></div>`;
 
   // Click to select (whiteboard only)
   if (type === 'whiteboard') {
     el.addEventListener('click', (e) => {
-      if (e.target.contentEditable === 'true' || e.target.tagName === 'BUTTON') return;
+      if (e.target.contentEditable === 'true' || e.target.tagName === 'BUTTON' || e.target.classList.contains('note-resize')) return;
       toggleWbSelect(note.id, el);
     });
   }
@@ -3204,8 +3390,9 @@ function createDraggableNote(note, type) {
   content.addEventListener('blur', () => { note.text = content.textContent; note.html = content.innerHTML; saveState(); });
 
   let isDragging = false, startX, startY, origX, origY;
+  // Drag
   el.addEventListener('mousedown', (e) => {
-    if (e.target.contentEditable === 'true' || e.target.tagName === 'BUTTON') return;
+    if (e.target.contentEditable === 'true' || e.target.tagName === 'BUTTON' || e.target.classList.contains('note-resize')) return;
     isDragging = true;
     startX = e.clientX; startY = e.clientY;
     origX = parseInt(el.style.left); origY = parseInt(el.style.top);
@@ -3225,6 +3412,31 @@ function createDraggableNote(note, type) {
     note.y = parseInt(el.style.top);
     saveState();
   });
+
+  // Resize
+  const resizeHandle = el.querySelector('.note-resize');
+  let isResizing = false, rsx, rsy, rw, rh;
+  resizeHandle.addEventListener('mousedown', (e) => {
+    isResizing = true;
+    rsx = e.clientX; rsy = e.clientY;
+    rw = el.offsetWidth; rh = el.offsetHeight;
+    el.style.zIndex = '100';
+    e.preventDefault(); e.stopPropagation();
+  });
+  document.addEventListener('mousemove', (e) => {
+    if (!isResizing) return;
+    el.style.width = Math.max(100, rw + e.clientX - rsx) + 'px';
+    el.style.height = Math.max(60, rh + e.clientY - rsy) + 'px';
+  });
+  document.addEventListener('mouseup', () => {
+    if (!isResizing) return;
+    isResizing = false;
+    el.style.zIndex = '';
+    note.w = parseInt(el.style.width);
+    note.h = parseInt(el.style.height);
+    saveState();
+  });
+
   return el;
 }
 
@@ -3320,6 +3532,13 @@ function escAttr(str) { return str.replace(/"/g, '&quot;').replace(/'/g, '&#39;'
 
 // ==================== INIT ====================
 document.addEventListener('DOMContentLoaded', () => {
+  // Add cloud-sync note to all section headers
+  document.querySelectorAll('.section-header').forEach(h => {
+    const note = document.createElement('div');
+    note.className = 'cloud-sync-note';
+    note.textContent = '☁ Cloud-synced — everyone can see everyone\u2019s notes';
+    h.appendChild(note);
+  });
   renderConditions();
   renderPinned();
   renderStrategy();
@@ -3716,6 +3935,8 @@ function closeRemixModal() {
 }
 
 function applyRemixPreset(i) {
+  // Save current journey edits before switching persona
+  saveCurrentJourneyEdits();
   const p = REMIX_PRESETS[i];
   document.getElementById('remix-name').value = p.persona;
   document.getElementById('remix-age').value = p.age;
@@ -3774,6 +3995,8 @@ function applyRemix() {
   }
 
   closeRemixModal();
+  // Re-init journey edits for the new persona (restores any saved edits)
+  setTimeout(() => initJourneyEdits(), 100);
 }
 </script>
 </body>
