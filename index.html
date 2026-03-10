@@ -478,7 +478,8 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
 .todo-check:hover { border-color: var(--amber); }
 .todo-text-input {
   flex: 1; background: none; border: none; color: var(--text-light);
-  font-size: 14px; font-family: 'JetBrains Mono', monospace; padding: 4px 0;
+  font-size: 13px; font-family: 'JetBrains Mono', monospace; padding: 4px 0;
+  resize: none; overflow: hidden; min-height: 20px; line-height: 1.4;
 }
 .todo-text-input:focus { outline: none; color: var(--amber); }
 .todo-text-input::placeholder { color: var(--text-dim); }
@@ -981,6 +982,33 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
 </style>
 </head>
 <body>
+
+<!-- PASSWORD GATE -->
+<div id="password-gate" style="position:fixed; inset:0; z-index:99999; background:#000; display:flex; align-items:center; justify-content:center; flex-direction:column;">
+  <img src="689347.jpg" alt="Adidas" style="height:40px; filter:invert(1); margin-bottom:24px;">
+  <div style="font-family:'Oswald',sans-serif; font-size:32px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#00C8FF; margin-bottom:24px;">YOU GOT THIS</div>
+  <input id="password-input" type="password" placeholder="ENTER PASSWORD" autofocus
+    style="background:#111; border:1px solid #333; color:#fff; font-family:'Oswald',sans-serif; font-size:16px; text-transform:uppercase; letter-spacing:0.1em; padding:12px 20px; width:280px; text-align:center; border-radius:2px;"
+    onkeydown="if(event.key==='Enter')checkPassword()">
+  <button onclick="checkPassword()" style="margin-top:12px; background:#00C8FF; color:#000; border:none; font-family:'Oswald',sans-serif; font-size:14px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; padding:10px 32px; cursor:pointer; border-radius:2px;">Enter</button>
+  <div id="password-error" style="margin-top:12px; color:#ff4444; font-size:12px; font-family:'JetBrains Mono',monospace; min-height:16px;"></div>
+</div>
+<script>
+function checkPassword() {
+  const input = document.getElementById('password-input');
+  if (input.value === 'FTW') {
+    document.getElementById('password-gate').style.display = 'none';
+    sessionStorage.setItem('ygt_auth', '1');
+  } else {
+    document.getElementById('password-error').textContent = 'WRONG PASSWORD';
+    input.value = '';
+    input.focus();
+  }
+}
+if (sessionStorage.getItem('ygt_auth') === '1') {
+  document.getElementById('password-gate').style.display = 'none';
+}
+</script>
 
 <!-- STATUS BAR -->
 
@@ -1620,7 +1648,7 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
       <div class="canvas-area" id="whiteboard-canvas"></div>
     </div>
     <!-- Collapsible To-Do Panel -->
-    <div id="wb-todo-panel" style="width:320px; flex-shrink:0; transition:width 0.3s var(--ease), opacity 0.3s;">
+    <div id="wb-todo-panel" style="width:400px; flex-shrink:0; transition:width 0.3s var(--ease), opacity 0.3s;">
       <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
         <span style="font-family:'Oswald',sans-serif; font-size:16px; text-transform:uppercase; letter-spacing:0.08em; color:var(--amber);">Tasks</span>
         <div style="display:flex; gap:6px; align-items:center;">
@@ -2088,7 +2116,7 @@ function toggleTodoPanel() {
   if (!panel) return;
   const isCollapsed = panel.style.width === '40px';
   if (isCollapsed) {
-    panel.style.width = '320px';
+    panel.style.width = '400px';
     inner.style.display = '';
     btn.innerHTML = '&#9654;';
   } else {
@@ -2182,7 +2210,7 @@ function renderTodos() {
       <button class="todo-check" onclick="cycleTodoStatus('${t.id}')" style="border-color:${statusColors[t.status]}; ${t.status === 'done' ? 'background:var(--green);' : ''}" title="${statusLabels[t.status]}">
         ${t.status === 'done' ? '&#10003;' : t.status === 'in-progress' ? '&#9654;' : ''}
       </button>
-      <input type="text" class="todo-text-input" value="${escHtml(t.text)}" placeholder="Task description..." onblur="updateTodoText('${t.id}',this.value)">
+      <textarea class="todo-text-input" rows="1" placeholder="Task description..." onblur="updateTodoText('${t.id}',this.value)" oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'">${escHtml(t.text)}</textarea>
       <button class="todo-priority" onclick="cycleTodoPriority('${t.id}')" style="color:${priorityColors[t.priority]}; border-color:${priorityColors[t.priority]};" title="Priority: ${t.priority}">${t.priority.toUpperCase()}</button>
       <button class="todo-delete" onclick="deleteTodo('${t.id}')" title="Delete">&times;</button>
     </div>
