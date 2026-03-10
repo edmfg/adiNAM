@@ -761,36 +761,8 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
 ::-webkit-scrollbar-thumb:hover { background: var(--amber); }
 
 /* ── HERO ── */
-.hero { text-align: center; padding: 20px 0; }
-.hero h1 {
-  font-size: 36px; font-weight: 700; line-height: 1; margin-bottom: 8px;
-  color: var(--amber); -webkit-text-fill-color: var(--amber); background: none; background-clip: unset;
-}
-.hero p {
-  font-size: 10px; color: var(--text-dim); text-transform: uppercase;
-  letter-spacing: 0.2em; font-family: 'JetBrains Mono', monospace; font-weight: 500;
-}
 
 /* ── KEYBOARD HINT ── */
-.kb-hint {
-  position: fixed; bottom: 12px; right: 12px;
-  background: var(--card); border: 1px solid var(--border); border-radius: 2px;
-  padding: 4px 10px; font-size: 9px; color: var(--text-dim); z-index: 999;
-  cursor: pointer; transition: all 0.15s var(--ease); font-family: 'JetBrains Mono', monospace;
-}
-.kb-hint:hover { color: var(--amber); border-color: var(--amber); }
-.kb-panel {
-  position: fixed; bottom: 36px; right: 12px;
-  background: var(--card); border: 1px solid var(--amber); border-radius: 2px;
-  padding: 14px; z-index: 1001; display: none; width: 240px; font-size: 10px;
-  font-family: 'JetBrains Mono', monospace;
-}
-.kb-panel.show { display: block; }
-.kb-panel div { display: flex; justify-content: space-between; padding: 3px 0; color: var(--text-mid); }
-.kb-panel kbd {
-  background: #1a1a1a; border: 1px solid var(--border); border-radius: 2px;
-  padding: 1px 6px; font-size: 10px; font-family: 'JetBrains Mono', monospace; color: var(--amber);
-}
 
 /* ── ACCORDION ── */
 .accordion { margin-bottom: 4px; }
@@ -835,8 +807,6 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
 .sub-panel { display: none; }
 .sub-panel.active { display: block; animation: sectionIn 0.2s var(--ease); }
 
-/* ── EXPAND BUTTON for Journey ── */
-.expand-row { display: none; }
 .journey-table tr.expandable { cursor: pointer; }
 .journey-table tr.expandable:hover .journey-day { color: var(--green); }
 
@@ -1144,8 +1114,6 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
   /* Floating notes */
   .floating-note { width: 200px !important; }
 
-  /* Keyboard hints - hide on mobile */
-  .kb-hint, .kb-panel { display: none !important; }
 
   /* FAB */
   .fab-note { width: 36px; height: 36px; font-size: 18px; bottom: 12px; right: 12px; }
@@ -1224,17 +1192,6 @@ if (sessionStorage.getItem('ygt_auth') === '1') {
   </div>
 </nav>
 
-<!-- KEYBOARD HINT -->
-<div class="kb-hint" id="kbHint" onclick="document.getElementById('kbPanel').classList.toggle('show')">? Shortcuts</div>
-<div class="kb-panel" id="kbPanel">
-  <div><span>New Insight</span><kbd>I</kbd></div>
-  <div><span>New Tension</span><kbd>T</kbd></div>
-  <div><span>New Opportunity</span><kbd>O</kbd></div>
-  <div><span>Focus Search</span><kbd>F</kbd></div>
-  <div><span>Math</span><kbd>G</kbd> then <kbd>M</kbd></div>
-  <div><span>NAM Conditions</span><kbd>G</kbd> then <kbd>C</kbd></div>
-  <div><span>Journey</span><kbd>G</kbd> then <kbd>J</kbd></div>
-</div>
 
 <div class="main">
 
@@ -1338,7 +1295,8 @@ if (sessionStorage.getItem('ygt_auth') === '1') {
   </div>
 
   <!-- Filter Bar -->
-  <div class="filter-bar" id="conditions-filter" style="align-items:center;">
+  <div class="filter-bar" id="conditions-filter" style="align-items:center; flex-wrap:wrap;">
+    <button class="btn btn-sm btn-fill" onclick="openAddConditionModal()" style="font-size:10px; padding:4px 10px; margin-right:8px;">+ Add Card</button>
     <button class="filter-btn active" data-filter="all" onclick="filterConditions('all',this)">All</button>
     <button class="filter-btn" data-filter="sports-system" onclick="filterConditions('sports-system',this)">Sports System</button>
     <button class="filter-btn" data-filter="media" onclick="filterConditions('media',this)">Media Landscape</button>
@@ -1918,7 +1876,8 @@ const STATE = {
   todos: [],
   slides: [],
   whiteboardLabels: [],
-  journeyEdits: {}
+  journeyEdits: {},
+  userConditions: []
 };
 
 // ==================== SUPABASE ====================
@@ -2292,27 +2251,8 @@ function toggleAccordion(header) {
 }
 
 // ==================== KEYBOARD SHORTCUTS ====================
-let gPressed = false;
-let gTimeout = null;
 document.addEventListener('keydown', (e) => {
-  const tag = e.target.tagName;
-  if (tag === 'INPUT' || tag === 'TEXTAREA' || e.target.contentEditable === 'true') return;
-  if (e.key === 'g' || e.key === 'G') { gPressed = true; clearTimeout(gTimeout); gTimeout = setTimeout(() => gPressed = false, 1000); return; }
-  if (gPressed) {
-    gPressed = false;
-    if (e.key === 'm' || e.key === 'M') { switchTab('todo'); e.preventDefault(); }
-    if (e.key === 'c' || e.key === 'C') { switchTab('conditions'); e.preventDefault(); }
-    if (e.key === 'j' || e.key === 'J') { switchTab('journey'); e.preventDefault(); }
-    return;
-  }
-  if (e.key === 'i' || e.key === 'I') { openStrategyModal('insight'); e.preventDefault(); }
-  if (e.key === 't' && !e.ctrlKey && !e.metaKey) { openStrategyModal('tension'); e.preventDefault(); }
-  if (e.key === 'o' || e.key === 'O') { openStrategyModal('opportunity'); e.preventDefault(); }
-  if (e.key === 'f' || e.key === 'F') {
-    openGlobalSearch();
-    e.preventDefault();
-  }
-  if (e.key === 'Escape') { closeGlobalSearch(); closeModal(); document.getElementById('kbPanel').classList.remove('show'); }
+  if (e.key === 'Escape') { closeGlobalSearch(); closeModal(); }
 });
 
 // ==================== AI CARDS ====================
@@ -2596,7 +2536,7 @@ function renderTodos() {
 
 // ==================== CONDITIONS ====================
 function getConditionsData() {
-  return [
+  let cards = [
     { id: 'c1', text: 'U.S. High School Football: ~1.03M participants in 2024-25, largest boys\' sport', theme: 'Sports System', themeKey: 'sports-system', source: 'NFHS Survey 2024-25', connections: ['strategy','journey'], link: 'https://www.nfhs.org/articles/high-school-sports-participation-increases-for-fifth-consecutive-year/', implication: 'Massive teamwear + training addressable market — Adidas can own the youth football equipment pipeline.', viz: { type: 'bar', value: 1.03, max: 8.27, label: '% of total HS sports', color: 'var(--green)' }, ccc: ['culture','community'] },
     { id: 'c2', text: 'Texas UIL football championships drew 191,815 attendees at AT&T Stadium in 2025', theme: 'Sports System', themeKey: 'sports-system', source: 'UIL / Texas Athletics', connections: ['strategy'], link: 'https://www.uiltexas.org/football', implication: 'State championship scale = professional-level live entertainment. Adidas should be present at these cultural events.', ccc: ['culture'] },
     { id: 'c3', text: 'Overall U.S. high school sports participation at record ~8.27M in 2024-25', theme: 'Sports System', themeKey: 'sports-system', source: 'NFHS Participation Data', connections: ['strategy','math'], link: 'https://www.nfhs.org/articles/high-school-sports-participation-increases-for-fifth-consecutive-year/', implication: 'Record participation = record demand for performance apparel. Youth-first product strategy unlocks this market.', ccc: ['culture','community'] },
@@ -2692,6 +2632,75 @@ function getConditionsData() {
     // Sports System — Canadian depth
     { id: 'c70', text: 'Canadian NHL fans average age 49, 44% women (unusually gender-balanced). CFL Grey Cup up 12% YoY to 4.02M viewers', theme: 'Sports System', themeKey: 'sports-system', source: 'Vividata / CFL', connections: ['strategy'], link: 'https://press.cfl.ca/the-numbers-are-in-112th-grey-cup-caps-successful-2025-season', implication: 'Canada requires dual strategy — respect hockey\'s linear TV dominance while investing in digital-first emerging sports for younger demographics.', ccc: ['culture'] },
   ];
+  // Append user-created cards
+  if (STATE.userConditions && STATE.userConditions.length > 0) {
+    cards = cards.concat(STATE.userConditions);
+  }
+  return cards;
+}
+
+function openAddConditionModal() {
+  const themes = [
+    { label: 'Sports System', key: 'sports-system' },
+    { label: 'Media Landscape', key: 'media' },
+    { label: 'Commerce', key: 'commerce' },
+    { label: 'Competitive', key: 'competitive' },
+    { label: 'Community', key: 'community' },
+    { label: 'Strategic', key: 'strategic' },
+  ];
+  const m = document.getElementById('modal-overlay');
+  m.innerHTML = `<div class="modal" style="max-width:520px;">
+    <h3 class="heading mb-16" style="color:var(--amber);">ADD CONDITION CARD</h3>
+    <div style="display:grid; gap:12px;">
+      <div>
+        <label class="card-label">Insight</label>
+        <textarea id="uc-text" rows="3" style="width:100%; background:var(--card3); border:1px solid var(--border); color:var(--text-light); padding:8px; font-family:'JetBrains Mono',monospace; font-size:12px; border-radius:2px; resize:vertical;" placeholder="What did you observe or learn?"></textarea>
+      </div>
+      <div>
+        <label class="card-label">Theme</label>
+        <select id="uc-theme" style="width:100%; background:var(--card3); border:1px solid var(--border); color:var(--text-light); padding:8px; font-family:'JetBrains Mono',monospace; font-size:12px; border-radius:2px;">
+          ${themes.map(t => '<option value="' + t.key + '">' + t.label + '</option>').join('')}
+        </select>
+      </div>
+      <div>
+        <label class="card-label">Source</label>
+        <input id="uc-source" type="text" style="width:100%; background:var(--card3); border:1px solid var(--border); color:var(--text-light); padding:8px; font-family:'JetBrains Mono',monospace; font-size:12px; border-radius:2px;" placeholder="Where did this come from?">
+      </div>
+      <div>
+        <label class="card-label">Strategic Implication</label>
+        <textarea id="uc-implication" rows="2" style="width:100%; background:var(--card3); border:1px solid var(--border); color:var(--text-light); padding:8px; font-family:'JetBrains Mono',monospace; font-size:12px; border-radius:2px; resize:vertical;" placeholder="What does this mean for Adidas?"></textarea>
+      </div>
+    </div>
+    <div style="display:flex; gap:8px; margin-top:16px;">
+      <button class="btn btn-sm btn-fill" onclick="saveUserCondition()">Add Card</button>
+      <button class="btn btn-sm" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>`;
+  m.classList.add('active');
+}
+
+function saveUserCondition() {
+  const text = document.getElementById('uc-text').value.trim();
+  if (!text) return;
+  const themeKey = document.getElementById('uc-theme').value;
+  const themes = { 'sports-system': 'Sports System', 'media': 'Media Landscape', 'commerce': 'Commerce', 'competitive': 'Competitive', 'community': 'Community', 'strategic': 'Strategic' };
+  const card = {
+    id: 'uc_' + Date.now(),
+    text: text,
+    theme: themes[themeKey] || 'Strategic',
+    themeKey: themeKey,
+    source: document.getElementById('uc-source').value.trim() || 'User added',
+    connections: [],
+    link: '',
+    implication: document.getElementById('uc-implication').value.trim() || '',
+    ccc: [],
+    userCreated: true
+  };
+  if (!STATE.userConditions) STATE.userConditions = [];
+  STATE.userConditions.push(card);
+  saveState();
+  closeModal();
+  renderConditions();
 }
 
 function getThemeColor(theme) {
@@ -3324,6 +3333,7 @@ function showWbHelp() {
       <div><strong style="color:#39FF14;">Batch Move/Resize</strong> — Select multiple notes, then drag or resize any one to move/resize all</div>
       <div><strong style="color:#39FF14;">Bold Text</strong> — <kbd style="background:var(--card3); padding:2px 6px; border-radius:2px; font-size:11px;">Ctrl/⌘</kbd> + <kbd style="background:var(--card3); padding:2px 6px; border-radius:2px; font-size:11px;">B</kbd> while editing</div>
       <div><strong style="color:#39FF14;">Label Group</strong> — Click <em>+ Label Group</em> to create a draggable/resizable grouping box</div>
+      <div><strong style="color:#39FF14;">Copy/Paste</strong> — Select notes, then <kbd style="background:var(--card3); padding:2px 6px; border-radius:2px; font-size:11px;">⌘/Ctrl</kbd>+<kbd style="background:var(--card3); padding:2px 6px; border-radius:2px; font-size:11px;">C</kbd> to copy, <kbd style="background:var(--card3); padding:2px 6px; border-radius:2px; font-size:11px;">⌘/Ctrl</kbd>+<kbd style="background:var(--card3); padding:2px 6px; border-radius:2px; font-size:11px;">V</kbd> to paste duplicates</div>
       <div><strong style="color:#39FF14;">Reset View</strong> — Click <em>Reset</em> at bottom-right to return to default pan/zoom</div>
     </div>
     <button class="btn btn-sm btn-fill" onclick="closeModal()" style="margin-top:20px;">Got It</button>
@@ -3398,6 +3408,35 @@ function screenToWorld(sx, sy) {
   const rect = canvas.getBoundingClientRect();
   return { x: (sx - rect.left - wbPan.x) / wbZoom, y: (sy - rect.top - wbPan.y) / wbZoom };
 }
+
+// ── Copy/Paste notes (Cmd+C / Cmd+V) ──
+let _wbClipboard = [];
+document.addEventListener('keydown', (e) => {
+  if (e.target.closest('[contenteditable],textarea,input')) return;
+  const activeTab = document.querySelector('.nav-tab.active');
+  if (!activeTab || activeTab.getAttribute('data-tab') !== 'whiteboard') return;
+
+  // Copy selected notes
+  if ((e.metaKey || e.ctrlKey) && e.key === 'c' && wbSelected.size > 0) {
+    _wbClipboard = [];
+    wbSelected.forEach(id => {
+      const note = STATE.whiteboardNotes.find(n => n.id === id);
+      if (note) _wbClipboard.push({ ...note });
+    });
+    e.preventDefault();
+  }
+  // Paste copied notes
+  if ((e.metaKey || e.ctrlKey) && e.key === 'v' && _wbClipboard.length > 0) {
+    clearWbSelection();
+    _wbClipboard.forEach(src => {
+      const note = { ...src, id: 'w' + Date.now() + '_' + Math.random().toString(36).slice(2,6), x: src.x + 30, y: src.y + 30 };
+      STATE.whiteboardNotes.push(note);
+    });
+    saveState();
+    renderWhiteboard();
+    e.preventDefault();
+  }
+});
 
 function initWbMarquee() {
   const canvas = document.getElementById('whiteboard-canvas');
