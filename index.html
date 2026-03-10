@@ -595,7 +595,7 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
 /* ── WHITEBOARD canvas ── */
 .canvas-area {
   position: relative; width: 100%; min-height: 640px;
-  background: #0a0a0a; border: 1px solid var(--amber); border-radius: 2px; overflow: hidden;
+  background: #0a0a0a; border: 1px solid var(--amber); border-radius: 2px; overflow: auto;
 }
 .sticky-note {
   position: absolute; width: 180px; min-height: 110px;
@@ -627,25 +627,29 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
 .sticky-note .note-delete:hover { color: rgba(0,0,0,0.7); }
 .wb-label-box {
   position: absolute; min-width: 200px; min-height: 120px;
-  border: 2px dashed rgba(255,255,255,0.3); border-radius: 4px;
-  background: rgba(255,255,255,0.03); cursor: move; user-select: none;
+  border: 2px dashed rgba(57,255,20,0.4); border-radius: 2px;
+  background: rgba(57,255,20,0.05); cursor: move; user-select: none;
 }
 .wb-label-box .wb-label-title {
-  position: absolute; top: -20px; left: 4px;
-  font-family: 'Oswald', sans-serif; font-size: 11px; text-transform: uppercase;
-  letter-spacing: 0.1em; color: rgba(255,255,255,0.5); outline: none;
+  position: absolute; top: 6px; left: 8px;
+  font-family: 'Oswald', sans-serif; font-size: 12px; text-transform: uppercase;
+  letter-spacing: 0.1em; color: #39FF14; outline: none; cursor: text; user-select: text;
 }
 .wb-label-box .wb-label-resize {
-  position: absolute; bottom: 0; right: 0; width: 16px; height: 16px;
-  cursor: nwse-resize; opacity: 0.3;
+  position: absolute; bottom: 0; right: 0; width: 18px; height: 18px;
+  cursor: nwse-resize; opacity: 0; transition: opacity 0.15s;
 }
+.wb-label-box:hover .wb-label-resize { opacity: 1; }
+.wb-label-box .wb-label-resize::before,
 .wb-label-box .wb-label-resize::after {
-  content: ''; position: absolute; bottom: 3px; right: 3px;
-  width: 8px; height: 8px; border-right: 2px solid rgba(255,255,255,0.5); border-bottom: 2px solid rgba(255,255,255,0.5);
+  content: ''; position: absolute; background: #39FF14; opacity: 0.5;
+  height: 1px; transform: rotate(-45deg);
 }
+.wb-label-box .wb-label-resize::before { width: 12px; bottom: 5px; right: 1px; }
+.wb-label-box .wb-label-resize::after { width: 8px; bottom: 3px; right: 1px; }
 .wb-label-box .wb-label-delete {
-  position: absolute; top: -18px; right: 4px;
-  background: none; border: none; color: rgba(255,255,255,0.3); cursor: pointer; font-size: 12px;
+  position: absolute; top: 4px; right: 6px;
+  background: none; border: none; color: rgba(57,255,20,0.3); cursor: pointer; font-size: 14px;
 }
 .wb-label-box .wb-label-delete:hover { color: var(--red); }
 
@@ -1821,12 +1825,12 @@ if (sessionStorage.getItem('ygt_auth') === '1') {
     </div>
     <button class="btn btn-sm" onclick="clearWhiteboard()">Clear All</button>
   </div>
-  <div style="display:flex; gap:16px;">
-    <div style="flex:1; min-width:0;">
-      <div class="canvas-area" id="whiteboard-canvas"></div>
+  <div style="display:flex; gap:16px; height: calc(100vh - 180px); min-height: 500px;">
+    <div style="flex:1; min-width:0; display:flex; flex-direction:column;">
+      <div class="canvas-area" id="whiteboard-canvas" style="flex:1; overflow:auto; min-height:0;"></div>
     </div>
     <!-- Collapsible To-Do Panel -->
-    <div id="wb-todo-panel" style="width:400px; flex-shrink:0; transition:width 0.3s var(--ease), opacity 0.3s;">
+    <div id="wb-todo-panel" style="width:400px; flex-shrink:0; transition:width 0.3s var(--ease), opacity 0.3s; display:flex; flex-direction:column; overflow:hidden;">
       <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
         <span style="font-family:'Oswald',sans-serif; font-size:16px; text-transform:uppercase; letter-spacing:0.08em; color:var(--amber);">Tasks</span>
         <div style="display:flex; gap:6px; align-items:center;">
@@ -1834,7 +1838,7 @@ if (sessionStorage.getItem('ygt_auth') === '1') {
           <button class="btn btn-sm" onclick="toggleTodoPanel()" title="Collapse" style="font-size:10px; padding:3px 6px;" id="todo-collapse-btn">&#9654;</button>
         </div>
       </div>
-      <div id="wb-todo-inner">
+      <div id="wb-todo-inner" style="flex:1; overflow-y:auto; min-height:0;">
         <!-- Filters -->
         <div class="filter-bar" style="margin-bottom:10px;">
           <button class="filter-btn active" data-filter="all" onclick="filterTodos('all',this)">All</button>
