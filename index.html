@@ -547,6 +547,66 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
 }
 .todo-delete:hover { color: var(--red); }
 
+/* ── CULTURAL MOMENTS ── */
+.moments-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+@media (max-width: 1100px) { .moments-grid { grid-template-columns: 1fr; } }
+.moments-quarter { display: flex; flex-direction: column; gap: 12px; }
+.moments-q-header { font-family: var(--font-heading); font-size: 14px; letter-spacing: 3px; color: var(--green); padding: 10px 16px; background: rgba(0,210,106,0.08); border: 1px solid rgba(0,210,106,0.2); border-radius: 3px; text-align: center; font-weight: 700; }
+.moment-card { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 3px; padding: 14px 16px; border-left: 3px solid var(--border); transition: border-color 0.2s; }
+.moment-card:hover { border-color: var(--border-hover); }
+.moment-sports { border-left-color: #4A9EFF; }
+.moment-entertainment { border-left-color: #A050FF; }
+.moment-music { border-left-color: #FF45A0; }
+.moment-culture { border-left-color: #00D26A; }
+.moment-cat { font-size: 10px; letter-spacing: 2px; font-weight: 700; color: var(--text-dim); margin-bottom: 4px; text-transform: uppercase; }
+.moment-sports .moment-cat { color: #4A9EFF; }
+.moment-entertainment .moment-cat { color: #A050FF; }
+.moment-music .moment-cat { color: #FF45A0; }
+.moment-culture .moment-cat { color: #00D26A; }
+.moment-title { font-family: var(--font-heading); font-size: 15px; letter-spacing: 1px; color: var(--text); margin-bottom: 2px; }
+.moment-meta { font-size: 11px; color: var(--text-dim); margin-bottom: 8px; }
+.moment-desc { font-size: 12px; color: var(--text-light); line-height: 1.5; margin-bottom: 8px; }
+.moment-opp { font-size: 11px; color: var(--text-dim); line-height: 1.4; padding: 6px 10px; background: rgba(0,210,106,0.06); border-radius: 3px; border-left: 2px solid rgba(0,210,106,0.3); }
+.moment-opp strong { color: var(--green); }
+
+/* ── CCC FRAMEWORK ── */
+.ccc-framework { background: var(--card); border: 1px solid var(--border); border-radius: 3px; overflow: hidden; }
+.ccc-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; cursor: pointer; transition: background 0.2s; }
+.ccc-header:hover { background: rgba(255,255,255,0.03); }
+.ccc-toggle { font-size: 12px; color: var(--text-dim); transition: transform 0.3s; }
+.ccc-toggle.open { transform: rotate(180deg); }
+.ccc-body { padding: 0 24px 28px 24px; }
+.ccc-thesis { text-align: center; padding: 20px 0 28px; border-bottom: 1px solid var(--border); margin-bottom: 28px; }
+.ccc-thesis-quote { font-size: 18px; font-style: italic; color: var(--text-light); margin-bottom: 12px; line-height: 1.5; }
+.ccc-thesis-sub { font-size: 14px; color: var(--text-dim); line-height: 1.6; }
+.ccc-pillars { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 28px; }
+@media (max-width: 900px) { .ccc-pillars { grid-template-columns: 1fr; } }
+.ccc-pillar { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 3px; padding: 20px; border-top: 3px solid var(--pillar-color); }
+.ccc-pillar-icon { font-size: 28px; margin-bottom: 8px; }
+.ccc-pillar-title { font-family: var(--font-heading); font-size: 18px; letter-spacing: 3px; margin-bottom: 4px; }
+.ccc-pillar-tag { font-size: 11px; letter-spacing: 2px; color: var(--text-dim); font-weight: 700; margin-bottom: 12px; text-transform: uppercase; }
+.ccc-pillar-desc { font-size: 13px; color: var(--text-light); line-height: 1.6; margin-bottom: 16px; }
+.ccc-pillar-details { display: flex; flex-direction: column; gap: 8px; }
+.ccc-detail-item { font-size: 12px; color: var(--text-dim); line-height: 1.5; padding: 6px 10px; background: rgba(0,0,0,0.2); border-radius: 3px; }
+.ccc-detail-item strong { color: var(--text-light); }
+.ccc-prize { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 3px; padding: 24px; text-align: center; margin-bottom: 24px; }
+.ccc-prize-header { font-family: var(--font-heading); font-size: 14px; letter-spacing: 3px; color: var(--text-dim); margin-bottom: 20px; }
+.ccc-prize-stats { display: flex; justify-content: center; gap: 48px; flex-wrap: wrap; }
+.ccc-prize-stat { text-align: center; }
+.ccc-prize-num { font-family: var(--font-heading); font-size: 36px; font-weight: 900; line-height: 1; margin-bottom: 6px; }
+.ccc-prize-label { font-size: 12px; color: var(--text-dim); max-width: 180px; line-height: 1.4; }
+.ccc-drivers { margin-bottom: 24px; }
+.ccc-drivers-title { font-family: var(--font-heading); font-size: 13px; letter-spacing: 3px; color: var(--text-dim); margin-bottom: 16px; text-align: center; }
+.ccc-drivers-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+@media (max-width: 900px) { .ccc-drivers-row { grid-template-columns: 1fr; } }
+.ccc-driver { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 3px; padding: 16px; text-align: center; }
+.ccc-driver-name { font-family: var(--font-heading); font-size: 15px; letter-spacing: 2px; color: var(--green); margin-bottom: 6px; }
+.ccc-driver-desc { font-size: 12px; color: var(--text-dim); line-height: 1.5; }
+.ccc-search-insight { background: rgba(255,68,68,0.06); border: 1px solid rgba(255,68,68,0.2); border-radius: 3px; padding: 16px 20px; }
+.ccc-search-title { font-family: var(--font-heading); font-size: 13px; letter-spacing: 2px; color: #FF4444; margin-bottom: 8px; }
+.ccc-search-insight p { font-size: 13px; color: var(--text-light); line-height: 1.6; margin: 0; }
+.ccc-search-insight strong { color: #FF4444; }
+
 /* ── COMPETITIVE SECTION ── */
 .comp-card {
   background: var(--card); border: 1px solid var(--border); border-radius: 3px; padding: 20px;
@@ -1515,6 +1575,212 @@ if (sessionStorage.getItem('ygt_auth') === '1') {
     </div>
   </div>
 
+  <!-- 2027 Cultural Moments Calendar -->
+  <div class="card-label">2027 Cultural Moments Calendar</div>
+  <div class="card mb-40">
+    <p class="text-sm text-dim mb-20" style="line-height:1.6;">The biggest cultural moments across sports, entertainment, and music that will dominate North American social media in 2027. These represent peak attention windows for Adidas to activate across <strong style="color:var(--green)">Culture &rarr; Community &rarr; Commerce</strong>.</p>
+
+    <div class="moments-grid">
+
+      <!-- Q1 -->
+      <div class="moments-quarter">
+        <div class="moments-q-header">Q1 &mdash; JAN&ndash;MAR</div>
+
+        <div class="moment-card moment-sports">
+          <div class="moment-cat">SPORTS</div>
+          <div class="moment-title">CFP National Championship</div>
+          <div class="moment-meta">Jan 25 &middot; Las Vegas, Allegiant Stadium</div>
+          <div class="moment-desc">First-ever CFP title game in Vegas. College football's biggest stage — massive Gen Z + alumni audience. Peak social conversation around NIL athletes.</div>
+          <div class="moment-opp"><strong>Adidas Opp:</strong> NIL athlete visibility, campus culture activation, gameday gear moments</div>
+        </div>
+
+        <div class="moment-card moment-sports">
+          <div class="moment-cat">SPORTS</div>
+          <div class="moment-title">Super Bowl LXI</div>
+          <div class="moment-meta">Feb 14 &middot; SoFi Stadium, Los Angeles</div>
+          <div class="moment-desc">Valentine's Day Super Bowl. 120M+ live viewers + 13B+ social impressions. First on ESPN/ABC simulcast. LA amplifies celebrity + culture crossover.</div>
+          <div class="moment-opp"><strong>Adidas Opp:</strong> Culture x commerce activation. 3-day half-life = must own the pre/post conversation. Creator-led content.</div>
+        </div>
+
+        <div class="moment-card moment-sports">
+          <div class="moment-cat">SPORTS</div>
+          <div class="moment-title">NBA All-Star Weekend</div>
+          <div class="moment-meta">Feb 21 &middot; Phoenix, Footprint Center</div>
+          <div class="moment-desc">Culture + style epicenter. Sneaker culture, streetwear, and celebrity converge. High social velocity across TikTok, IG, X.</div>
+          <div class="moment-opp"><strong>Adidas Opp:</strong> Lifestyle silhouette showcase (Samba, Gazelle). Athlete-creator crossover. Streetwear drops timed to weekend.</div>
+        </div>
+
+        <div class="moment-card moment-sports">
+          <div class="moment-cat">SPORTS</div>
+          <div class="moment-title">NCAA March Madness + Final Four</div>
+          <div class="moment-meta">Mar&ndash;Apr &middot; Men's Final Four: Detroit, Ford Field</div>
+          <div class="moment-desc">3 weeks of wall-to-wall college basketball. Bracket culture drives massive engagement. NIL athletes are social media stars. Detroit hosting creates Midwest energy.</div>
+          <div class="moment-opp"><strong>Adidas Opp:</strong> Campus communities, NIL partnerships, D1 athlete content, bracket-themed social campaigns</div>
+        </div>
+
+        <div class="moment-card moment-entertainment">
+          <div class="moment-cat">ENTERTAINMENT</div>
+          <div class="moment-title">Grammys on ABC (New Home)</div>
+          <div class="moment-meta">Feb &middot; First year on ABC/Disney+/Hulu</div>
+          <div class="moment-desc">Historic shift from CBS to Disney platforms after 50+ years. Simulcast on ABC + Hulu + Disney+ = massive cross-platform reach. Red carpet = style culture peak.</div>
+          <div class="moment-opp"><strong>Adidas Opp:</strong> Athleisure on the red carpet. Artist partnerships. Music x sport culture crossover.</div>
+        </div>
+
+        <div class="moment-card moment-entertainment">
+          <div class="moment-cat">ENTERTAINMENT</div>
+          <div class="moment-title">Oscars 2027</div>
+          <div class="moment-meta">Feb&ndash;Mar &middot; ABC simulcast year with Super Bowl + Grammys</div>
+          <div class="moment-desc">ABC hosts Super Bowl, Grammys, AND Oscars in 2027 — an unprecedented trifecta. Fashion/style conversation peaks.</div>
+          <div class="moment-opp"><strong>Adidas Opp:</strong> Cross-platform style visibility across all three tentpoles on one network</div>
+        </div>
+      </div>
+
+      <!-- Q2 -->
+      <div class="moments-quarter">
+        <div class="moments-q-header">Q2 &mdash; APR&ndash;JUN</div>
+
+        <div class="moment-card moment-sports">
+          <div class="moment-cat">SPORTS</div>
+          <div class="moment-title">NCAA Women's Final Four</div>
+          <div class="moment-meta">Apr &middot; Columbus, Nationwide Arena</div>
+          <div class="moment-desc">Women's basketball viewership exploded — 2024 championship drew 19M viewers (more than men's). 2027 continues the momentum with expanded coverage and NIL stars.</div>
+          <div class="moment-opp"><strong>Adidas Opp:</strong> Women's sports leadership. NIL athlete partnerships. Community-driven storytelling.</div>
+        </div>
+
+        <div class="moment-card moment-sports">
+          <div class="moment-cat">SPORTS</div>
+          <div class="moment-title">NFL Draft</div>
+          <div class="moment-meta">Apr 29&ndash;May 1 &middot; Washington D.C.</div>
+          <div class="moment-desc">3-day cultural event — draft night fashion is a social media tentpole. Gen Z athletes become instant celebrities. D.C. backdrop adds prestige.</div>
+          <div class="moment-opp"><strong>Adidas Opp:</strong> Draft night outfit partnerships. Athlete signing announcements. "Next chapter" storytelling.</div>
+        </div>
+
+        <div class="moment-card moment-entertainment">
+          <div class="moment-cat">ENTERTAINMENT</div>
+          <div class="moment-title">Met Gala</div>
+          <div class="moment-meta">First Monday in May &middot; NYC</div>
+          <div class="moment-desc">Fashion's biggest night. Dominates social media for 48+ hours. Sport x fashion crossover growing — athletes now regular attendees.</div>
+          <div class="moment-opp"><strong>Adidas Opp:</strong> Athlete-as-style-icon positioning. Originals/collab spotlight moment.</div>
+        </div>
+
+        <div class="moment-card moment-entertainment">
+          <div class="moment-cat">ENTERTAINMENT</div>
+          <div class="moment-title">Star Wars: Starfighter</div>
+          <div class="moment-meta">May &middot; Directed by Shawn Levy</div>
+          <div class="moment-desc">Brand-new standalone Star Wars film from the Deadpool & Wolverine director. Massive franchise reach across demographics. Global pop culture moment.</div>
+          <div class="moment-opp"><strong>Adidas Opp:</strong> Collab sneaker drops. Pop culture crossover content. Limited edition merchandise.</div>
+        </div>
+
+        <div class="moment-card moment-sports">
+          <div class="moment-cat">SPORTS</div>
+          <div class="moment-title">WNBA Season Tips Off</div>
+          <div class="moment-meta">May &middot; 15+ teams including new expansions</div>
+          <div class="moment-desc">WNBA continues explosive growth — new expansion teams (Portland, Toronto debuted 2026, Cleveland 2028). Women's basketball is the fastest-growing league in North America.</div>
+          <div class="moment-opp"><strong>Adidas Opp:</strong> Women's basketball footwear. WNBA player partnerships. Community-first marketing.</div>
+        </div>
+
+        <div class="moment-card moment-sports">
+          <div class="moment-cat">SPORTS</div>
+          <div class="moment-title">FIFA Women's World Cup</div>
+          <div class="moment-meta">Jun 24&ndash;Jul 25 &middot; Brazil</div>
+          <div class="moment-desc">Global women's football showcase. US women's team massive social following. Communities form around national pride and women's sport visibility.</div>
+          <div class="moment-opp"><strong>Adidas Opp:</strong> Women's football gear. National team energy. Creator content around USWNT. Community activation.</div>
+        </div>
+      </div>
+
+      <!-- Q3 -->
+      <div class="moments-quarter">
+        <div class="moments-q-header">Q3 &mdash; JUL&ndash;SEP</div>
+
+        <div class="moment-card moment-sports">
+          <div class="moment-cat">SPORTS</div>
+          <div class="moment-title">MLB All-Star Game at Wrigley Field</div>
+          <div class="moment-meta">Jul &middot; Chicago, Wrigley Field</div>
+          <div class="moment-desc">Iconic venue moment. Chicago culture + baseball heritage. Wrigley is bucket-list cultural landmark. Celebrity + home run derby drive social.</div>
+          <div class="moment-opp"><strong>Adidas Opp:</strong> Chicago community activation. Baseball lifestyle content. Heritage x culture storytelling.</div>
+        </div>
+
+        <div class="moment-card moment-sports">
+          <div class="moment-cat">SPORTS</div>
+          <div class="moment-title">CONCACAF Gold Cup</div>
+          <div class="moment-meta">Jul&ndash;Aug &middot; USA/North America</div>
+          <div class="moment-desc">Biennial CONCACAF championship. Massive Latino/multicultural audience engagement. Soccer community passion at peak. Post-World Cup energy sustains.</div>
+          <div class="moment-opp"><strong>Adidas Opp:</strong> Soccer community activation. Multicultural marketing. National team kit visibility.</div>
+        </div>
+
+        <div class="moment-card moment-music">
+          <div class="moment-cat">MUSIC</div>
+          <div class="moment-title">Festival Season Peak</div>
+          <div class="moment-meta">Jul&ndash;Aug &middot; Lollapalooza, Outside Lands, Governors Ball</div>
+          <div class="moment-desc">Summer music festival circuit peaks. Gen Z lives on TikTok/IG during festivals. Style + music + community collide. 84% of Billboard Global 200 were TikTok-famous first.</div>
+          <div class="moment-opp"><strong>Adidas Opp:</strong> Festival style moments. Creator partnerships. Music x streetwear drops. Community content.</div>
+        </div>
+
+        <div class="moment-card moment-sports">
+          <div class="moment-cat">SPORTS</div>
+          <div class="moment-title">NFL Season Kickoff + College Football</div>
+          <div class="moment-meta">Sep &middot; Nationwide</div>
+          <div class="moment-desc">America's most-watched sport returns. College football = campus culture epicenter. Both drive massive social conversation from Sep through Feb.</div>
+          <div class="moment-opp"><strong>Adidas Opp:</strong> Campus community activation. NIL deals. Tailgate culture. Back-to-school sport lifestyle.</div>
+        </div>
+
+        <div class="moment-card moment-sports">
+          <div class="moment-cat">SPORTS</div>
+          <div class="moment-title">Ryder Cup &mdash; Centenary Edition</div>
+          <div class="moment-meta">Sep &middot; Bethpage Black, New York</div>
+          <div class="moment-desc">100th anniversary of golf's fiercest rivalry. Bethpage's loud NY crowds are legendary. Golf culture crossover with streetwear growing fast.</div>
+          <div class="moment-opp"><strong>Adidas Opp:</strong> Golf footwear + apparel showcase. adidas Golf portfolio. Culture x sport crossover.</div>
+        </div>
+      </div>
+
+      <!-- Q4 -->
+      <div class="moments-quarter">
+        <div class="moments-q-header">Q4 &mdash; OCT&ndash;DEC</div>
+
+        <div class="moment-card moment-sports">
+          <div class="moment-cat">SPORTS</div>
+          <div class="moment-title">NBA + NHL Season Openers</div>
+          <div class="moment-meta">Oct &middot; Nationwide</div>
+          <div class="moment-desc">Dual league launches drive sports social conversation. NBA opening night = sneaker culture moment. NHL growing cultural relevance.</div>
+          <div class="moment-opp"><strong>Adidas Opp:</strong> Basketball lifestyle. NHL partnerships (adidas makes NHL jerseys). Sneaker drops timed to openers.</div>
+        </div>
+
+        <div class="moment-card moment-sports">
+          <div class="moment-cat">SPORTS</div>
+          <div class="moment-title">MLB World Series</div>
+          <div class="moment-meta">Oct&ndash;Nov &middot; TBD</div>
+          <div class="moment-desc">Baseball's championship. Community-driven — local fan bases explode on social. Moments define cultural memory (walk-offs, celebrations).</div>
+          <div class="moment-opp"><strong>Adidas Opp:</strong> Baseball lifestyle. Community activation around finalist cities. Watch party culture.</div>
+        </div>
+
+        <div class="moment-card moment-entertainment">
+          <div class="moment-cat">ENTERTAINMENT</div>
+          <div class="moment-title">Frozen III + Avengers: Secret Wars</div>
+          <div class="moment-meta">Nov &amp; Dec &middot; Theaters worldwide</div>
+          <div class="moment-desc">Frozen III (Nov) and Avengers: Secret Wars (Dec) — two massive Disney franchise films in back-to-back months. Secret Wars closes the MCU Multiverse Saga. Unprecedented pop culture conversation.</div>
+          <div class="moment-opp"><strong>Adidas Opp:</strong> Collab drops. Youth/family crossover. Limited editions. Social media content partnerships.</div>
+        </div>
+
+        <div class="moment-card moment-culture">
+          <div class="moment-cat">CULTURE</div>
+          <div class="moment-title">Holiday Shopping Season + Sneaker Culture Peak</div>
+          <div class="moment-meta">Nov&ndash;Dec &middot; Black Friday &rarr; Christmas</div>
+          <div class="moment-desc">Peak commerce window. Sneaker drops dominate wishlists. TikTok Shop projected $8B+ social commerce by 2027. Omnichannel shoppers spend 30% more. UGC gift guides drive discovery.</div>
+          <div class="moment-opp"><strong>Adidas Opp:</strong> Connected commerce activation. Creator gift guides. Drop calendar strategy. Community &rarr; Commerce conversion peak.</div>
+        </div>
+
+        <div class="moment-card moment-culture">
+          <div class="moment-cat">CULTURE</div>
+          <div class="moment-title">Year-End Creator Economy Surge</div>
+          <div class="moment-meta">Dec &middot; Cross-platform</div>
+          <div class="moment-desc">"Best of 2027" content floods social. Wrapped/Rewind culture drives retrospective engagement. Creator partnerships peak for brand visibility.</div>
+          <div class="moment-opp"><strong>Adidas Opp:</strong> Year-in-review content. "Best of" creator partnerships. Community celebration moments.</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <!-- ==================== MEDIA ==================== -->
@@ -1765,6 +2031,117 @@ if (sessionStorage.getItem('ygt_auth') === '1') {
   <div class="section-header">
     <h2>Strategy Library</h2>
     <p>Capture, organize, and connect strategic thinking.</p>
+  </div>
+
+  <!-- CCC Framework Guide -->
+  <div class="ccc-framework mb-40" id="ccc-framework">
+    <div class="ccc-header" onclick="toggleCCCFramework()">
+      <div>
+        <h3 class="heading" style="font-size:20px; margin-bottom:4px; letter-spacing:2px;">CULTURE &rarr; COMMUNITY &rarr; COMMERCE</h3>
+        <p class="text-sm text-dim">The Global Strategic Framework &mdash; click to expand</p>
+      </div>
+      <span class="ccc-toggle" id="ccc-toggle-icon">&#9660;</span>
+    </div>
+    <div class="ccc-body" id="ccc-body" style="display:none;">
+
+      <!-- Big Thesis -->
+      <div class="ccc-thesis">
+        <div class="ccc-thesis-quote">"Consumer-centric growth means winning visibility on three fronts, not two."</div>
+        <div class="ccc-thesis-sub">The next phase of growth comes from harnessing the power of <strong>Culture</strong> into <strong>Community</strong>, and <strong>Community</strong> into <strong>Commerce</strong>.</div>
+      </div>
+
+      <!-- Three Pillars -->
+      <div class="ccc-pillars">
+        <!-- CULTURE -->
+        <div class="ccc-pillar" style="--pillar-color: #FF4444;">
+          <div class="ccc-pillar-icon">&#127752;</div>
+          <h4 class="ccc-pillar-title" style="color: #FF4444;">CULTURE</h4>
+          <div class="ccc-pillar-tag">EASY TO MIND</div>
+          <p class="ccc-pillar-desc">Be unmissable across sports and the culture born from it. Deliver consistent icon strategy 2.0.</p>
+          <div class="ccc-pillar-details">
+            <div class="ccc-detail-item"><strong>Goal:</strong> Win visibility in sport + the culture sport creates</div>
+            <div class="ccc-detail-item"><strong>Insight:</strong> 90% of category consumers buy according to impressions formed before they are in market</div>
+            <div class="ccc-detail-item"><strong>Challenge:</strong> 3x more brands activating in sports since 2023. Battle for visibility is tougher.</div>
+            <div class="ccc-detail-item"><strong>Signal:</strong> Super Bowl = 123.7M live views, but 13B addressable signals in communities around it</div>
+            <div class="ccc-detail-item"><strong>Lever:</strong> Earned and owned content propel the speed of culture. Even the Super Bowl had only a 3-day half-life.</div>
+          </div>
+        </div>
+
+        <!-- COMMUNITY -->
+        <div class="ccc-pillar" style="--pillar-color: #4A9EFF;">
+          <div class="ccc-pillar-icon">&#129309;</div>
+          <h4 class="ccc-pillar-title" style="color: #4A9EFF;">COMMUNITY</h4>
+          <div class="ccc-pillar-tag">IMPOSSIBLE TO MISS</div>
+          <p class="ccc-pillar-desc">Be impossible to miss at the moments our customers move into market. Turn consideration into purchase.</p>
+          <div class="ccc-pillar-details">
+            <div class="ccc-detail-item"><strong>Goal:</strong> Close the conversion gap &mdash; adidas converts 33% of considerers vs 45% category average</div>
+            <div class="ccc-detail-item"><strong>Insight:</strong> Adidas buyers are 66% more likely to turn to social platforms for opinions vs category avg (55%)</div>
+            <div class="ccc-detail-item"><strong>Data:</strong> 7/10 streetwear choices directly influenced by creators. 76% trust UGC over traditional ads.</div>
+            <div class="ccc-detail-item"><strong>Signal:</strong> 84% of Billboard Global 200 songs in 2024 were TikTok famous first &mdash; communities drive discovery</div>
+            <div class="ccc-detail-item"><strong>Lever:</strong> Turn human communities into advocates &rarr; advocates lead to machine (LLM/AI) discovery</div>
+          </div>
+        </div>
+
+        <!-- COMMERCE -->
+        <div class="ccc-pillar" style="--pillar-color: #00D26A;">
+          <div class="ccc-pillar-icon">&#128176;</div>
+          <h4 class="ccc-pillar-title" style="color: #00D26A;">COMMERCE</h4>
+          <div class="ccc-pillar-tag">EASY TO FIND</div>
+          <p class="ccc-pillar-desc">Be unmissable across the full commerce landscape. Move from performance to connected commerce.</p>
+          <div class="ccc-pillar-details">
+            <div class="ccc-detail-item"><strong>Goal:</strong> Win in an expanding omnichannel ecosystem &mdash; DTC, retail, social, marketplace</div>
+            <div class="ccc-detail-item"><strong>Insight:</strong> Agentic commerce forecast to account for 25% of global ecom revenue by 2030</div>
+            <div class="ccc-detail-item"><strong>Data:</strong> TikTok Shop hit $33B GMV in 2024. Omnichannel shoppers spend 30% more than single-channel.</div>
+            <div class="ccc-detail-item"><strong>Signal:</strong> Sports apparel ecommerce growing at 10.2% CAGR through 2030. Gen Z 52% more likely to want in-store entertainment.</div>
+            <div class="ccc-detail-item"><strong>Lever:</strong> Connected commerce, not collision of commerce &mdash; seamless flow across owned apps, DTC, retail media, social</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- The Prize -->
+      <div class="ccc-prize">
+        <div class="ccc-prize-header">THE SIZE OF THE PRIZE</div>
+        <div class="ccc-prize-stats">
+          <div class="ccc-prize-stat">
+            <div class="ccc-prize-num" style="color: #FF4444;">+12pp</div>
+            <div class="ccc-prize-label">Conversion improvement from consideration to purchase to match category average</div>
+          </div>
+          <div class="ccc-prize-stat">
+            <div class="ccc-prize-num" style="color: #4A9EFF;">&euro;7.5B</div>
+            <div class="ccc-prize-label">Incremental revenue unlocked globally</div>
+          </div>
+          <div class="ccc-prize-stat">
+            <div class="ccc-prize-num" style="color: #00D26A;">+2pts</div>
+            <div class="ccc-prize-label">Share of global sportswear market</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Three Drivers -->
+      <div class="ccc-drivers">
+        <div class="ccc-drivers-title">THREE DRIVERS OF EFFECTIVE GROWTH</div>
+        <div class="ccc-drivers-row">
+          <div class="ccc-driver">
+            <div class="ccc-driver-name">AGILITY</div>
+            <div class="ccc-driver-desc">Moving faster than the speed of culture. On the front foot of moments.</div>
+          </div>
+          <div class="ccc-driver">
+            <div class="ccc-driver-name">CONNECTIVITY</div>
+            <div class="ccc-driver-desc">Turning signals into communities, communities into consideration, consideration into commerce.</div>
+          </div>
+          <div class="ccc-driver">
+            <div class="ccc-driver-name">EFFICIENCY</div>
+            <div class="ccc-driver-desc">Robots do repetitive tasks, humans do the thinking. Find growth in unexpected places.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Key Search Insight -->
+      <div class="ccc-search-insight">
+        <div class="ccc-search-title">&#9888; HUMAN + MACHINE SEARCH</div>
+        <p>Adidas is #1 in traditional search but <strong>7th in LLM/AI search</strong> (ChatGPT). 32% of all searches now use an LLM. Communities drive the content that AI models learn from &mdash; Reddit, social, UGC reviews. Winning community = winning machine discovery.</p>
+      </div>
+    </div>
   </div>
 
   <div class="flex items-center justify-between mb-32">
@@ -3182,6 +3559,18 @@ function filterStrategyType(type, btn) {
 function filterStrategy() {
   stratSearchTerm = document.getElementById('strategy-search').value.toLowerCase();
   renderStrategy();
+}
+
+function toggleCCCFramework() {
+  const body = document.getElementById('ccc-body');
+  const icon = document.getElementById('ccc-toggle-icon');
+  if (body.style.display === 'none') {
+    body.style.display = 'block';
+    icon.classList.add('open');
+  } else {
+    body.style.display = 'none';
+    icon.classList.remove('open');
+  }
 }
 
 function renderStrategy() {
