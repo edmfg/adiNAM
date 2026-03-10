@@ -626,18 +626,23 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
 .sticky-note:hover { box-shadow: 0 6px 24px rgba(0,0,0,0.6); }
 .sticky-note.wb-selected { outline: 3px solid #fff; outline-offset: 2px; box-shadow: 0 0 12px rgba(255,255,255,0.3); }
 .wb-marquee { position: absolute; border: 1px solid var(--amber); background: rgba(57,255,20,0.08); pointer-events: none; z-index: 200; }
-.sticky-note .note-resize {
-  position: absolute; bottom: 0; right: 0; width: 18px; height: 18px;
-  cursor: nwse-resize; opacity: 0; z-index: 10; transition: opacity 0.15s;
+.corner-handle {
+  position: absolute; width: 14px; height: 14px; z-index: 10;
+  opacity: 0; transition: opacity 0.15s;
 }
-.sticky-note .note-resize::before,
-.sticky-note .note-resize::after {
-  content: ''; position: absolute; background: currentColor; opacity: 0.4;
-  height: 1px; transform: rotate(-45deg);
+.corner-handle::after {
+  content: ''; position: absolute; width: 6px; height: 6px;
+  border-style: solid; border-color: currentColor; opacity: 0.5;
 }
-.sticky-note .note-resize::before { width: 12px; bottom: 5px; right: 1px; }
-.sticky-note .note-resize::after { width: 8px; bottom: 3px; right: 1px; }
-.sticky-note:hover .note-resize { opacity: 1; }
+.corner-handle.ch-br { bottom: 0; right: 0; cursor: nwse-resize; }
+.corner-handle.ch-br::after { bottom: 2px; right: 2px; border-width: 0 2px 2px 0; }
+.corner-handle.ch-bl { bottom: 0; left: 0; cursor: nesw-resize; }
+.corner-handle.ch-bl::after { bottom: 2px; left: 2px; border-width: 0 0 2px 2px; }
+.corner-handle.ch-tr { top: 0; right: 0; cursor: nesw-resize; }
+.corner-handle.ch-tr::after { top: 2px; right: 2px; border-width: 2px 2px 0 0; }
+.corner-handle.ch-tl { top: 0; left: 0; cursor: nwse-resize; }
+.corner-handle.ch-tl::after { top: 2px; left: 2px; border-width: 2px 0 0 2px; }
+.sticky-note:hover .corner-handle, .wb-label-box:hover .corner-handle { opacity: 1; }
 .sticky-note .note-toolbar { display:none; }
 .sticky-note .note-bold-btn { display:none; }
 .sticky-note .note-content { outline: none; min-height: 50px; cursor: text; user-select: text; white-space: pre-wrap; word-break: break-word; overflow-wrap: break-word; }
@@ -654,18 +659,6 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
   font-family: 'Oswald', sans-serif; font-size: 12px; text-transform: uppercase;
   letter-spacing: 0.1em; color: #39FF14; outline: none; cursor: text; user-select: text;
 }
-.wb-label-box .wb-label-resize {
-  position: absolute; bottom: 0; right: 0; width: 18px; height: 18px;
-  cursor: nwse-resize; opacity: 0; transition: opacity 0.15s;
-}
-.wb-label-box:hover .wb-label-resize { opacity: 1; }
-.wb-label-box .wb-label-resize::before,
-.wb-label-box .wb-label-resize::after {
-  content: ''; position: absolute; background: #39FF14; opacity: 0.5;
-  height: 1px; transform: rotate(-45deg);
-}
-.wb-label-box .wb-label-resize::before { width: 12px; bottom: 5px; right: 1px; }
-.wb-label-box .wb-label-resize::after { width: 8px; bottom: 3px; right: 1px; }
 .wb-label-box .wb-label-delete {
   position: absolute; top: 4px; right: 6px;
   background: none; border: none; color: rgba(57,255,20,0.3); cursor: pointer; font-size: 14px;
@@ -3602,7 +3595,10 @@ function createLabelBox(label) {
   el.innerHTML = `
     <div class="wb-label-title" contenteditable="true">${escHtml(label.title)}</div>
     <button class="wb-label-delete" onclick="deleteWhiteboardLabel('${label.id}')" title="Remove label">&times;</button>
-    <div class="wb-label-resize"></div>`;
+    <div class="corner-handle ch-br"></div>
+    <div class="corner-handle ch-bl"></div>
+    <div class="corner-handle ch-tr"></div>
+    <div class="corner-handle ch-tl"></div>`;
 
   // Title edit
   const title = el.querySelector('.wb-label-title');
@@ -3611,7 +3607,7 @@ function createLabelBox(label) {
   // Drag label
   let isDrag = false, sx, sy, ox, oy;
   el.addEventListener('mousedown', (e) => {
-    if (e.target.contentEditable === 'true' || e.target.tagName === 'BUTTON' || e.target.classList.contains('wb-label-resize')) return;
+    if (e.target.contentEditable === 'true' || e.target.tagName === 'BUTTON' || e.target.classList.contains('corner-handle')) return;
     isDrag = true; sx = e.clientX; sy = e.clientY;
     ox = parseInt(el.style.left); oy = parseInt(el.style.top);
     e.preventDefault();
@@ -3629,24 +3625,31 @@ function createLabelBox(label) {
     saveState();
   });
 
-  // Resize handle
-  const resizeHandle = el.querySelector('.wb-label-resize');
-  let isResize = false, rsx, rsy, rw, rh;
-  resizeHandle.addEventListener('mousedown', (e) => {
-    isResize = true; rsx = e.clientX; rsy = e.clientY;
-    rw = parseInt(el.style.width); rh = parseInt(el.style.height);
-    e.preventDefault(); e.stopPropagation();
+  // Resize from any corner
+  let isResize = false, _rsx, _rsy, _rw, _rh, _rx, _ry, _rc = '';
+  el.querySelectorAll('.corner-handle').forEach(handle => {
+    handle.addEventListener('mousedown', (e) => {
+      isResize = true;
+      _rc = handle.classList.contains('ch-tl') ? 'tl' : handle.classList.contains('ch-tr') ? 'tr' : handle.classList.contains('ch-bl') ? 'bl' : 'br';
+      _rsx = e.clientX; _rsy = e.clientY;
+      _rw = parseInt(el.style.width); _rh = parseInt(el.style.height);
+      _rx = parseInt(el.style.left); _ry = parseInt(el.style.top);
+      e.preventDefault(); e.stopPropagation();
+    });
   });
   document.addEventListener('mousemove', (e) => {
     if (!isResize) return;
-    el.style.width = Math.max(120, rw + e.clientX - rsx) + 'px';
-    el.style.height = Math.max(80, rh + e.clientY - rsy) + 'px';
+    const dx = e.clientX - _rsx, dy = e.clientY - _rsy;
+    if (_rc === 'br') { el.style.width = Math.max(120, _rw + dx) + 'px'; el.style.height = Math.max(80, _rh + dy) + 'px'; }
+    else if (_rc === 'bl') { const nw = Math.max(120, _rw - dx); el.style.width = nw + 'px'; el.style.left = (_rx + _rw - nw) + 'px'; el.style.height = Math.max(80, _rh + dy) + 'px'; }
+    else if (_rc === 'tr') { el.style.width = Math.max(120, _rw + dx) + 'px'; const nh = Math.max(80, _rh - dy); el.style.height = nh + 'px'; el.style.top = (_ry + _rh - nh) + 'px'; }
+    else if (_rc === 'tl') { const nw = Math.max(120, _rw - dx), nh = Math.max(80, _rh - dy); el.style.width = nw + 'px'; el.style.height = nh + 'px'; el.style.left = (_rx + _rw - nw) + 'px'; el.style.top = (_ry + _rh - nh) + 'px'; }
   });
   document.addEventListener('mouseup', () => {
     if (!isResize) return;
     isResize = false;
-    label.w = parseInt(el.style.width);
-    label.h = parseInt(el.style.height);
+    label.x = parseInt(el.style.left); label.y = parseInt(el.style.top);
+    label.w = parseInt(el.style.width); label.h = parseInt(el.style.height);
     saveState();
   });
 
@@ -3676,14 +3679,17 @@ function createDraggableNote(note, type) {
   el.innerHTML = `<div class="note-toolbar"><button class="note-bold-btn" title="Bold (Ctrl+B)"><b>B</b></button></div>
     <div class="note-content" contenteditable="true">${noteHtml}</div>
     <div class="note-actions"><button class="note-delete" onclick="deleteNote('${note.id}','${type}')" title="Delete">&times;</button></div>
-    <div class="note-resize"></div>`;
+    <div class="corner-handle ch-br"></div>
+    <div class="corner-handle ch-bl"></div>
+    <div class="corner-handle ch-tr"></div>
+    <div class="corner-handle ch-tl"></div>`;
 
   // Click to select (whiteboard only) — Shift adds to selection, plain click toggles solo
   let _noteDidDrag = false;
   if (type === 'whiteboard') {
     el.addEventListener('click', (e) => {
       if (_noteDidDrag) { _noteDidDrag = false; return; }
-      if (e.target.closest('.note-content') || e.target.tagName === 'BUTTON' || e.target.classList.contains('note-resize')) return;
+      if (e.target.closest('.note-content') || e.target.tagName === 'BUTTON' || e.target.classList.contains('corner-handle')) return;
       if (!e.shiftKey && !wbSelected.has(note.id)) {
         clearWbSelection();
       }
@@ -3766,44 +3772,78 @@ function createDraggableNote(note, type) {
     saveState();
   });
 
-  // Resize (batch if selected)
-  const resizeHandle = el.querySelector('.note-resize');
-  let isResizing = false, rsx, rsy, rw, rh, batchResizeData = [];
-  resizeHandle.addEventListener('mousedown', (e) => {
-    isResizing = true;
-    rsx = e.clientX; rsy = e.clientY;
-    rw = el.offsetWidth; rh = el.offsetHeight;
-    el.style.zIndex = '100';
-    // Collect batch resize data
-    batchResizeData = [];
-    if (type === 'whiteboard' && wbSelected.has(note.id) && wbSelected.size > 1) {
-      wbSelected.forEach(sid => {
-        if (sid === note.id) return;
-        const sel = document.querySelector(`.sticky-note[data-note-id="${sid}"]`);
-        if (sel) batchResizeData.push({ id: sid, el: sel, w: sel.offsetWidth, h: sel.offsetHeight });
-      });
-    }
-    e.preventDefault(); e.stopPropagation();
+  // Resize from any corner (batch if selected)
+  let isResizing = false, rsx, rsy, rw, rh, rx, ry, rCorner = '', batchResizeData = [];
+  el.querySelectorAll('.corner-handle').forEach(handle => {
+    handle.addEventListener('mousedown', (e) => {
+      isResizing = true;
+      rCorner = handle.classList.contains('ch-tl') ? 'tl' : handle.classList.contains('ch-tr') ? 'tr' : handle.classList.contains('ch-bl') ? 'bl' : 'br';
+      rsx = e.clientX; rsy = e.clientY;
+      rw = el.offsetWidth; rh = el.offsetHeight;
+      rx = parseInt(el.style.left); ry = parseInt(el.style.top);
+      el.style.zIndex = '100';
+      batchResizeData = [];
+      if (type === 'whiteboard' && wbSelected.has(note.id) && wbSelected.size > 1) {
+        wbSelected.forEach(sid => {
+          if (sid === note.id) return;
+          const sel = document.querySelector(`.sticky-note[data-note-id="${sid}"]`);
+          if (sel) batchResizeData.push({ id: sid, el: sel, w: sel.offsetWidth, h: sel.offsetHeight, x: parseInt(sel.style.left), y: parseInt(sel.style.top) });
+        });
+      }
+      e.preventDefault(); e.stopPropagation();
+    });
   });
   document.addEventListener('mousemove', (e) => {
     if (!isResizing) return;
-    const dw = e.clientX - rsx, dh = e.clientY - rsy;
-    el.style.width = Math.max(100, rw + dw) + 'px';
-    el.style.height = Math.max(60, rh + dh) + 'px';
+    const dx = e.clientX - rsx, dy = e.clientY - rsy;
+    if (rCorner === 'br') {
+      el.style.width = Math.max(100, rw + dx) + 'px';
+      el.style.height = Math.max(60, rh + dy) + 'px';
+    } else if (rCorner === 'bl') {
+      const nw = Math.max(100, rw - dx);
+      el.style.width = nw + 'px';
+      el.style.left = (rx + rw - nw) + 'px';
+      el.style.height = Math.max(60, rh + dy) + 'px';
+    } else if (rCorner === 'tr') {
+      el.style.width = Math.max(100, rw + dx) + 'px';
+      const nh = Math.max(60, rh - dy);
+      el.style.height = nh + 'px';
+      el.style.top = (ry + rh - nh) + 'px';
+    } else if (rCorner === 'tl') {
+      const nw = Math.max(100, rw - dx);
+      const nh = Math.max(60, rh - dy);
+      el.style.width = nw + 'px'; el.style.height = nh + 'px';
+      el.style.left = (rx + rw - nw) + 'px';
+      el.style.top = (ry + rh - nh) + 'px';
+    }
     batchResizeData.forEach(b => {
-      b.el.style.width = Math.max(100, b.w + dw) + 'px';
-      b.el.style.height = Math.max(60, b.h + dh) + 'px';
+      if (rCorner === 'br') {
+        b.el.style.width = Math.max(100, b.w + dx) + 'px';
+        b.el.style.height = Math.max(60, b.h + dy) + 'px';
+      } else if (rCorner === 'bl') {
+        const nw = Math.max(100, b.w - dx);
+        b.el.style.width = nw + 'px'; b.el.style.left = (b.x + b.w - nw) + 'px';
+        b.el.style.height = Math.max(60, b.h + dy) + 'px';
+      } else if (rCorner === 'tr') {
+        b.el.style.width = Math.max(100, b.w + dx) + 'px';
+        const nh = Math.max(60, b.h - dy);
+        b.el.style.height = nh + 'px'; b.el.style.top = (b.y + b.h - nh) + 'px';
+      } else if (rCorner === 'tl') {
+        const nw = Math.max(100, b.w - dx), nh = Math.max(60, b.h - dy);
+        b.el.style.width = nw + 'px'; b.el.style.height = nh + 'px';
+        b.el.style.left = (b.x + b.w - nw) + 'px'; b.el.style.top = (b.y + b.h - nh) + 'px';
+      }
     });
   });
   document.addEventListener('mouseup', () => {
     if (!isResizing) return;
     isResizing = false;
     el.style.zIndex = '';
-    note.w = parseInt(el.style.width);
-    note.h = parseInt(el.style.height);
+    note.x = parseInt(el.style.left); note.y = parseInt(el.style.top);
+    note.w = parseInt(el.style.width); note.h = parseInt(el.style.height);
     batchResizeData.forEach(b => {
       const n = STATE.whiteboardNotes.find(wn => wn.id === b.id);
-      if (n) { n.w = parseInt(b.el.style.width); n.h = parseInt(b.el.style.height); }
+      if (n) { n.w = parseInt(b.el.style.width); n.h = parseInt(b.el.style.height); n.x = parseInt(b.el.style.left); n.y = parseInt(b.el.style.top); }
     });
     batchResizeData = [];
     saveState();
