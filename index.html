@@ -517,6 +517,8 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
 .todo-item:hover { border-color: var(--border-hover); }
 .todo-item.todo-dragging { opacity: 0.4; cursor: grabbing; }
 .todo-item.todo-drag-over { border-top: 2px solid var(--amber); margin-top: -2px; }
+.todo-drop-top { height: 0; transition: height 0.15s; }
+.todo-drop-top.todo-drag-over { height: 18px; border: 2px dashed var(--amber); border-radius: 3px; background: rgba(255,176,0,0.05); }
 .todo-item.todo-done { opacity: 0.5; }
 .todo-item.todo-done .todo-text-input { text-decoration: line-through; color: var(--text-dim); }
 .todo-check {
@@ -2909,9 +2911,22 @@ function todoDrop(e, targetId) {
   renderTodos();
   _todoDragId = null;
 }
+function todoDropTop(e) {
+  e.preventDefault();
+  if (!_todoDragId) return;
+  const todos = getTodos();
+  const fromIdx = todos.findIndex(t => t.id === _todoDragId);
+  if (fromIdx < 0) return;
+  const [moved] = todos.splice(fromIdx, 1);
+  todos.unshift(moved);
+  STATE.todos = todos;
+  saveState();
+  renderTodos();
+  _todoDragId = null;
+}
 function todoDragEnd() {
   _todoDragId = null;
-  document.querySelectorAll('.todo-item').forEach(el => { el.classList.remove('todo-dragging', 'todo-drag-over'); });
+  document.querySelectorAll('.todo-item,.todo-drop-top').forEach(el => { el.classList.remove('todo-dragging', 'todo-drag-over'); });
 }
 
 function renderTodos() {
@@ -2939,7 +2954,7 @@ function renderTodos() {
   const statusColors = { 'todo': 'var(--text-dim)', 'in-progress': 'var(--amber)', 'done': 'var(--green)' };
   const priorityColors = { 'low': 'var(--text-dim)', 'medium': 'var(--blue)', 'high': 'var(--amber)', 'urgent': 'var(--red)' };
 
-  list.innerHTML = filtered.map(t => `
+  list.innerHTML = `<div class="todo-drop-top" ondragover="todoDragOver(event)" ondragenter="todoDragEnter(event,this)" ondragleave="todoDragLeave(event,this)" ondrop="todoDropTop(event)"></div>` + filtered.map(t => `
     <div class="todo-item ${t.status === 'done' ? 'todo-done' : ''}" data-id="${t.id}" draggable="true" ondragstart="todoDragStart(event,'${t.id}')" ondragover="todoDragOver(event)" ondragenter="todoDragEnter(event,this)" ondragleave="todoDragLeave(event,this)" ondrop="todoDrop(event,'${t.id}')" ondragend="todoDragEnd()">
       <div class="todo-drag-handle"><span></span></div>
       <button class="todo-check" onclick="cycleTodoStatus('${t.id}')" style="border-color:${statusColors[t.status]}; ${t.status === 'done' ? 'background:var(--green);' : ''}" title="${statusLabels[t.status]}">
