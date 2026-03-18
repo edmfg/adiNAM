@@ -196,13 +196,6 @@ h1, h2, h3, h4, h5, h6, .heading { font-family: 'Oswald', 'Arial Narrow', sans-s
 .nav-tab[data-tab="whiteboard"].active::after { background: #39FF14; }
 .nav-tab[data-tab="whiteboard"]:hover { color: #39FF14; }
 
-.nav-tab[data-tab="strategy"].active { color: #a050ff; background: rgba(160,80,255,0.08); }
-.nav-tab[data-tab="strategy"].active::after { background: #a050ff; }
-.nav-tab[data-tab="strategy"]:hover { color: #a050ff; }
-
-.nav-tab[data-tab="narrative"].active { color: #FFD700; background: rgba(255,215,0,0.08); }
-.nav-tab[data-tab="narrative"].active::after { background: #FFD700; }
-.nav-tab[data-tab="narrative"]:hover { color: #FFD700; }
 
 .nav-tab[data-tab="library"].active { color: #00D26A; background: rgba(0,210,106,0.08); }
 .nav-tab[data-tab="library"].active::after { background: #00D26A; }
@@ -217,8 +210,6 @@ h1, h2, h3, h4, h5, h6, .heading { font-family: 'Oswald', 'Arial Narrow', sans-s
 #section-journey { --amber: #FF45A0; }
 #section-competitive { --amber: #ff6b35; }
 #section-whiteboard { --amber: #39FF14; }
-#section-strategy { --amber: #a050ff; }
-#section-narrative { --amber: #FFD700; }
 #section-communities { --amber: #FF8C00; }
 
 /* ── 20% Communities section (scoped styles) ── */
@@ -1554,8 +1545,6 @@ if (sessionStorage.getItem('ygt_auth') === '1') {
     <button class="nav-tab" data-tab="conditions" onclick="switchTab('conditions')">NAM Conditions</button>
     <button class="nav-tab" data-tab="journey" onclick="switchTab('journey')">Consumer Journey</button>
     <button class="nav-tab" data-tab="competitive" onclick="switchTab('competitive')">Competitive</button>
-    <button class="nav-tab" data-tab="strategy" onclick="switchTab('strategy')">Strategy</button>
-    <button class="nav-tab" data-tab="narrative" onclick="switchTab('narrative')">Narrative</button>
     <button class="nav-tab active" data-tab="communities" onclick="switchTab('communities')">20% Communities</button>
     <button class="nav-tab" data-tab="library" onclick="switchTab('library')">Library</button>
     <button class="nav-tab" data-tab="whiteboard" onclick="switchTab('whiteboard')">Whiteboard</button>
@@ -2205,156 +2194,6 @@ if (sessionStorage.getItem('ygt_auth') === '1') {
 </div>
 
 <!-- ==================== STRATEGY ==================== -->
-<div class="section" id="section-strategy">
-  <div class="section-header">
-    <h2>Strategy Library</h2>
-    <p>Capture, organize, and connect strategic thinking.</p>
-  </div>
-
-  <!-- CCC Framework Guide -->
-  <div class="ccc-framework mb-40" id="ccc-framework">
-    <div class="ccc-header" onclick="toggleCCCFramework()">
-      <div>
-        <h3 class="heading" style="font-size:20px; margin-bottom:4px; letter-spacing:2px;">CULTURE &rarr; COMMUNITY &rarr; COMMERCE</h3>
-        <p class="text-sm text-dim">The Global Strategic Framework &mdash; click to expand</p>
-      </div>
-      <span class="ccc-toggle" id="ccc-toggle-icon">&#9660;</span>
-    </div>
-    <div class="ccc-body" id="ccc-body" style="display:none;">
-
-      <!-- Big Thesis -->
-      <div class="ccc-thesis">
-        <div class="ccc-thesis-quote">"Consumer-centric growth means winning visibility on three fronts, not two."</div>
-        <div class="ccc-thesis-sub">The next phase of growth comes from harnessing the power of <strong>Culture</strong> into <strong>Community</strong>, and <strong>Community</strong> into <strong>Commerce</strong>.</div>
-      </div>
-
-      <!-- Three Pillars -->
-      <div class="ccc-pillars">
-        <!-- CULTURE -->
-        <div class="ccc-pillar" style="--pillar-color: #FF4444;">
-          <div class="ccc-pillar-icon">&#127752;</div>
-          <h4 class="ccc-pillar-title" style="color: #FF4444;">CULTURE</h4>
-          <div class="ccc-pillar-tag">EASY TO MIND</div>
-          <p class="ccc-pillar-desc">Be unmissable across sports and the culture born from it. Deliver consistent icon strategy 2.0.</p>
-          <div class="ccc-pillar-details">
-            <div class="ccc-detail-item"><strong>Goal:</strong> Win visibility in sport + the culture sport creates</div>
-            <div class="ccc-detail-item"><strong>Insight:</strong> 90% of category consumers buy according to impressions formed before they are in market</div>
-            <div class="ccc-detail-item"><strong>Challenge:</strong> 3x more brands activating in sports since 2023. Battle for visibility is tougher.</div>
-            <div class="ccc-detail-item"><strong>Signal:</strong> Super Bowl = 123.7M live views, but 13B addressable signals in communities around it</div>
-            <div class="ccc-detail-item"><strong>Lever:</strong> Earned and owned content propel the speed of culture. Even the Super Bowl had only a 3-day half-life.</div>
-          </div>
-        </div>
-
-        <!-- COMMUNITY -->
-        <div class="ccc-pillar" style="--pillar-color: #4A9EFF;">
-          <div class="ccc-pillar-icon">&#129309;</div>
-          <h4 class="ccc-pillar-title" style="color: #4A9EFF;">COMMUNITY</h4>
-          <div class="ccc-pillar-tag">IMPOSSIBLE TO MISS</div>
-          <p class="ccc-pillar-desc">Be impossible to miss at the moments our customers move into market. Turn consideration into purchase.</p>
-          <div class="ccc-pillar-details">
-            <div class="ccc-detail-item"><strong>Goal:</strong> Close the conversion gap &mdash; adidas converts 33% of considerers vs 45% category average</div>
-            <div class="ccc-detail-item"><strong>Insight:</strong> Adidas buyers are 66% more likely to turn to social platforms for opinions vs category avg (55%)</div>
-            <div class="ccc-detail-item"><strong>Data:</strong> 7/10 streetwear choices directly influenced by creators. 76% trust UGC over traditional ads.</div>
-            <div class="ccc-detail-item"><strong>Signal:</strong> 84% of Billboard Global 200 songs in 2024 were TikTok famous first &mdash; communities drive discovery</div>
-            <div class="ccc-detail-item"><strong>Lever:</strong> Turn human communities into advocates &rarr; advocates lead to machine (LLM/AI) discovery</div>
-          </div>
-        </div>
-
-        <!-- COMMERCE -->
-        <div class="ccc-pillar" style="--pillar-color: #00D26A;">
-          <div class="ccc-pillar-icon">&#128176;</div>
-          <h4 class="ccc-pillar-title" style="color: #00D26A;">COMMERCE</h4>
-          <div class="ccc-pillar-tag">EASY TO FIND</div>
-          <p class="ccc-pillar-desc">Be unmissable across the full commerce landscape. Move from performance to connected commerce.</p>
-          <div class="ccc-pillar-details">
-            <div class="ccc-detail-item"><strong>Goal:</strong> Win in an expanding omnichannel ecosystem &mdash; DTC, retail, social, marketplace</div>
-            <div class="ccc-detail-item"><strong>Insight:</strong> Agentic commerce forecast to account for 25% of global ecom revenue by 2030</div>
-            <div class="ccc-detail-item"><strong>Data:</strong> TikTok Shop hit $33B GMV in 2024. Omnichannel shoppers spend 30% more than single-channel.</div>
-            <div class="ccc-detail-item"><strong>Signal:</strong> Sports apparel ecommerce growing at 10.2% CAGR through 2030. Gen Z 52% more likely to want in-store entertainment.</div>
-            <div class="ccc-detail-item"><strong>Lever:</strong> Connected commerce, not collision of commerce &mdash; seamless flow across owned apps, DTC, retail media, social</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- The Prize -->
-      <div class="ccc-prize">
-        <div class="ccc-prize-header">THE SIZE OF THE PRIZE</div>
-        <div class="ccc-prize-stats">
-          <div class="ccc-prize-stat">
-            <div class="ccc-prize-num" style="color: #FF4444;">+12pp</div>
-            <div class="ccc-prize-label">Conversion improvement from consideration to purchase to match category average</div>
-          </div>
-          <div class="ccc-prize-stat">
-            <div class="ccc-prize-num" style="color: #4A9EFF;">&euro;7.5B</div>
-            <div class="ccc-prize-label">Incremental revenue unlocked globally</div>
-          </div>
-          <div class="ccc-prize-stat">
-            <div class="ccc-prize-num" style="color: #00D26A;">+2pts</div>
-            <div class="ccc-prize-label">Share of global sportswear market</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Three Drivers -->
-      <div class="ccc-drivers">
-        <div class="ccc-drivers-title">THREE DRIVERS OF EFFECTIVE GROWTH</div>
-        <div class="ccc-drivers-row">
-          <div class="ccc-driver">
-            <div class="ccc-driver-name">AGILITY</div>
-            <div class="ccc-driver-desc">Moving faster than the speed of culture. On the front foot of moments.</div>
-          </div>
-          <div class="ccc-driver">
-            <div class="ccc-driver-name">CONNECTIVITY</div>
-            <div class="ccc-driver-desc">Turning signals into communities, communities into consideration, consideration into commerce.</div>
-          </div>
-          <div class="ccc-driver">
-            <div class="ccc-driver-name">EFFICIENCY</div>
-            <div class="ccc-driver-desc">Robots do repetitive tasks, humans do the thinking. Find growth in unexpected places.</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Key Search Insight -->
-      <div class="ccc-search-insight">
-        <div class="ccc-search-title">&#9888; HUMAN + MACHINE SEARCH</div>
-        <p>Adidas is #1 in traditional search but <strong>7th in LLM/AI search</strong> (ChatGPT). 32% of all searches now use an LLM. Communities drive the content that AI models learn from &mdash; Reddit, social, UGC reviews. Winning community = winning machine discovery.</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="flex items-center justify-between mb-32">
-    <div class="search-bar" style="margin-bottom:0;">
-      <input type="text" id="strategy-search" placeholder="Search strategies..." oninput="filterStrategy()">
-    </div>
-    <button class="btn btn-green" onclick="openStrategyModal()">+ New Item</button>
-  </div>
-
-  <div class="filter-bar mb-32" id="strategy-filter">
-    <button class="filter-btn active" data-sfilter="all" onclick="filterStrategyType('all',this)">All</button>
-    <button class="filter-btn" data-sfilter="insight" onclick="filterStrategyType('insight',this)">Insight</button>
-    <button class="filter-btn" data-sfilter="tension" onclick="filterStrategyType('tension',this)">Tension</button>
-    <button class="filter-btn" data-sfilter="opportunity" onclick="filterStrategyType('opportunity',this)">Opportunity</button>
-    <button class="filter-btn" data-sfilter="hypothesis" onclick="filterStrategyType('hypothesis',this)">Hypothesis</button>
-    <button class="filter-btn" data-sfilter="idea" onclick="filterStrategyType('idea',this)">Strategic Idea</button>
-  </div>
-
-  <div class="grid grid-2" id="strategy-grid"></div>
-</div>
-
-<!-- ==================== MATH ==================== -->
-<!-- ==================== NARRATIVE ==================== -->
-<div class="section" id="section-narrative">
-  <div class="section-header" style="display:flex; align-items:flex-start; justify-content:space-between;">
-    <div>
-      <h2>Narrative</h2>
-      <p>Prototype your pitch deck. Add slides, define headlines, note required data, and capture key talking points.</p>
-    </div>
-    <button class="btn btn-sm btn-fill" onclick="addSlide()" style="margin-top:4px; white-space:nowrap;">+ Add Slide</button>
-  </div>
-
-  <div id="slides-list"></div>
-</div>
-
 <!-- ==================== LIBRARY ==================== -->
 <div class="section" id="section-library">
   <div class="section-header">
@@ -3227,10 +3066,8 @@ function switchTab(tab) {
   if (sec) sec.classList.add('active');
   const tabBtn = document.querySelector(`.nav-tab[data-tab="${tab}"]`);
   if (tabBtn) tabBtn.classList.add('active');
-  if (tab === 'narrative') { renderSlides(); }
   if (tab === 'whiteboard') { renderTodos(); }
   if (tab === 'conditions') { renderConditions(); }
-  if (tab === 'strategy') { renderStrategy(); }
   if (tab === 'whiteboard') { renderWhiteboard(); }
   if (tab === 'journey') { restoreJourneyColOrder(); initJourneyColDrag(); initJourneyEdits(); renderMomentPins(); }
   if (tab === 'library') { renderLibrary(); }
