@@ -1556,9 +1556,9 @@ if (sessionStorage.getItem('ygt_auth') === '1') {
     <button class="nav-tab" data-tab="competitive" onclick="switchTab('competitive')">Competitive</button>
     <button class="nav-tab" data-tab="strategy" onclick="switchTab('strategy')">Strategy</button>
     <button class="nav-tab" data-tab="narrative" onclick="switchTab('narrative')">Narrative</button>
-    <button class="nav-tab" data-tab="communities" onclick="switchTab('communities')">20% Communities</button>
+    <button class="nav-tab active" data-tab="communities" onclick="switchTab('communities')">20% Communities</button>
     <button class="nav-tab" data-tab="library" onclick="switchTab('library')">Library</button>
-    <button class="nav-tab active" data-tab="whiteboard" onclick="switchTab('whiteboard')">Whiteboard</button>
+    <button class="nav-tab" data-tab="whiteboard" onclick="switchTab('whiteboard')">Whiteboard</button>
   </div>
   <div style="margin-left:auto; display:flex; align-items:center; gap:8px;">
     <div style="display:flex; align-items:center; gap:2px;">
@@ -2374,7 +2374,7 @@ if (sessionStorage.getItem('ygt_auth') === '1') {
 </div>
 
 <!-- ==================== 20% COMMUNITIES ==================== -->
-<div class="section" id="section-communities">
+<div class="section active" id="section-communities">
   <div class="section-header">
     <h2>20% Communities</h2>
     <p>Stripe 2 — 7 high-growth sub-communities for the path to $10B.</p>
@@ -2695,7 +2695,7 @@ if (sessionStorage.getItem('ygt_auth') === '1') {
 </div>
 
 <!-- ==================== WHITEBOARD ==================== -->
-<div class="section active" id="section-whiteboard">
+<div class="section" id="section-whiteboard">
   <div class="section-header">
     <h2>Whiteboard</h2>
     <p>Drag-and-drop brainstorming canvas.</p>
@@ -3239,7 +3239,7 @@ function switchTab(tab) {
 
 function getCurrentTab() {
   const active = document.querySelector('.nav-tab.active');
-  return active ? active.getAttribute('data-tab') : 'conditions';
+  return active ? active.getAttribute('data-tab') : 'communities';
 }
 
 function showFloatingNotesForTab(tab) {
