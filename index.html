@@ -208,6 +208,10 @@ h1, h2, h3, h4, h5, h6, .heading { font-family: 'Oswald', 'Arial Narrow', sans-s
 .nav-tab[data-tab="library"].active::after { background: #00D26A; }
 .nav-tab[data-tab="library"]:hover { color: #00D26A; }
 
+.nav-tab[data-tab="communities"].active { color: #FF8C00; background: rgba(255,140,0,0.08); }
+.nav-tab[data-tab="communities"].active::after { background: #FF8C00; }
+.nav-tab[data-tab="communities"]:hover { color: #FF8C00; }
+
 /* ── Per-section accent override ── */
 #section-conditions { --amber: #00C8FF; }
 #section-journey { --amber: #FF45A0; }
@@ -215,6 +219,183 @@ h1, h2, h3, h4, h5, h6, .heading { font-family: 'Oswald', 'Arial Narrow', sans-s
 #section-whiteboard { --amber: #39FF14; }
 #section-strategy { --amber: #a050ff; }
 #section-narrative { --amber: #FFD700; }
+#section-communities { --amber: #FF8C00; }
+
+/* ── 20% Communities section (scoped styles) ── */
+#section-communities .comm-hero {
+  position: relative; min-height: 500px; display: flex; flex-direction: column;
+  justify-content: flex-end; padding: 60px; background: linear-gradient(135deg, #000 0%, #1a1a1a 50%, #000 100%);
+  overflow: hidden; border-radius: 6px; margin-bottom: 40px;
+}
+#section-communities .comm-hero::before {
+  content: ''; position: absolute; top: -50%; right: -20%; width: 800px; height: 800px;
+  background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%); border-radius: 50%;
+}
+#section-communities .comm-three-stripes {
+  position: absolute; top: 0; right: 80px; display: flex; gap: 12px; height: 100%;
+}
+#section-communities .comm-three-stripes .comm-stripe {
+  width: 28px; background: linear-gradient(180deg, transparent 0%, rgba(255,255,255,0.06) 30%, rgba(255,255,255,0.06) 70%, transparent 100%);
+  transform: skewX(-12deg);
+}
+#section-communities .comm-hero-label {
+  font-size: 11px; font-weight: 700; letter-spacing: 6px; text-transform: uppercase;
+  color: rgba(255,255,255,0.4); margin-bottom: 24px;
+}
+#section-communities .comm-hero-title {
+  font-size: 56px; font-weight: 900; line-height: 0.95; letter-spacing: -3px;
+  text-transform: uppercase; margin-bottom: 16px; max-width: 800px; color: #fff;
+}
+#section-communities .comm-hero-title .comm-accent { color: #FFD700; }
+#section-communities .comm-hero-subtitle {
+  font-size: 18px; font-weight: 300; color: rgba(255,255,255,0.6); max-width: 600px; margin-bottom: 40px;
+}
+#section-communities .comm-hero-meta {
+  display: flex; gap: 40px; padding-top: 40px; border-top: 1px solid rgba(255,255,255,0.1);
+}
+#section-communities .comm-hero-meta-item { display: flex; flex-direction: column; }
+#section-communities .comm-hero-meta-label {
+  font-size: 10px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase;
+  color: rgba(255,255,255,0.35); margin-bottom: 4px;
+}
+#section-communities .comm-hero-meta-value { font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.8); }
+
+#section-communities .comm-section {
+  padding: 60px; border-top: 1px solid rgba(255,255,255,0.06); border-radius: 6px; margin-bottom: 24px;
+}
+#section-communities .comm-section-dark { background: #0a0a0a; }
+#section-communities .comm-section-accent { background: linear-gradient(135deg, #111 0%, #0d0d0d 100%); }
+#section-communities .comm-section-label {
+  font-size: 10px; font-weight: 700; letter-spacing: 5px; text-transform: uppercase;
+  color: #FFD700; margin-bottom: 16px;
+}
+#section-communities .comm-section-title {
+  font-size: 36px; font-weight: 800; letter-spacing: -2px; text-transform: uppercase;
+  line-height: 1.05; margin-bottom: 40px; max-width: 700px; color: #fff;
+}
+#section-communities .comm-section-body {
+  font-size: 15px; font-weight: 300; color: rgba(255,255,255,0.7); max-width: 800px; line-height: 1.7; margin-bottom: 40px;
+}
+
+#section-communities .comm-stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 60px; }
+#section-communities .comm-stat-card {
+  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 4px; padding: 28px 24px; transition: all 0.3s ease;
+}
+#section-communities .comm-stat-card:hover { background: rgba(255,255,255,0.06); border-color: rgba(255,215,0,0.3); transform: translateY(-2px); }
+#section-communities .comm-stat-number { font-size: 48px; font-weight: 900; letter-spacing: -2px; line-height: 1; margin-bottom: 8px; }
+#section-communities .comm-stat-number.comm-gold { color: #FFD700; }
+#section-communities .comm-stat-number.comm-dim { color: rgba(255,255,255,0.5); }
+#section-communities .comm-stat-label { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.4); }
+#section-communities .comm-stat-detail { font-size: 13px; font-weight: 400; color: rgba(255,255,255,0.5); margin-top: 4px; }
+
+#section-communities .comm-comp-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-top: 40px; }
+#section-communities .comm-comp-card { padding: 28px 24px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.02); }
+#section-communities .comm-comp-card.comm-adidas-card { background: linear-gradient(135deg, rgba(255,215,0,0.06) 0%, rgba(255,215,0,0.02) 100%); border-color: rgba(255,215,0,0.2); }
+#section-communities .comm-comp-brand { font-size: 18px; font-weight: 800; text-transform: uppercase; margin-bottom: 16px; color: rgba(255,255,255,0.7); }
+#section-communities .comm-comp-brand.comm-gold { color: #FFD700; }
+#section-communities .comm-comp-metric { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+#section-communities .comm-comp-metric-label { font-size: 11px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+#section-communities .comm-comp-metric-value { font-size: 16px; font-weight: 700; }
+#section-communities .comm-up { color: #34C759; }
+#section-communities .comm-down { color: #FF3B30; }
+#section-communities .comm-stable { color: rgba(255,255,255,0.6); }
+
+#section-communities .comm-priority-grid { display: flex; flex-direction: column; gap: 2px; }
+#section-communities .comm-priority-header {
+  display: grid; grid-template-columns: 50px 1fr 140px 160px 180px; gap: 0; padding: 16px 24px;
+  background: rgba(255,215,0,0.08); border: 1px solid rgba(255,215,0,0.15); border-radius: 4px 4px 0 0;
+}
+#section-communities .comm-priority-header span { font-size: 10px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: #FFD700; }
+#section-communities .comm-priority-row {
+  display: grid; grid-template-columns: 50px 1fr 140px 160px 180px; gap: 0; padding: 20px 24px;
+  background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-top: none; transition: all 0.3s ease;
+}
+#section-communities .comm-priority-row:last-child { border-radius: 0 0 4px 4px; }
+#section-communities .comm-priority-row:hover { background: rgba(255,255,255,0.05); }
+#section-communities .comm-priority-rank { font-size: 24px; font-weight: 900; color: #FFD700; line-height: 1; align-self: center; }
+#section-communities .comm-priority-info { display: flex; flex-direction: column; gap: 4px; }
+#section-communities .comm-priority-name { font-size: 16px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #fff; }
+#section-communities .comm-priority-audience { font-size: 12px; color: rgba(255,255,255,0.4); }
+#section-communities .comm-priority-tag {
+  display: inline-flex; align-items: center; padding: 4px 12px; border-radius: 2px;
+  font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; align-self: center; justify-self: start;
+}
+#section-communities .comm-tag-critical { background: rgba(255,59,48,0.15); color: #FF3B30; border: 1px solid rgba(255,59,48,0.3); }
+#section-communities .comm-tag-high { background: rgba(255,149,0,0.15); color: #FF9500; border: 1px solid rgba(255,149,0,0.3); }
+#section-communities .comm-tag-medium-high { background: rgba(255,215,0,0.12); color: #FFD700; border: 1px solid rgba(255,215,0,0.25); }
+#section-communities .comm-priority-size { font-size: 14px; font-weight: 600; color: rgba(255,255,255,0.8); align-self: center; }
+#section-communities .comm-priority-whitespace { font-size: 12px; color: rgba(255,255,255,0.5); align-self: center; }
+
+#section-communities .comm-sizing-bar-container { margin-top: 60px; }
+#section-communities .comm-sizing-row { display: flex; align-items: center; gap: 16px; margin-bottom: 12px; }
+#section-communities .comm-sizing-label {
+  width: 220px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;
+  color: rgba(255,255,255,0.6); text-align: right; flex-shrink: 0;
+}
+#section-communities .comm-sizing-bar-track { flex: 1; height: 28px; background: rgba(255,255,255,0.04); border-radius: 2px; position: relative; overflow: hidden; }
+#section-communities .comm-sizing-bar-fill {
+  height: 100%; border-radius: 2px; display: flex; align-items: center; padding-left: 12px; transition: width 1s ease;
+}
+#section-communities .comm-sizing-bar-fill span { font-size: 11px; font-weight: 700; color: #000; letter-spacing: 1px; white-space: nowrap; }
+#section-communities .comm-fill-gold { background: linear-gradient(90deg, #FFD700, #FFC300); }
+#section-communities .comm-fill-white { background: linear-gradient(90deg, rgba(255,255,255,0.8), rgba(255,255,255,0.6)); }
+#section-communities .comm-fill-dim { background: linear-gradient(90deg, rgba(255,255,255,0.4), rgba(255,255,255,0.25)); }
+
+#section-communities .comm-subculture-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+#section-communities .comm-subculture-card {
+  background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); border-radius: 4px;
+  padding: 36px 32px; position: relative; overflow: hidden; transition: all 0.3s ease;
+}
+#section-communities .comm-subculture-card:hover { border-color: rgba(255,215,0,0.2); background: rgba(255,255,255,0.04); }
+#section-communities .comm-subculture-card.comm-featured { grid-column: span 2; background: linear-gradient(135deg, rgba(255,215,0,0.04) 0%, rgba(255,255,255,0.02) 100%); border-color: rgba(255,215,0,0.15); }
+#section-communities .comm-subculture-rank-badge {
+  position: absolute; top: 0; right: 0; width: 56px; height: 56px; background: rgba(255,215,0,0.1);
+  display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 900;
+  color: #FFD700; border-bottom-left-radius: 4px;
+}
+#section-communities .comm-subculture-emoji { font-size: 28px; margin-bottom: 12px; }
+#section-communities .comm-subculture-name { font-size: 22px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; color: #fff; }
+#section-communities .comm-subculture-tagline { font-size: 14px; font-weight: 400; font-style: italic; color: rgba(255,255,255,0.4); margin-bottom: 20px; }
+#section-communities .comm-subculture-stats {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px; padding: 16px 0;
+  border-top: 1px solid rgba(255,255,255,0.06); border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+#section-communities .comm-subculture-stat-label { font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.3); margin-bottom: 4px; }
+#section-communities .comm-subculture-stat-value { font-size: 14px; font-weight: 600; color: rgba(255,255,255,0.9); }
+#section-communities .comm-subculture-body { font-size: 14px; font-weight: 300; color: rgba(255,255,255,0.6); line-height: 1.65; }
+#section-communities .comm-subculture-signal {
+  display: inline-block; margin-top: 16px; padding: 6px 14px; background: rgba(255,215,0,0.08);
+  border: 1px solid rgba(255,215,0,0.15); border-radius: 2px; font-size: 11px; font-weight: 600;
+  color: #FFD700; letter-spacing: 1px;
+}
+
+#section-communities .comm-whitespace-card {
+  background: linear-gradient(135deg, rgba(255,215,0,0.04) 0%, transparent 100%);
+  border: 1px solid rgba(255,215,0,0.12); border-radius: 4px; padding: 48px; margin-top: 40px;
+}
+#section-communities .comm-whitespace-quote { font-size: 24px; font-weight: 700; line-height: 1.35; letter-spacing: -0.5px; margin-bottom: 24px; max-width: 800px; color: #fff; }
+#section-communities .comm-whitespace-quote .comm-highlight { color: #FFD700; }
+#section-communities .comm-whitespace-points { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 32px; }
+#section-communities .comm-whitespace-point { display: flex; gap: 12px; align-items: flex-start; }
+#section-communities .comm-whitespace-icon { font-size: 18px; flex-shrink: 0; margin-top: 2px; }
+#section-communities .comm-whitespace-text { font-size: 14px; color: rgba(255,255,255,0.65); line-height: 1.6; }
+#section-communities .comm-whitespace-text strong { color: rgba(255,255,255,0.9); font-weight: 600; }
+
+@media (max-width: 900px) {
+  #section-communities .comm-stat-row { grid-template-columns: repeat(2, 1fr); }
+  #section-communities .comm-comp-grid { grid-template-columns: repeat(2, 1fr); }
+  #section-communities .comm-priority-header,
+  #section-communities .comm-priority-row { grid-template-columns: 40px 1fr 100px; }
+  #section-communities .comm-priority-size,
+  #section-communities .comm-priority-whitespace { display: none; }
+  #section-communities .comm-subculture-grid { grid-template-columns: 1fr; }
+  #section-communities .comm-subculture-card.comm-featured { grid-column: span 1; }
+  #section-communities .comm-whitespace-points { grid-template-columns: 1fr; }
+  #section-communities .comm-hero { padding: 30px; min-height: 350px; }
+  #section-communities .comm-hero-title { font-size: 36px; }
+  #section-communities .comm-section { padding: 30px; }
+}
 
 /* ── MAIN ── */
 .main { padding-top: calc(var(--nav-h) + 20px); padding-bottom: 40px; }
@@ -1375,6 +1556,7 @@ if (sessionStorage.getItem('ygt_auth') === '1') {
     <button class="nav-tab" data-tab="competitive" onclick="switchTab('competitive')">Competitive</button>
     <button class="nav-tab" data-tab="strategy" onclick="switchTab('strategy')">Strategy</button>
     <button class="nav-tab" data-tab="narrative" onclick="switchTab('narrative')">Narrative</button>
+    <button class="nav-tab" data-tab="communities" onclick="switchTab('communities')">20% Communities</button>
     <button class="nav-tab" data-tab="library" onclick="switchTab('library')">Library</button>
     <button class="nav-tab active" data-tab="whiteboard" onclick="switchTab('whiteboard')">Whiteboard</button>
   </div>
@@ -2189,6 +2371,327 @@ if (sessionStorage.getItem('ygt_auth') === '1') {
 
   <div class="card-label mt-24" style="color:var(--green);">STORED FILES <span id="lib-count" style="font-size:11px; color:var(--text-dim); font-family:'JetBrains Mono',monospace;"></span></div>
   <div class="lib-grid" id="lib-grid"></div>
+</div>
+
+<!-- ==================== 20% COMMUNITIES ==================== -->
+<div class="section" id="section-communities">
+  <div class="section-header">
+    <h2>20% Communities</h2>
+    <p>Stripe 2 — 7 high-growth sub-communities for the path to $10B.</p>
+  </div>
+
+  <!-- HERO -->
+  <div class="comm-hero">
+    <div class="comm-three-stripes">
+      <div class="comm-stripe"></div>
+      <div class="comm-stripe"></div>
+      <div class="comm-stripe"></div>
+    </div>
+    <div class="comm-hero-label">Stripe 2 — 20% Growth Areas</div>
+    <h1 class="comm-hero-title">
+      Executive<br>Growth<br><span class="comm-accent">Subculture</span><br>Report
+    </h1>
+    <p class="comm-hero-subtitle">
+      7 high-growth sub-communities for the path to $10B. Validated through BAV equity data, real-time cultural intelligence, and competitive landscape analysis.
+    </p>
+    <div class="comm-hero-meta">
+      <div class="comm-hero-meta-item">
+        <span class="comm-hero-meta-label">Client</span>
+        <span class="comm-hero-meta-value">adidas</span>
+      </div>
+      <div class="comm-hero-meta-item">
+        <span class="comm-hero-meta-label">Date</span>
+        <span class="comm-hero-meta-value">March 2026</span>
+      </div>
+      <div class="comm-hero-meta-item">
+        <span class="comm-hero-meta-label">Markets</span>
+        <span class="comm-hero-meta-value">U.S. &amp; Canada</span>
+      </div>
+      <div class="comm-hero-meta-item">
+        <span class="comm-hero-meta-label">Framework</span>
+        <span class="comm-hero-meta-value">3 Stripes Approach</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- BAV SNAPSHOT -->
+  <div class="comm-section comm-section-dark">
+    <div class="comm-section-label">Brand Equity Foundation</div>
+    <h2 class="comm-section-title">adidas has the permission.<br>Now it needs the <span style="color:#FFD700">distinction.</span></h2>
+    <div class="comm-stat-row">
+      <div class="comm-stat-card">
+        <div class="comm-stat-number comm-gold">93</div>
+        <div class="comm-stat-label">Relevance</div>
+        <div class="comm-stat-detail">Up from 83 in 2020</div>
+      </div>
+      <div class="comm-stat-card">
+        <div class="comm-stat-number comm-gold">98</div>
+        <div class="comm-stat-label">Gaining in Popularity</div>
+        <div class="comm-stat-detail">Perceived momentum</div>
+      </div>
+      <div class="comm-stat-card">
+        <div class="comm-stat-number comm-dim">61</div>
+        <div class="comm-stat-label">Differentiation</div>
+        <div class="comm-stat-detail">Down from 64 — #1 gap</div>
+      </div>
+      <div class="comm-stat-card">
+        <div class="comm-stat-number comm-dim">39</div>
+        <div class="comm-stat-label">Stylish</div>
+        <div class="comm-stat-detail">Red flag for Originals</div>
+      </div>
+    </div>
+
+    <div class="comm-comp-grid">
+      <div class="comm-comp-card comm-adidas-card">
+        <div class="comm-comp-brand comm-gold">adidas</div>
+        <div class="comm-comp-metric"><span class="comm-comp-metric-label">Diff.</span><span class="comm-comp-metric-value comm-down">61</span></div>
+        <div class="comm-comp-metric"><span class="comm-comp-metric-label">Relevance</span><span class="comm-comp-metric-value comm-up">93</span></div>
+        <div class="comm-comp-metric"><span class="comm-comp-metric-label">Strength</span><span class="comm-comp-metric-value comm-up">90</span></div>
+        <div class="comm-comp-metric"><span class="comm-comp-metric-label">Stature</span><span class="comm-comp-metric-value comm-up">96</span></div>
+      </div>
+      <div class="comm-comp-card">
+        <div class="comm-comp-brand">Nike</div>
+        <div class="comm-comp-metric"><span class="comm-comp-metric-label">Diff.</span><span class="comm-comp-metric-value comm-down">76</span></div>
+        <div class="comm-comp-metric"><span class="comm-comp-metric-label">Relevance</span><span class="comm-comp-metric-value comm-stable">95</span></div>
+        <div class="comm-comp-metric"><span class="comm-comp-metric-label">Strength</span><span class="comm-comp-metric-value comm-stable">96</span></div>
+        <div class="comm-comp-metric"><span class="comm-comp-metric-label">Arrogant</span><span class="comm-comp-metric-value comm-down">85</span></div>
+      </div>
+      <div class="comm-comp-card">
+        <div class="comm-comp-brand">New Balance</div>
+        <div class="comm-comp-metric"><span class="comm-comp-metric-label">Diff.</span><span class="comm-comp-metric-value comm-down">66</span></div>
+        <div class="comm-comp-metric"><span class="comm-comp-metric-label">Authentic</span><span class="comm-comp-metric-value comm-up">93</span></div>
+        <div class="comm-comp-metric"><span class="comm-comp-metric-label">Soc. Resp.</span><span class="comm-comp-metric-value comm-up">98</span></div>
+        <div class="comm-comp-metric"><span class="comm-comp-metric-label">Daring</span><span class="comm-comp-metric-value comm-dim">48</span></div>
+      </div>
+      <div class="comm-comp-card">
+        <div class="comm-comp-brand">HOKA</div>
+        <div class="comm-comp-metric"><span class="comm-comp-metric-label">BAV Data</span><span class="comm-comp-metric-value comm-stable">N/A</span></div>
+        <div class="comm-comp-metric"><span class="comm-comp-metric-label">Cultural</span><span class="comm-comp-metric-value comm-stable">Niche</span></div>
+        <div class="comm-comp-metric"><span class="comm-comp-metric-label">Territory</span><span class="comm-comp-metric-value comm-stable">Comfort</span></div>
+        <div class="comm-comp-metric"><span class="comm-comp-metric-label">Threat</span><span class="comm-comp-metric-value comm-stable">Med-Low</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRIORITY RANKING -->
+  <div class="comm-section comm-section-accent">
+    <div class="comm-section-label">Growth Priority Ranking</div>
+    <h2 class="comm-section-title">7 subcultures.<br>Ranked by <span style="color:#FFD700">growth potential.</span></h2>
+    <p class="comm-section-body">Each subculture has been validated through BAV equity data, cultural trend analysis, social narrative scanning, and competitive landscape mapping. Rankings reflect growth velocity, competitive white space, source audience alignment, and adidas brand fit.</p>
+
+    <div class="comm-priority-grid">
+      <div class="comm-priority-header">
+        <span>#</span><span>Sub-Community</span><span>Priority</span><span>Audience Size</span><span>White Space</span>
+      </div>
+      <div class="comm-priority-row">
+        <div class="comm-priority-rank">01</div>
+        <div class="comm-priority-info"><div class="comm-priority-name">Flag Football Queens</div><div class="comm-priority-audience">Category Buyers</div></div>
+        <span class="comm-priority-tag comm-tag-critical">Critical</span>
+        <div class="comm-priority-size">1.5-2M active</div>
+        <div class="comm-priority-whitespace">Wide open — no brand owns it</div>
+      </div>
+      <div class="comm-priority-row">
+        <div class="comm-priority-rank">02</div>
+        <div class="comm-priority-info"><div class="comm-priority-name">Aesthetic Running Women</div><div class="comm-priority-audience">Runners</div></div>
+        <span class="comm-priority-tag comm-tag-critical">Critical</span>
+        <div class="comm-priority-size">3-5M active</div>
+        <div class="comm-priority-whitespace">Style + community unclaimed</div>
+      </div>
+      <div class="comm-priority-row">
+        <div class="comm-priority-rank">03</div>
+        <div class="comm-priority-info"><div class="comm-priority-name">Hyrox Social Competitors</div><div class="comm-priority-audience">Runners / Category Buyers</div></div>
+        <span class="comm-priority-tag comm-tag-high">High</span>
+        <div class="comm-priority-size">800K-1.2M active</div>
+        <div class="comm-priority-whitespace">No major brand at scale</div>
+      </div>
+      <div class="comm-priority-row">
+        <div class="comm-priority-rank">04</div>
+        <div class="comm-priority-info"><div class="comm-priority-name">Pickleball Social Leaguers</div><div class="comm-priority-audience">Category Buyers</div></div>
+        <span class="comm-priority-tag comm-tag-high">High</span>
+        <div class="comm-priority-size">6-8M (U.S.+CA)</div>
+        <div class="comm-priority-whitespace">No brand has court shoes</div>
+      </div>
+      <div class="comm-priority-row">
+        <div class="comm-priority-rank">05</div>
+        <div class="comm-priority-info"><div class="comm-priority-name">Creator-Culture Originals</div><div class="comm-priority-audience">Originals</div></div>
+        <span class="comm-priority-tag comm-tag-high">High</span>
+        <div class="comm-priority-size">3-5M core</div>
+        <div class="comm-priority-whitespace">No athletic brand in gaming x fashion</div>
+      </div>
+      <div class="comm-priority-row">
+        <div class="comm-priority-rank">06</div>
+        <div class="comm-priority-info"><div class="comm-priority-name">Golfcore Remixers</div><div class="comm-priority-audience">Cat. Buyers / Originals</div></div>
+        <span class="comm-priority-tag comm-tag-medium-high">Med-High</span>
+        <div class="comm-priority-size">2-3M style-first</div>
+        <div class="comm-priority-whitespace">Golf x streetwear = early stage</div>
+      </div>
+      <div class="comm-priority-row">
+        <div class="comm-priority-rank">07</div>
+        <div class="comm-priority-info"><div class="comm-priority-name">Canada's Social Sport Collective</div><div class="comm-priority-audience">Runners / Category Buyers</div></div>
+        <span class="comm-priority-tag comm-tag-medium-high">Med-High</span>
+        <div class="comm-priority-size">500K-1M active</div>
+        <div class="comm-priority-whitespace">Completely unbranded territory</div>
+      </div>
+    </div>
+
+    <!-- Audience Sizing Bars -->
+    <div class="comm-sizing-bar-container">
+      <div class="comm-section-label" style="margin-bottom: 24px;">Addressable Market Opportunity</div>
+      <div class="comm-sizing-row"><div class="comm-sizing-label">Pickleball</div><div class="comm-sizing-bar-track"><div class="comm-sizing-bar-fill comm-fill-gold" style="width:100%"><span>20M+ (U.S. + CA)</span></div></div></div>
+      <div class="comm-sizing-row"><div class="comm-sizing-label">Creator-Culture</div><div class="comm-sizing-bar-track"><div class="comm-sizing-bar-fill comm-fill-gold" style="width:75%"><span>15-20M</span></div></div></div>
+      <div class="comm-sizing-row"><div class="comm-sizing-label">Aesthetic Running</div><div class="comm-sizing-bar-track"><div class="comm-sizing-bar-fill comm-fill-white" style="width:50%"><span>10M+</span></div></div></div>
+      <div class="comm-sizing-row"><div class="comm-sizing-label">Flag Football</div><div class="comm-sizing-bar-track"><div class="comm-sizing-bar-fill comm-fill-white" style="width:40%"><span>8M</span></div></div></div>
+      <div class="comm-sizing-row"><div class="comm-sizing-label">Hyrox</div><div class="comm-sizing-bar-track"><div class="comm-sizing-bar-fill comm-fill-dim" style="width:25%"><span>5M</span></div></div></div>
+      <div class="comm-sizing-row"><div class="comm-sizing-label">Canada Collective</div><div class="comm-sizing-bar-track"><div class="comm-sizing-bar-fill comm-fill-dim" style="width:15%"><span>3M</span></div></div></div>
+      <div class="comm-sizing-row"><div class="comm-sizing-label">Golfcore</div><div class="comm-sizing-bar-track"><div class="comm-sizing-bar-fill comm-fill-dim" style="width:13%"><span>2.5M style-first</span></div></div></div>
+    </div>
+  </div>
+
+  <!-- SUBCULTURE DEEP DIVES -->
+  <div class="comm-section comm-section-dark">
+    <div class="comm-section-label">The 7 Growth Bets</div>
+    <h2 class="comm-section-title">Sub-communities that<br>move the <span style="color:#FFD700">needle.</span></h2>
+
+    <div class="comm-subculture-grid">
+
+      <!-- #1 Flag Football -->
+      <div class="comm-subculture-card comm-featured">
+        <div class="comm-subculture-rank-badge">01</div>
+        <div class="comm-subculture-emoji">🏈</div>
+        <h3 class="comm-subculture-name">Flag Football Queens</h3>
+        <div class="comm-subculture-tagline">"This isn't a trend — it's our sport now."</div>
+        <div class="comm-subculture-stats">
+          <div><div class="comm-subculture-stat-label">Growth Signal</div><div class="comm-subculture-stat-value">84% girls' participation</div></div>
+          <div><div class="comm-subculture-stat-label">Catalyst</div><div class="comm-subculture-stat-value">LA 2028 Olympics</div></div>
+          <div><div class="comm-subculture-stat-label">adidas Edge</div><div class="comm-subculture-stat-value">Football heritage + team kits</div></div>
+        </div>
+        <p class="comm-subculture-body">NCAA emerging sport. 40+ varsity programs expected by 2028. NFL franchise investment flowing. Kansas City Chiefs considering a women's team. No athletic brand owns the community infrastructure — the leagues, uniforms, training gear. adidas's global football heritage makes this a lateral move, not a new build. First mover wins for a decade.</p>
+        <div class="comm-subculture-signal">2,243 ARTICLES IN CULTURAL DATA | NCAA + NFL + IOC BACKING</div>
+      </div>
+
+      <!-- #2 Aesthetic Running -->
+      <div class="comm-subculture-card">
+        <div class="comm-subculture-rank-badge">02</div>
+        <div class="comm-subculture-emoji">🏃‍♀️</div>
+        <h3 class="comm-subculture-name">Aesthetic Running Women</h3>
+        <div class="comm-subculture-tagline">"Running is my sport, my style, and my therapy."</div>
+        <div class="comm-subculture-stats">
+          <div><div class="comm-subculture-stat-label">Size</div><div class="comm-subculture-stat-value">3-5M active</div></div>
+          <div><div class="comm-subculture-stat-label">Key Signal</div><div class="comm-subculture-stat-value">Hot Girl Walk to brand</div></div>
+          <div><div class="comm-subculture-stat-label">Fixes</div><div class="comm-subculture-stat-value">Stylish (39) gap</div></div>
+        </div>
+        <p class="comm-subculture-body">The only brand that bridges performance running (Ultraboost) AND streetwear (Samba). HOKA can't do style. Nike can't do community warmth. This directly improves adidas's weakest BAV metric.</p>
+        <div class="comm-subculture-signal">HOT GIRL WALK SCALED TO BRAND + AMBASSADORS + BOOK</div>
+      </div>
+
+      <!-- #3 Hyrox -->
+      <div class="comm-subculture-card">
+        <div class="comm-subculture-rank-badge">03</div>
+        <div class="comm-subculture-emoji">💪</div>
+        <h3 class="comm-subculture-name">Hyrox Social Competitors</h3>
+        <div class="comm-subculture-tagline">"We don't just work out — we compete together."</div>
+        <div class="comm-subculture-stats">
+          <div><div class="comm-subculture-stat-label">Global</div><div class="comm-subculture-stat-value">1.3M participants</div></div>
+          <div><div class="comm-subculture-stat-label">Spend</div><div class="comm-subculture-stat-value">$1,000+ per cycle</div></div>
+          <div><div class="comm-subculture-stat-label">Growth</div><div class="comm-subculture-stat-value">30%+ YoY</div></div>
+        </div>
+        <p class="comm-subculture-body">Gen Z's identity sport. F45 extended global title partnership across 12 events in 2026. Celebrity adoption accelerating. No major athletic brand has claimed Hyrox at scale. Couples/doubles format = unique marketing angle.</p>
+        <div class="comm-subculture-signal">F45 GLOBAL PARTNERSHIP | GEN Z SPENDING PRIORITY</div>
+      </div>
+
+      <!-- #4 Pickleball -->
+      <div class="comm-subculture-card">
+        <div class="comm-subculture-rank-badge">04</div>
+        <div class="comm-subculture-emoji">🏓</div>
+        <h3 class="comm-subculture-name">Pickleball Social Leaguers</h3>
+        <div class="comm-subculture-tagline">"It's not about the game — it's about who you play with."</div>
+        <div class="comm-subculture-stats">
+          <div><div class="comm-subculture-stat-label">Players</div><div class="comm-subculture-stat-value">~20M U.S. + 2M CA</div></div>
+          <div><div class="comm-subculture-stat-label">Growth</div><div class="comm-subculture-stat-value">4.8M to 20M (5yr)</div></div>
+          <div><div class="comm-subculture-stat-label">Entry</div><div class="comm-subculture-stat-value">Tennis heritage to court shoes</div></div>
+        </div>
+        <p class="comm-subculture-body">"Pickleball Aesthetics and Elevated Lifestyle" is an active social narrative. adidas already named in trend data. No major athletic brand has court shoes positioned for pickleball. Strongest cross-border play.</p>
+        <div class="comm-subculture-signal">3,027 ARTICLES | FACILITY BOOM NATIONWIDE | CANADA PRIMARY PLAY</div>
+      </div>
+
+      <!-- #5 Creator Culture -->
+      <div class="comm-subculture-card">
+        <div class="comm-subculture-rank-badge">05</div>
+        <div class="comm-subculture-emoji">🎮</div>
+        <h3 class="comm-subculture-name">Creator-Culture Originals</h3>
+        <div class="comm-subculture-tagline">"My style is my content. My content is my identity."</div>
+        <div class="comm-subculture-stats">
+          <div><div class="comm-subculture-stat-label">TikTok Signal</div><div class="comm-subculture-stat-value">40M daily cosplay views</div></div>
+          <div><div class="comm-subculture-stat-label">Proof</div><div class="comm-subculture-stat-value">Babymonster x Z.N.E.</div></div>
+          <div><div class="comm-subculture-stat-label">Audience</div><div class="comm-subculture-stat-value">Young women-led</div></div>
+        </div>
+        <p class="comm-subculture-body">The play that most directly addresses Differentiation (61). Gaming/K-pop/cosplay x fashion — no athletic brand is present. "Celebrate Originality" IS their ethos. Kai Cenat's 1M Twitch subs prove creator influence has mass scale.</p>
+        <div class="comm-subculture-signal">CREATOR ECONOMY $480B+ | ROBLOX COMMERCE EMERGING</div>
+      </div>
+
+      <!-- #6 Golfcore -->
+      <div class="comm-subculture-card">
+        <div class="comm-subculture-rank-badge">06</div>
+        <div class="comm-subculture-emoji">⛳</div>
+        <h3 class="comm-subculture-name">Golfcore Remixers</h3>
+        <div class="comm-subculture-tagline">"The course is just a backdrop — the fit is the main event."</div>
+        <div class="comm-subculture-stats">
+          <div><div class="comm-subculture-stat-label">Audience</div><div class="comm-subculture-stat-value">2-3M style-first</div></div>
+          <div><div class="comm-subculture-stat-label">Validation</div><div class="comm-subculture-stat-value">Golf x street products launching</div></div>
+          <div><div class="comm-subculture-stat-label">adidas Edge</div><div class="comm-subculture-stat-value">Golf div + Originals</div></div>
+        </div>
+        <p class="comm-subculture-body">adidas is the only brand with both a golf division AND a streetwear empire. Women's golf fashion surging on Pinterest. Polo/rugby style resurgence across social. Get in before fashion-native brands claim the space. Strong Canada play.</p>
+        <div class="comm-subculture-signal">DUCA DEL COSMA GOLF x STREETWEAR LAUNCH | PINTEREST SURGE</div>
+      </div>
+
+      <!-- #7 Canada Collective -->
+      <div class="comm-subculture-card comm-featured">
+        <div class="comm-subculture-rank-badge">07</div>
+        <div class="comm-subculture-emoji">🇨🇦</div>
+        <h3 class="comm-subculture-name">Canada's Social Sport Collective</h3>
+        <div class="comm-subculture-tagline">"It's not about the sport — it's about who shows up."</div>
+        <div class="comm-subculture-stats">
+          <div><div class="comm-subculture-stat-label">Signals</div><div class="comm-subculture-stat-value">Slowpokes | Run clubs | Climbing</div></div>
+          <div><div class="comm-subculture-stat-label">Climbing Growth</div><div class="comm-subculture-stat-value">25% (2021-2024)</div></div>
+          <div><div class="comm-subculture-stat-label">Moat</div><div class="comm-subculture-stat-value">Community investment</div></div>
+        </div>
+        <p class="comm-subculture-body">Slowpokes chapters across cities. Ethnicity-based run clubs (Black Runners of GTA, Asian Toronto Run Club, Filipinos in the 6ix, YAMAJO). Climbing gyms +25%. Rucking emergence. Jam Sports multi-sport leagues. Completely unbranded. The most defensible, hardest-to-replicate play. Nike's global model can't operate at this grain. This is adidas's Canada differentiation story.</p>
+        <div class="comm-subculture-signal">MULTI-SIGNAL CONVERGENCE | COMPLETELY UNCONTESTED TERRITORY</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- WHITE SPACE / STRATEGIC THESIS -->
+  <div class="comm-section">
+    <div class="comm-section-label">The Strategic Thesis</div>
+    <h2 class="comm-section-title">Why this wins.</h2>
+
+    <div class="comm-whitespace-card">
+      <p class="comm-whitespace-quote">
+        adidas is the <span class="comm-highlight">only brand</span> with the Relevance, the product breadth, and the community-first posture to credibly show up across all 7 growth spaces. The competitors <span class="comm-highlight">can't replicate this</span> because they don't have the breadth. And they won't invest in it because their models are built for mass, not for community.
+      </p>
+      <div class="comm-whitespace-points">
+        <div class="comm-whitespace-point">
+          <div class="comm-whitespace-icon">⚡</div>
+          <p class="comm-whitespace-text"><strong>Nike</strong> is losing Differentiation (96 to 76) and gaining Arrogance (85). Their model is top-down: signed athletes to mass campaigns. They don't have a community play.</p>
+        </div>
+        <div class="comm-whitespace-point">
+          <div class="comm-whitespace-icon">⚡</div>
+          <p class="comm-whitespace-text"><strong>New Balance</strong> wins on Authenticity (93) but plays it safe (Daring: 48). They're not going to show up at a Hyrox event or a slow-running collective. They don't take swings.</p>
+        </div>
+        <div class="comm-whitespace-point">
+          <div class="comm-whitespace-icon">⚡</div>
+          <p class="comm-whitespace-text"><strong>HOKA</strong> owns comfort-first running, but their cultural footprint is narrow. Not in pickleball, golf, gaming, or team sports. They can't go broad.</p>
+        </div>
+        <div class="comm-whitespace-point">
+          <div class="comm-whitespace-icon">🏆</div>
+          <p class="comm-whitespace-text"><strong>adidas</strong> has running + football + golf + tennis + Originals + training. 85M+ total addressable market. The 20% bet is a portfolio of culturally potent bets that collectively move Differentiation while growing the top line toward $10B.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <!-- ==================== WHITEBOARD ==================== -->
